@@ -4,7 +4,7 @@
 
 ## About this project
 
-Model Context Protocol (MCP) server for AI-assisted development ("vibe coding") of MDK applications.
+Model Context Protocol (MCP) server for AI-assisted development ("vibe coding") of SAP Mobile Development Kit applications.
 
 ## Requirements and Setup
 
