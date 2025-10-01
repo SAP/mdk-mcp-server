@@ -1,6 +1,6 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/mcp-server-for-sap-mobile-development-kit)](https://api.reuse.software/info/github.com/SAP/mcp-server-for-sap-mobile-development-kit)
 
-# MCP server for SAP Mobile Development Kit
+# MCP server for mobile development kit
 
 ## About this project
 
