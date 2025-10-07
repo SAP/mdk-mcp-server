@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action",
+  "title": "Action",
+  "description": "The following describes the common metadata properties applicable for all action types. Note: Failed actions are events that execute with errors. Invalid actions are events that doesn't get executed at all due to validation errors.",
+  "properties": {
+    "ActionResult": {
+      "description": "Refer to the [MDK Guide](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/action-binding-and-result.html#action-results) to understand what an action result is.\n\nContains a name that can be used to look up an action result via target path or rule. Action results are only available for subsequent actions, given that the preceding action result is stored via `OnSuccess` or `OnFailure` actions.",
+      "$ref": "definitions/ActionResult"
+    },
+    "ActivityIndicatorText": {
+      "description": "Text that appears on the progress bar.",
+      "type": "string",
+      "default": "LOADING"
+    },
+    "OnFailure": {
+      "description": "Action or rule that is executed when an action fails. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule",
+      "examples": ["$(PLT,'/MDKDevApp/Actions/PLTActions/FailureIOS.action', '/MDKDevApp/Actions/PLTActions/FailureAndroid.action')"]
+    },
+    "OnFailureLog": {
+      "description": "Messages are logged when an action fails.",
+      "$ref": "definitions/OnActionLog"
+    },
+    "OnInvalid": {
+      "description": "Action or rule that is executed when a validation fails. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule",
+      "examples": ["$(PLT,'/MDKDevApp/Actions/PLTActions/InvalidIOS.action', '/MDKDevApp/Actions/PLTActions/InvalidAndroid.action')"]
+    },
+    "OnInvalidLog": {
+      "description": "Messages are logged when a validation fails.",
+      "$ref": "definitions/OnActionLog"
+    },
+    "OnSuccess": {
+      "description": "Action or rule that is executed when an action is successful. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule",
+      "examples": ["$(PLT,'/MDKDevApp/Actions/PLTActions/SuccessIOS.action', '/MDKDevApp/Actions/PLTActions/SuccessAndroid.action')"]
+    },
+    "OnSuccessLog": {
+      "description": "Messages are logged when an action gets executed successful.",
+      "$ref": "definitions/OnActionLog"
+    },
+    "ShowActivityIndicator": {
+      "description": "If set to True, every time an activity or action gets executed, a progress bar appears with the execution status, and it’ll automatically disappear once done.",
+      "type": "boolean"
+    },
+    "ValidationRule": {
+      "description": "Rule that validates the current action. The rule will be run before the action is executed. The rule can check values to make sure properties exist and match business criteria or any other business logic needed before executing the action.  Return a boolean value to indicate if the validation has passed. If false or non-boolean value is returned, the action will not be executed and OnInvalid event will be triggered.",
+      "$ref": "definitions/Rule"
+    },
+    "_Type": {
+      "pattern": "(^Action\\.Type\\.)([A-Z].+)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,62 @@
+{
+  "name": "@sap/mdk-mcp-server",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Model Context Protocol (MCP) server for AI-assisted development of MDK applications.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SAP/mdk-mcp-server.git"
+  },
+  "author": "SAP SE (https://www.sap.com)",
+  "homepage": "",
+  "bin": {
+    "mdk-mcp": "./build/start.js"
+  },
+  "files": [
+    "build/",
+    "res/"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && cp -r src/lib build && cp -r src/start.js build",
+    "test": "node --test --test-concurrency=1 src/tests/*.test.js",
+    "lint": "eslint 'src/**/*.ts' --ignore-pattern 'src/**/*.d.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --ignore-pattern 'src/**/*.d.ts' --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "lint:all": "npm run lint && npm run format:check",
+    "fix:all": "npm run lint:fix && npm run format",
+    "prepare": "npm run build",
+    "start": "npx -y supergateway --port 9881 --stdio \"node ./build/start.js\""
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.7.2",
+    "@modelcontextprotocol/sdk": "^1.18.1",
+    "@sap/mdk-tools": "^1.14.0",
+    "@sap/generator-mdk": "1.0.0-2",
+    "xml2js": "^0.6.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.11.24",
+    "@types/xml2js": "^0.4.14",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^4.2.5",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "postcss": "^8.4.31",
+    "glob": "^11.0.3",
+    "@octokit/plugin-paginate-rest": "^11.3.5",
+    "@octokit/request": "^9.1.3",
+    "@octokit/request-error": "^6.1.5",
+    "form-data": "^4.0.1",
+    "tough-cookie": "^5.0.0"
+  }
+}

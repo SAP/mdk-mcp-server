@@ -1,0 +1,90 @@
+{
+  "$id": "Page/ActionBar",
+  "title": "ActionBar",
+  "description": "ActionBar is the navigation bar that appears at the top of a page. Action items can be added to the action bar to execute actions on the context of the page.\nBack navigation button will be automatically added to the action bar when navigation occurred.\nWhen there are too many items on the `ActionBar`, an overflow button would appear automatically on top right corner which would display the overflown items as popover menu items. The max number of allowed visible items is based on the device type (tablet or phone) and item type (text or icon). On tablet, the max visible items (including overflow button) is 4 for icon only items and 3 if text item is present. On phone the max visible items (including overflow button) is 3 for icon only items and 2 if text item is present.\n\nThe `ActionBar` can support styling at two different levels:\n\nApplication-level styling: This is done by defining a type selector CSS with the predefined type names `ActionBar` (using the color property to style the color of the caption, subhead, text items, and icon tint, and the background-color property to style the background color of the `ActionBar`; for Android, the same background color is applied to the status bar as well) and `ActionBarTitle` (to style the caption, large caption, and subhead).\n\nPage-level styling: This is done by defining a CSS class name (class selector) for a subview or property in `ActionBar.Styles` or `ActionBar.Items.Style`.",
+  "additionalProperties": {
+    "proxy": "ActionBarProxy"
+  },
+  "properties": {
+    "Caption": {
+      "description": "Main caption / title of the page.",
+      "type": "string"
+    },
+    "Subhead": {
+      "description": "Sub caption / sub title of the page. When `Subhead` is set, the `PrefersLargeCaption` property is ignored.",
+      "type": "string"
+    },
+    "CaptionAlignment": {
+      "type": "string",
+      "enum": [ "Left", "Center" ],
+      "default": "Left",
+      "description": "Android only. Choose one of the options based on how you want to align the `Caption` and `Subhead`."
+    },
+    "PrefersLargeCaption": {
+      "description": "iOS and Android only. Set as true to display in large caption mode. This property is ignored if `Subhead` is defined.\n\nSpecifically for iOS, this property is not supported on page with BottomNavigation, Tabs, SideDrawer, FormCellContainer, or FlexibleColumn as the control.",
+      "type": "boolean",
+      "default": false
+    },
+    "Logo": {
+      "$ref": "definitions/Image",
+      "description": "The icon can only be displayed on page without back navigation. The icon to be provided as app logo is displayed at the left most item on ActionBar. On iOS, The logo is displayed after `SideDrawer` menu button if app is using `SideDrawer`, the size is fixed at 44dp height x 88dp width. On Android, Logo can only be displayed if there is no SideDrawer and no back navigation button, the size is fixed at 44dp height x 88dp width."
+    },
+    "OverflowIcon": {
+      "$ref": "definitions/Image",
+      "description": "iOS only. The icon is to replace the overflow button icon (default ellipsis)."
+    },
+    "OnBackButtonPressed": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is triggered when a user presses the back button in the action bar. This event will not be triggered when ClosePage action is triggered or System Back button (Android) is pressed. If a false is returned from the handler then the back navigation is cancelled, if true or void or undefined or null is returned then the back navigation continued."
+    },
+    "DataSubscriptions": {
+      "$ref": "definitions/DataSubscriptions",
+      "description": "Array of data change events to subscribe to."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "iOS and Android only. Set styles for actionbar.",
+      "properties": {
+        "ActionBar": {
+          "type": "string",
+          "$ref": "Styles/ActionBarClass",
+          "description": "The string value is a style class name of `ActionBar`. It is used to set the background color of the actionbar."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `Caption`. It is used to style the `Caption` text on the actionbar."
+        },
+        "Subhead": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `Subhead`. It is used to style the `Subhead` text on the actionbar."
+        },
+        "Logo": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Logo`."
+        },
+        "OverflowIcon": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "iOS only. The string value is a style class name of `OverflowIcon`."
+        }
+      }
+    },
+    "Items": {
+      "items": {
+        "$ref": "Page/ActionBarItem"
+      },
+      "type": "array",
+      "description": "Each item represents a button displayed in the navigation bar.\nFor mobile, by default, all items are positioned to the right side of `ActionBar`.\nWhen visible items exceed the max items allowed, an overflow button would automatically be displayed, excess items can be accessed through popover displayed when the overflow button is pressed.\nThe max items allowed vary based on several factors.\nOn tablet, icon only items has a maximum of 4 items, while text only items or mixed items have a maximum of 3 items.\nOn phone, icon only items has a maximum of 3 items, while text only items or mixed items have a maximum of 2 items."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.ActionBar"
+    }
+  },
+  "type": "object"
+}

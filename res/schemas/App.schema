@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "App",
+  "title": "Application",
+  "description": "The Application.app file is a JSON file that contains the MDK app definition.",
+  "additionalProperties": {
+    "proxy": "ClientAPI"
+  },
+  "properties": {
+    "MainPage": {
+      "$ref": "definitions/Page",
+      "description": "Refers to a file underneath the project root's `Pages` folder that has a .page extension.",
+      "examples": ["/_Name/Pages/SomePage.page"]
+    },
+    "OnDidUpdate": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "A .action or .js file that runs with the new definitions recieved from the update. If rejected/fails, revert to previous definitions. PLT formatter is supported."
+    },
+    "OnExit": {  
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is raised when the app is about to be exited. PLT formatter is supported.",
+      "examples": ["$(PLT, '/MDKDevApp/Actions/PLTActions/AppEvents/OnExitIOS.action','/MDKDevApp/Actions/PLTActions/AppEvents/OnExitAndroid.action')"]
+    },
+    "OnLaunch": {
+      "anyOf": [
+        {
+          "$ref": "definitions/ActionOrRule"
+        },
+        {
+          "items": {
+            "$ref": "definitions/ActionOrRule"
+          },
+          "type": "array"
+        }
+      ],
+      "description": "This event is raised when the app is launched and when user has onboarded, entered demo mode or entered passcode. PLT formatter is supported."
+    },
+    "OnUnCaughtError": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is raised when an uncaught app error is present. PLT formatter is supported.",
+      "examples": ["$(PLT, '/MDKDevApp/Actions/PLTActions/AppEvents/OnUncaughtErrorIOS.action','/MDKDevApp/Actions/PLTActions/AppEvents/OnUncaughtErrorAndroid.action')"]
+    },
+    "OnWillUpdate": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "A .action or .js file that runs with the existing definitions prior to update. PLT formatter is supported."
+    },
+    "OnReceiveForegroundNotification": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "A .js file that is triggered when a notification is about to be presented to the app. PLT formatter is supported."
+    },
+    "OnReceiveFetchCompletion": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "A .js file that is triggered when a remote notification arrived that indicates there is data to be fetched.\nFor iOS, the request contains { \"apns.contentAvailable\": true }.\nFor Android, the request does not contain any notification section. PLT formatter is supported."
+    },
+    "OnReceiveNotificationResponse": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "A .js file that is called to let your app know which action was selected by the user for a given notification. PLT formatter is supported."
+    },
+    "OnSuspend": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is raised when the application is suspended, for example, when the app goes into the background. PLT formatter is supported.",
+      "examples": ["$(PLT, '/MDKDevApp/Actions/PLTActions/AppEvents/OnSuspendIOS.action','/MDKDevApp/Actions/PLTActions/AppEvents/OnSuspendAndroid.action')"]
+    },
+    "OnResume": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is raised when the application is resumed after being suspended, for example, when the app comes back to the foreground. PLT formatter is supported.",
+      "examples": ["$(PLT, '/MDKDevApp/Actions/PLTActions/AppEvents/OnResumeIOS.action','/MDKDevApp/Actions/PLTActions/AppEvents/OnResumeAndroid.action')"]
+    },
+    "OnLinkDataReceived": {
+      "$ref":"definitions/ActionOrRule",
+      "description": "A .action or .js file that runs when the app is launched from an external link (deeplink). \n\nThe link data can be accessed via [`context.getAppEventData()`](../apidoc/classes/clientapi.html#getappeventdata) in your event handler. It is a JS object containing the properties of `URL`, `URLScheme`, `Parameters`, `Hash` and `OriginalKey`. See the [example](./App.schema.html#linkdata-example) below for more details.\n\nPLT function is supported."
+    },
+    "OnUserSwitch": {
+      "$ref":"definitions/ActionOrRule",
+      "description": "This event is raised when the user is switched in Multi-User mode and all the pending Offline OData transactions from previous user are successfully synced."
+    },
+    "Styles": {
+      "$ref": "definitions/Style",
+      "description": "The Styles metadata provides the client with a LESS style file used to style the controls.\nThese are also known as built-in controls."
+    },
+    "Version": {
+      "type": "string",
+      "description": "A string, .global or .js file that returns a string representing the version of updated metadata."
+    },
+    "_Name": {
+      "pattern": "^[a-zA-Z_]+([a-zA-Z0-9\\_]+)*?$",
+      "type": "string",
+      "description": "Name of the app to be used as the base in definition reference. No space and symbols are allowed"
+    },
+    "Localization": {
+      "$ref": "definitions/I18n",
+      "description": "Refers to any file underneath the project root's `i18n` folder that has a .properties extension.",
+      "examples": ["/_Name/i18n/i18n.properties"]
+    },
+    "EditorSetting": {
+      "$ref": "definitions/EditorSetting",
+      "description": "Name and Path of the reference application."
+    }
+  },
+  "required": [
+    "MainPage",
+    "_Name"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,38 @@
+{
+  "$id": "Page/SectionedTable/Control/Calendar/Indicator",
+  "title": "Calendar Indicator",
+  "description": "Represents an indicator on the calendar.",
+  "additionalProperties": {
+    "proxy": "CalendarProxy"  
+  },
+  "properties": {
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "Icon to be displayed on the calendar indicator."
+    },
+    "Title": {
+      "type": "string",
+      "description": "Title of the calendar indicator, if not defined it will be used `_Name` as Title."
+    },
+    "Styles": {
+      "properties": {
+        "Icon": {
+          "type": "string",
+          "$ref": "Styles/TintClass",
+          "description": "The string value is a style class name of `Icon`. This applies the tint color to the icon of the calendar indicator."
+        }
+      },
+      "type": "object",
+      "description": "A style to be applied to the indicator in the CalendarSection. Not support Web but Mobile only."
+    },
+    "_Name": {
+      "type": "string",
+      "description": "Name of the calendar indicator."
+    }
+  },
+  "required": [
+    "_Name",
+    "Icon"
+  ],
+  "type": "object"
+}

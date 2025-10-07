@@ -1,0 +1,108 @@
+{
+  "$id": "Page/SectionedTable/Container/ObjectCollection",
+  "title": "ObjectCollection",
+  "description": "This control includes a view that manages and displays an ordered collection of object cells. Object Collection supports multiple columns and extensions.\n\nAn Object Collection will only render in columns on a tablet and web browser. The control responsively changes the rendering to one cell per row on a phone device.",
+  "additionalProperties": {
+    "proxy": "ObjectCollectionProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.ObjectCollection"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Extension": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "MaxWidth": {
+              "type": "integer",
+              "description": "The maximum width of each extension in an object collection column in Device Independent Pixel. The DIP value will be converted to pixels of the platform (based on scale and on density for iOS and Android respectively).\n\nIf there's not enough space to fit all extensions in their maximum width, then this property will not be applied and width will be automatically calculated to fit the space evenly."
+            },
+            "DimensionRatio": {
+              "type": "string",
+              "pattern": "^[0-9]+:[0-9]+$",
+              "description": "The ratio between width and height, only accept value in the format of \"width:height\" e.g. \"8:5\", \"2:4\", \"16:9\", etc."
+            },
+            "Height": {
+              "type": "integer",
+              "description": "The height of each extension in an object collection column in Device Independent Pixel. The value (DIP) will be converted to pixels of the platform (based on scale and on density for iOS and Android respectively). This property will not be applied if `DimensionRatio` is defined."
+            }
+          }
+        },
+        {
+          "$ref": "Page/Common/Extension"
+        }
+      ]
+    },
+    "Layout": {
+      "$ref": "definitions/ObjectCollectionLayout"
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "The maximum number of items to be displayed in the section. If `MaxItemCount` is not specified, then all records are displayed in the section."
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed when the event is triggered."
+    },
+    "ObjectCell": {
+      "$ref": "Page/SectionedTable/Control/ObjectCell",
+      "description": "`Description` and `ProgressIndicator` are not supported."
+    },
+    "ObjectCells": {
+      "items": {
+        "properties": {
+          "ObjectCell": {
+            "$ref": "Page/SectionedTable/Control/ObjectCell"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty. This only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the ObjectCollection. If more than one searchable section is provided in the SectionedTable, then the search definition from the first searchable section is used in defining the search bar behavior in the SectionedTable. If there is a `Search` object defined with `Enabled` set to true, search will be enabled. In iOS, when an ObjectCollection is used alongside a header control (KPIHeader/ProfileHeader/ObjectHeader), search bar is not enabled."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

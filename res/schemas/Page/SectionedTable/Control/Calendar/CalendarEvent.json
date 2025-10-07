@@ -1,0 +1,21 @@
+{
+  "$id": "Page/SectionedTable/Control/Calendar/CalendarEvent",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CalendarProxy"  
+  },
+  "properties": {
+    "IndicatorName": {
+      "type": "string",
+      "description": "The name of the indicator to be displayed on the calendar."
+    },
+    "Date": {
+      "type": "string",
+      "description": "The date of the calendar event in ISO 8601 format."
+    }
+  },
+  "required": [
+    "IndicatorName",
+    "Date"
+  ]
+}

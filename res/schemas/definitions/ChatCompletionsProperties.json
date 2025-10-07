@@ -1,0 +1,59 @@
+{
+  "$id": "definitions/ChatCompletionsProperties",
+  "title": "ChatCompletionsProperties",
+  "description": "A list of the chat completions property names and values in key/value pairs format.",
+  "type": "object",
+  "properties": {
+    "Model": {
+      "type": "string",
+      "description": "Name of the LLM. Ignored if the deployment supports only one model."
+    },
+    "Messages": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array",
+      "description": "Message history to be sent to LLM as prompt"
+    },
+    "Tool": {
+      "type": "array",
+      "description": "A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported."
+    },
+    "ToolChoice": {
+      "type": "object",
+      "description": "Controls which (if any) tool is called by the model. none means the model will not call any tool and instead generates a message. auto means the model can pick between generating a message or calling one or more tools. required means the model must call one or more tools. Specifying a particular tool via {\"type\": \"function\", \"function\": {\"name\": \"my_function\"}} forces the model to call that tool."
+    },
+    "Temperature": {
+      "type": "number",
+      "default": 0,
+      "description": "Value affecting token generation in LLM. Higher values like 1.8 will make the output more random, while lower values like 0.2 will make the output more focused and deterministic. Valid range of values depends on the model doing the inference."
+    },
+    "FrequencyPenalty": {
+      "type": "number",
+      "default": 0,
+      "description": "Parameter to discourage the model from repeating the same words or phrases too frequently within the generated text. A higher frequency_penalty value will result in the model being more conservative in its use of repeated tokens. Valid range of values depends on the model doing the inference."
+    },
+    "PresencePenalty": {
+      "type": "number",
+      "default": 0,
+      "description": "Parameter to encourage the model to include a diverse range of tokens in the generated text. A higher presence_penalty value will result in the model being more likely to generate tokens that have not yet been included in the generated text. Valid range of values depends on the model doing the inference."
+    },
+    "MaxTokens": {
+      "type": "integer",
+      "description": "Parameter to control the maximum number of tokens that can be generated in the chat completion. Upper limit is dependent on the model (e.g. ~4k for GPT3.5, ~32k for GPT4-32k)"
+    },
+    "ParallelToolCalls": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to enable parallel function calling during tool use."
+    },
+    "ResponseFormat": {
+      "type": "object",
+      "description": "An object specifying the format that the model must output.\n\nSetting to { \"type\": \"json_schema\", \"json_schema\": {...} } enables Structured Outputs which ensures the model will match your supplied JSON schema.\n\nSetting to { \"type\": \"json_object\" } enables the older JSON mode, which ensures the message the model generates is valid JSON. Using json_schema is preferred for models that support it."
+    }
+  },
+  "required": [
+    "Model",
+    "Messages"
+  ]
+}

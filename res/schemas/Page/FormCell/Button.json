@@ -1,0 +1,115 @@
+{
+  "$id": "Page/FormCell/Button",
+  "title": "Button",
+  "description": "A button communicates the action that it is going to initiate. Users can tap a button to begin a process or workflow, or to trigger an action.",
+  "additionalProperties": {
+    "proxy": "ButtonFormCellControlProxy"  
+  },
+  "properties": {
+    "Enabled": {
+      "type": "boolean",
+      "description": "Sets the button as enabled or disabled.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the button is pressed."
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center",
+      "description": "[Deprecated. Use `Alignment` instead.] Choose one of the options based on how you want the text alignment on your button to appear."
+    },
+    "Alignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center",
+      "description": "Choose one of the options based on how you want the content alignment on your button to appear."
+    },
+    "Title": {
+      "type": "string"
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        { "const": "Primary", "description": "Emphasize the most important actions." },
+        { "const": "Secondary", "description": "Less emphasis but still require users's attention." },
+        { "const": "Text", "description": "Less important actions users can take." }
+      ],
+      "default": "Text",
+      "description": "The important types of the button."
+    },
+    "Semantic": {
+      "type": "string",
+      "enum": [
+        { "const": "Normal", "description": "Use it for neutral actions, e.g. Back / Cancel." },
+        { "const": "Tint", "description": "Use it for positive actions, e.g. Update / Add / Approve." },
+        { "const": "Negative", "description": "Use it for negative actions, e.g. Delete / Reset / Reject." }
+      ],
+      "default": "Tint",
+      "description": "Use the semantic buttons for positive and negative actions."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The image to be displayed along with the title."
+    },
+    "ImagePosition": {
+      "type": "string",
+      "enum": [ "Leading", "Trailing" ],
+      "default": "Leading",
+      "description": "Position of the image to be displayed along with the title"
+    },
+    "ImageSize": {
+      "$ref": "definitions/ImageSize",
+      "description": "Size of the image to be displayed along with the title"
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for button.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "[Deprecated. Use `Button` instead.] The string value is a style class name of `Background`."
+        },      
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ButtonClass",
+          "description": "[Deprecated. Use `Button` instead.] The string value is a style class name of `Value`."
+        },
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Image`. The CSS property `background-color` is supported for all image types (iOS only), while `font-size` and `color` are additionally supported for SAP icon and font icon types."
+        },
+        "Button": {
+          "type": "string",
+          "$ref": "Styles/ButtonNewClass",
+          "description": "The string value is a style class name of `Button`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Button"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

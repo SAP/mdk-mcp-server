@@ -1,0 +1,35 @@
+{
+  "$id": "definitions/Validation",
+  "title": "Validation",
+  "properties": {
+    "Message": {
+      "type": "string",
+      "description": "The validation message."
+    },
+    "Visible": {
+      "type": "boolean",
+      "description": "The visibility of the validation view."
+    },
+    "SeparatorVisible": {
+      "type": "boolean",
+      "description": "The visibility of the separator. Only supported in iOS and WebClient."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Styles for validation view.",
+      "properties": {
+        "Message": {
+          "type": "string",
+          "$ref": "Styles/ValidationMessageClass",
+          "description": "The string value is a style class name of validation message."
+        },
+        "ValidationView": {
+          "type": "string",
+          "$ref": "Styles/ValidationViewClass",
+          "description": "The string value is a style class name of validation background and separator color."
+        }
+      }
+    }
+    
+  }
+}

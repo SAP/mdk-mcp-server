@@ -1,0 +1,38 @@
+{
+  "$id": "Page/SectionedTable/Control/KeyValueItem",
+  "title": "KeyValueItem",
+  "description": "A simple key value cell that displays a label and a text pair.",
+  "additionalProperties": {
+    "proxy": "KeyValueItemProxy"
+  },
+  "properties": {
+    "KeyName": {
+      "type": "string",
+      "description": "The key name of the cell."
+    },
+    "Value": {
+      "type": "string",
+      "description": "The value of the property.\n\nFor iOS devices, there is an unlimited number of lines for the KeyValue section.\n\nFor Android devices, the KeyValue section has a maximum of three lines for a value. Also, if the screen width is less than 600 dpi, only one column is rendered for the KeyValue control. On rotation of the screen, the display switches back to multiple columns if the width is more than 600 dpi."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this section."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Use this property to mark a KeyValue cell as clickable and to define the action on click of the cell"
+    },
+    "LinkColor": {
+      "type": "string",
+      "description": "Use this property to override the Fiori Default color of Value text. Only valid for clickable KeyValue and only accepts Hex code strings"
+    },
+    "_Type": {
+      "const": "KeyValue.Type.Item"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

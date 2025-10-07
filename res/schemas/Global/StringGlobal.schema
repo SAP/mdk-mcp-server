@@ -1,0 +1,14 @@
+{
+  "$id": "Global/StringGlobal",
+  "title": "StringGlobal",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Value": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "String"
+    }
+  },
+  "type": "object"
+}

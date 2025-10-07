@@ -1,0 +1,47 @@
+{
+  "$id": "Page/TabControl/TabItem",
+  "title": "TabItem",
+  "additionalProperties": {
+    "proxy": "TabItemProxy"  
+  },
+  "properties": {
+    "Caption": {
+      "type": "string"
+    },
+    "Image": {
+      "description": "Image will display together with Caption if specified.\nSpecific for iOS, an overlay mask would be applied on top of the image to distinguish active and inactive tab items. The overlay mask only works well on image with transparent background, otherwise the image would be displayed as monotone square icon.",
+      "$ref": "definitions/Image"
+    },
+    "PageToOpen": {
+      "description": "Page to be rendered as the content of the tab item, references a .page file. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified.",
+      "$ref": "definitions/Page"
+    },
+    "PageMetadata": {
+      "description": "Only supported on `Tabs`, not supported on `BottomNavigation`. Page's metadata will be rendered, when the PageMetadata is specified it will take preference over the PageToOpen.\n\nThe properties defined in [Page](../../Page.schema.md) are also applicable to it. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified.",
+      "type": [
+        "string",
+        "object"
+      ]
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the tab item is pressed."
+    },
+    "ResetIfPressedWhenActive": {
+      "description": "Flag to determine whether need to reset to original tab page if the tab item is pressed again when it is the selected tab item.",
+      "type": "boolean",
+      "default": false
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.TabItem"
+    }
+  },
+  "required": [
+    "_Name",
+    "_Type"
+  ],
+  "type": "object"
+}

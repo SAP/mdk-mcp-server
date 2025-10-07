@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/ButtonLayout",
+  "title": "Button Layout",
+  "type": "object",
+  "description": "button layout properties for a collection view as those used in the ButtonCollection section.",
+  "additionalProperties": {
+    "proxy": "ButtonTableProxy"
+  },
+  "properties": {
+    "LayoutType": {
+      "type": "string",
+      "enum": [
+        "Horizontal",
+        "Vertical"
+      ],
+      "default": "Vertical",
+      "description": "layout types."
+    },
+    "HorizontalAlignment": {
+      "type": "string",
+      "enum": [
+        "Leading",
+        "Center",
+        "Trailing"
+      ],
+      "default": "Leading",
+      "description": "the alignment of buttons when layout type is horizontal."
+    }
+  }
+}

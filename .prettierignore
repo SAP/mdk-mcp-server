@@ -1,0 +1,14 @@
+build/**
+node_modules/**
+package-lock.json
+*.md
+.git/**
+.gitignore
+CHANGELOG.md
+LICENSE
+LICENSES/**
+res/schemas/**
+*.json
+*.yaml
+*.yml
+*.d.ts

@@ -1,0 +1,22 @@
+{
+  "$id": "definitions/HeaderItem",
+  "title": "HeaderItem",
+  "description": "Header item to be displayed on section header",
+  "additionalProperties": {
+    "proxy": "SectionHeaderProxy"
+  },
+  "anyOf": [
+    {
+      "$ref": "Page/SectionedTable/Common/SectionHeaderItem/Label",
+      "description": "A label to show the caption or title for the section header."
+    },
+    {
+      "$ref": "Page/SectionedTable/Common/SectionHeaderItem/Icon",
+      "description": "An icon which can communicate the action that it is going to initiate. Users can click on the icon to begin a process or workflow, or to trigger an action."
+    },
+    {
+      "$ref": "Page/SectionedTable/Common/SectionHeaderItem/Button",
+      "description": "A button communicates the action that it is going to initiate. Users can click a button to begin a process or workflow, or to trigger an action."
+    }
+  ]
+}

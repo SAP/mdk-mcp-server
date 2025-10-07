@@ -1,0 +1,110 @@
+{
+  "$id": "Page/SectionedTable/Control/ButtonItem",
+  "title": "ButtonItem",
+  "additionalProperties": {
+      "proxy": "ButtonTableButtonProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of the button."
+    },
+    "OnPress": {
+      "anyOf": [
+        {
+          "$ref": "definitions/ActionOrRule"
+        },
+        {
+          "$ref": "Page/Common/OnPressObject"
+        }
+      ],
+      "description": "Action or rule to be performed when the event is triggered."  
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center",
+      "description": "[Deprecated. Use `Alignment` instead.] Text alignment of the button"
+    },
+    "Alignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center",
+      "description": "Content of alignment of the button, will be ignored if layout type is horizontal"
+    },
+    "Title": {
+      "type": "string",
+      "description": "Label to be displayed on the button. For Android, the text is always in upper case and cannot be styled to contain lower case letters."
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        { "const": "Primary", "description": "Emphasize the most important actions." },
+        { "const": "Secondary", "description": "Less emphasis but still require users's attention." },
+        { "const": "Text", "description": "Less important actions users can take." }
+      ],
+      "default": "Text",
+      "description": "The important types of the button."
+    },
+    "Semantic": {
+      "type": "string",
+      "enum": [
+        { "const": "Normal", "description": "Use it for neutral actions, e.g. Back / Cancel." },
+        { "const": "Tint", "description": "Use it for positive actions, e.g. Update / Add / Approve." },
+        { "const": "Negative", "description": "Use it for negative actions, e.g. Delete / Reset / Reject." }
+      ],
+      "default": "Tint",
+      "description": "Use the semantic buttons for positive and negative actions."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The image to be displayed along with the title."
+    },
+    "ImagePosition": {
+      "type": "string",
+      "enum": [ "Leading", "Trailing" ],
+      "default": "Leading",
+      "description": "Position of the image to be displayed along with the title"
+    },
+    "ImageSize": {
+      "$ref": "definitions/ImageSize",
+      "description": "Size of the image to be displayed along with the title"
+    },
+    "FullWidth": {
+      "type": "boolean",
+      "description": "Sets the full width of the button, will be ignored if layout type is horizontal",
+      "default": false
+    },
+    "Style": {
+      "type": "string",
+      "description": "[Deprecated. Use `Styles` instead.] The string value is a [style class](../../../Styles/ButtonClass.style.md) name of `Button`."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for button.",
+      "properties": {
+        "Image": {
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Image`."
+        },
+        "Button": {
+          "$ref": "Styles/ButtonNewClass",
+          "description": "The string value is a style class name of `Button`."
+        }
+      }
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Sets the button as enabled or disabled.",
+      "default": true
+    },
+    "_Type": {
+      "const": "ButtonTable.Type.Button"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

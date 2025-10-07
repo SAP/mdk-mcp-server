@@ -1,0 +1,33 @@
+{
+  "$id": "Page/SectionedTable/Control/TimelinePreviewCell",
+  "title": "TimelinePreviewCell",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only valid for static section, will be ignored in dynamic sections."
+    },
+    "Headline": {
+      "type": "string"
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "The date time for the cell."
+    },
+    "State": {
+      "type": "string",
+      "enum": [
+        "Open",
+        "Complete",
+        "End"
+      ]
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

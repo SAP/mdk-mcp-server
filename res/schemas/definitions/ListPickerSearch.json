@@ -1,0 +1,42 @@
+{
+    "$id": "definitions/ListPickerSearch",
+    "title": "Search",
+    "description": "Search over the items in the list.\n\n When using target binding, only the property names available in the target EntitySet are valid search keys. By default, these keys are generated from the searchable parameters of items with values of [Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/binding.html) or [TargetPath](./TargetPath.schema.html). [Rules](./Rule.schema.html) results or other complex mappings (e.g. [Formatters](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/i18n-formatter.html) or [Default Value Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/default-value-binding.html)) are not considered.",
+    "additionalProperties": {
+      "proxy": "ListPickerFormCellProxy"
+    },
+    "properties": {
+      "AdditionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array",
+        "description": "Additional properties of the EntitySet that will be added to the search keys, in addition to the default ones. Strings not available in the EntitySet, and the number-typed properties if `NumberSearch` is not enabled, will be ignored. Not applicable when using fixed collection."
+      },
+      "BarcodeScanner": {
+        "type": "boolean",
+        "description": "Enables the use of a barcode scanner in search."
+      },
+      "Delay": {
+        "type": "integer",
+        "description": "`Delay` represents the number of milliseconds to delay. As a user is adding or deleting characters in the search text entry field, it will be used to delay the execution of the search.\n\nIf `Delay` is set to zero or not defined then no delay will be used and the search will be executed as soon as the user enters the minimum character count.\n\nIf `Delay` is greater than zero, then the delay will be reset each time the user enters or deletes a character under the minimum character count."
+      },
+      "Enabled": {
+        "type": "boolean",
+        "description": "Enables search on the ListPicker."
+      },
+      "OnScanPress" : {
+        "$ref": "definitions/Rule",
+        "description": "This event will be triggered when the barcode scan button is pressed. It allows app to provide its own custom scanning capability via rule. When the rule is executed, the default barcode scan using on-device camera will not be triggered and the rule is expected to return a promise. If the promise is resolved with a string result, the search will be carried out using the result string. If the promise is rejected, then it will fallback to use the default barcode scan using on-device camera."
+      },
+      "MinimumCharacterThreshold": {
+        "type": "number",
+        "description": "The `MinimumCharacterThreshold` is limited to a non-negative integer number and represents the minimum number of characters required before a search is executed.\n\nIf the `MinimumCharacterThreshold` is zero then every character will be searched.\n\nIf `MinimumCharacterThreshold` is greater than 0, a minimum of Y characters will be accepted in the search field before executing the search."
+      },
+      "Placeholder": {
+        "type": "string",
+        "description": "Placeholder text for the search field when the field is empty."
+      }
+    },
+    "type": "object"
+  }

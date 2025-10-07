@@ -1,0 +1,78 @@
+{
+  "$id": "Page/SectionedTable/Container/ObjectCardCollection",
+  "title": "ObjectCardCollection",
+  "description": "The object card is a flexible visual container displaying critical information regarding a single object. It previews the object and serves as the entry point to the full object detail page. The object card is highly customizable to accommodate various content types and use cases.\n\nObject Card supports two layout styles: HorizontalScroll and Vertical.",
+  "additionalProperties": {
+    "proxy": "ObjectCardCollectionProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.ObjectCardCollection"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Layout": {
+      "$ref": "definitions/ObjectCardCollectionLayout",
+      "description": "The layout of cards. Now ObjectCard only supports HorizontalScroll or Vertical for LayoutType."
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "The maximum number of items to be displayed in the section. If `MaxItemCount` is not specified, then all records are displayed in the section."
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed when the event is triggered."
+    },
+    "Card": {
+      "$ref": "Page/SectionedTable/Control/ObjectCard"
+    },
+    "Cards": {
+      "Card":{
+          "$ref": "Page/SectionedTable/Control/ObjectCard"
+      },
+      "type": "array"
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty. This only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the ObjectCardCollection."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

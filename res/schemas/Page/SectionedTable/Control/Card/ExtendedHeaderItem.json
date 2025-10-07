@@ -1,0 +1,22 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/ExtendedHeaderItem",
+  "title": "ExtendedHeaderItem",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardHeaderExtendedHeaderItemProxy"
+  },
+  "anyOf": [
+    {
+      "$ref": "Page/SectionedTable/Control/Card/LabelItem",
+      "description": "Label to be displayed in `ExtendedHeader`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/Card/RatingItem",
+      "description": "Rating to be displayed in `ExtendedHeader`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/Card/TagItem",
+      "description": "Tag to be displayed in `ExtendedHeader`."
+    }
+  ]
+}

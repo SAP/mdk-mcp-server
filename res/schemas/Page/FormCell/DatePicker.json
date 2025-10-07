@@ -1,0 +1,107 @@
+{
+  "$id": "Page/FormCell/DatePicker",
+  "title": "DatePicker",
+  "description": "Date Picker allows users to select date or time entries. Users can use this control to specify a date, a time of day, or a combination of both.",
+  "additionalProperties": {
+    "proxy": "DatePickerFormCellProxy"  
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The key name of the property."
+    },
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "default": "",
+      "description": "If specified, the given rule executes when control is initialized or value changes."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disable or enable interaction.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Mode": {
+      "enum": [
+        "Date",
+        "Datetime",
+        "Time"
+      ],
+      "type": "string",
+      "default": "Datetime",
+      "description": "Date picker mode for date picker."
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "Value": {
+      "type": "string",
+      "description": "Selected value of the Date and Time."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueClass",
+          "description": "The string value is a style class name of `Value`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        },
+        "RequiredIndicator": {
+          "type": "string",
+          "$ref": "Styles/RequiredIndicatorColorClass",
+          "description": "The string value is a style class name of `RequiredIndicator`."
+        }
+      }
+    },
+    "RequiredIndicator": {
+      "$ref": "definitions/BooleanOrString",
+      "default": false,
+      "description": "Sets required indicator. Either `Boolean` or a single character, E.g. `true` / `false` / `'!'`.\nThe default character is an asterisk `*`.\nThis feature currently only support a single character to be defined in Android, so iOS will also mirror this behaviour and only allow a single character. Any string set will default to the asterisk `*`."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.DatePicker"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Mode"
+  ]
+}

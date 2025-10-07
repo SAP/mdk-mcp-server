@@ -1,0 +1,200 @@
+{
+  "$id": "Page/SectionedTable/Container/Calendar",
+  "title": "Calendar",
+  "description": "Calendar is a container that provides a calendar view for the users to select a date or scroll between months/weeks.",
+  "additionalProperties": {
+    "proxy": "CalendarProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.Calendar"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Sets the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "Visibility of the separator lines can be controlled to provide more flexibility to render controls and sections."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "CalendarType": {
+      "type": "string",
+      "enum": [ "Week", "Month", "Expandable", "DateRange" ],
+      "default": "Month",
+      "description": "Choose how you want the calendar view to be displayed. Supported only in iOS and Android. In Web, only Month is supported. \n\nDateRange is to enable range selection and displays the dates similar to the month style. If the calendar section is the only section in the container, the calendar would take the entire screen space unless custom `Height` value is provided. This date range view allows the user to select a contiguous range of dates. The `IsPersistentSelection` property is disregarded in DateRange `CalendarType`, the selected date range stays selected regardless of scrolling to another month. \n\nThe first date selected is the start date of the range and when a second date is selected it becomes the end date of the range, with the entire range of dates between the start and end dates (inclusive) being selected. The end date of the range must be a later date than the start date. If start date is selected, when selecting another date that is earlier than the start date, the new date becomes the new selected start date.\n\nFor modifying the set of selected dates, on iOS, click on a selected date within existing range and it becomes the new end date with all the dates later than that getting deselected. To unselect the entire range, click outside the range, anywhere in the calendar view. While for Android, any click on date within or outside the existing range would result in unselecting the existing range. If the user clicks on a date earlier than the start date, then the newly selected date now becomes the start date and the original start date is deselected."
+    },
+    "StartDayOfWeek": {
+      "type": "string",
+      "enum": [ "Sun", "Sat", "Mon" ],
+      "description": "Choose the start day of the week for the calendar view. Supported only in iOS and Android. In Web, it is always Sun.\n\nIf no value is provided, the device's local calendar settings determine the default StartDayOfWeek. Only Friday, Saturday, and Sunday are supported as start days. If the local start day of the week doesn't match these supported values, Sunday is selected as default."
+    },
+    "StartDate": {
+      "type": "string",
+      "description": "Start date of the calendar. Users cannot scroll or select beyond the specified date. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf no value is set, the default `StartDate` will be January 1st of two years prior to the initially selected date. The `StartDate` will be set to the first day of the same year as the `EndDate` if the value of this property is later than the `EndDate`."
+    },
+    "EndDate": {
+      "type": "string",
+      "description": "End date of the calendar. Users cannot scroll or select beyond the specified date. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf no value is set, the default `EndDate` will be December 31st of two years following the initially selected date. The `StartDate` will be set to the first day of the same year as the `EndDate` if the value of this property is earlier than the `StartDate`."
+    },
+    "IsPersistentSelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set whether the date selection should be persistent when scrolling through the calendar. \n\nWhen set to false, the selected date will change to the 1st day of the month or week that you have scrolled to. For example, if the selected date is May 10, 2023, and you scroll to June 2023, the selected date will change to June 1, 2023. \n\n When set to true, the selected date will remain as it is when you scroll the calendar to another month or week. For example, if the selected date is May 10, 2023, and you scroll to June 2023, the selected date will remain as May 10, 2023. \n\nThis property is disregarded when the `CalendarType` is set to DateRange, for DateRange `CalendarType`, the selection is always retained.\nSupported in iOS and Android only. In Web, by default, it is set to true."
+    },
+    "Height": {
+      "type": "integer",
+      "default": 0,
+      "description": "The height of the calendar in Device Independent Pixel. Only applicable to DateRange `CalendarType`. The DIP value will be converted to pixels of the platform (based on scale and on density for iOS and Android respectively). \n\nIf set to 0, for multi-sections scenario, the calendar would be displayed with default height (600 for Android and 450 for iOS), while for single-section scenario, the calendar will display in full screen."
+    },
+    "SelectedDate": {
+      "type": "string",
+      "description": "Default selected date when the calendar is rendered. Not applicable to DateRange `CalendarType`. If not set, today's date will be selected by default. If the value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device. For example, 2016-01-01T00:00:00Z.\n\nWhen the calendar is redrawn, the selected date is retained."
+    },
+    "OnSelectedDateChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the selected date is changed, including scenarios where the selected date is adjusted to the nearest date within the range specified by `StartDate` and `EndDate`. Not applicable to DateRange `CalendarType`."
+    },
+    "SelectedDateRange": {
+      "description": "Initial selected date range when the calendar is rendered. Only applicable to DateRange `CalendarType`. If not set, today's date will be selected by default. If one of the date value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range.\n\nWhen the calendar is redrawn, the selected date is retained.",
+      "anyOf": [
+        {
+          "$ref": "Page/SectionedTable/Control/CalendarDateRange",
+          "description": "Calendar date range object containing selected `StartDate` and `EndDate`."
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `CalendarDateRange` object."
+        }
+      ]
+    },
+    "OnSelectedDateRangeChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the selected date range is changed. Only applicable to DateRange `CalendarType`. This event is only triggered when a valid range is formed, which means the selected start date is earlier or equal to the selected end date."
+    },
+    "Styles": {
+      "properties": {
+        "Calendar": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `Calendar`. This applies the color to main calendar background."
+        },
+        "ExpandableHandle": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `ExpandableHandle`. This applies the color to the expandable handle for the calendar's expandable view. Supported only in Android."
+        },
+        "Buttons": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `Buttons`. This applies the color styling for the buttons in the calendar's header. Supported only in Android."
+        },
+        "InnerMonthLabel": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `InnerMonthLabel`. This applies the font color and style to the month name label embedded in calendar month view. Supported only in iOS."
+        },
+        "WeekDayLabel": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `WeekDayLabel`. This applies the font styling to the days of the week."
+        },
+        "LegendLabel": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `LegendLabel`. This applies the font color and style to all legend labels."
+        },
+        "Header": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `Header`. This applies the fonts styling and background color to the calendar header."
+        },
+        "Dates": {
+          "type": "string",
+          "$ref": "Styles/CalendarDatesClass",
+          "description": "The string value is a style class name of `Dates`. This applies the fonts styling and colors to the dates specified in the style class."
+        }
+      },
+      "type": "object",
+      "description": "A style to be applied to the CalendarSection. Not support Web but Mobile only."
+    },
+    "Indicators": {
+      "description": "An array of indicators to be displayed on the calendar, each indicator is represented by an icon and a title. If no indicators are provided, the calendar will not display any indicators.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "An array of indicators.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Calendar/Indicator"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `Indicator` in array format."
+        }
+      ]
+    },
+    "EventLoadRange": {
+      "type": "number",
+      "default": 1,
+      "description": "The number of months before and after the currently selected month to load events. This is used to optimize the loading of events in the calendar. For example, if set to 1, events for the current month, the previous month, and the next month will be loaded. If set to 2, events for the current month, the two previous months, and the two next months will be loaded. If set to 0, all events will be loaded. \n\nSpecifically for when `CalendarType` is set to `DateRange`, if the calendar is displayed in full screen mode (single section scenario), the `EventLoadRange` would not be applicable and all events will be loaded, if calendar is set with custom height which displays more than 1 month within the view, please adjust the load range accordingly."
+    },
+    "Events": {
+      "description": "An array of events to be displayed on the calendar. Each event is represented by a date and an indicator link. `Events` is ignored if `Event` and `Targets` are defined.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "An array of events.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Calendar/CalendarEvent"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `CalendarEvent` in array format."
+        }
+      ]
+    },
+    "Event": {
+      "properties": {
+        "IndicatorName": {
+          "$ref": "definitions/Rule",
+          "description": "The rule name of the indicator to be displayed on the calendar for the event, it will be executed for each date of the event."
+        }
+      },
+      "description": "Event configuration for the calendar section. This is used to define the rule that will be executed for each event in the `Events` array. The rule should return an object with the properties `IndicatorName`, which is the name of the indicator to be displayed on the calendar for the event.",
+      "type": "object"
+    },
+    "Targets": {
+      "description": "An array of targets to be used for the calendar section. Each target is represented by a binding or rule that returns an array of data items. The calendar will use these targets to populate the events and execute the rules defined in the `Event/IndicatorName` to determine the events in the calendar.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "An array of targets.",
+          "items": {
+            "$ref": "definitions/CalendarQueryTarget"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `CalendarQueryTarget` in array format."
+        }
+      ]
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

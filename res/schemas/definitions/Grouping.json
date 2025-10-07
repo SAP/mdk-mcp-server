@@ -1,0 +1,45 @@
+{
+  "$id": "definitions/Grouping",
+  "title": "Grouping",
+  "description": "Grouping of the list items.",
+  "additionalProperties": {
+    "proxy": "ObjectTableProxy"
+  },
+  "properties": {
+    "GroupingProperties": {
+      "description": "The properties of the EntitySet that will be used to group the list items. Strings not available in the EntitySet will be ignored, these items should be defined in `QueryOptions` of `Target`.",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `GroupingProperties` in array format."
+        }
+      ]
+    },
+    "Header": {
+      "properties": {
+        "Items": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "definitions/GroupingItem"
+              }
+            },
+            {
+              "$ref": "definitions/Rule",
+              "description": "Expects return of `GroupingItem` in array format."
+            }
+          ]
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

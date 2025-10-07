@@ -1,0 +1,24 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Body/Space",
+  "title": "Space",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardBodyContentSpaceProxy"  
+  },
+  "properties": {
+    "NumberOfSpacings": {
+      "type": "integer",
+      "description": "The number of vertical spacings to be displayed. 1 spacing equals to 8dp vertical spacer.",
+      "default": 1
+    },
+    "_Type": {
+      "const": "CardBodyContent.Type.Space"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ]
+}

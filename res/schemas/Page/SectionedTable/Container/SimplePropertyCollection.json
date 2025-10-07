@@ -1,0 +1,71 @@
+{
+  "$id": "Page/SectionedTable/Container/SimplePropertyCollection",
+  "title": "SimplePropertyCollection",
+  "description": "This is a reusable UI component that you can use to display a key-value pair property. You can add header and footer to this control.",
+  "additionalProperties": {
+    "proxy": "SimplePropertyCollectionProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.SimplePropertyCollection"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Layout": {
+      "$ref": "definitions/Layout"
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "The maximum number of items to be displayed in the section. If `MaxItemCount` is not specified, then all records are displayed in the section."
+    },
+    "SimplePropertyCell": {
+      "$ref": "Page/SectionedTable/Control/SimplePropertyCell"
+    },
+    "SimplePropertyCells": {
+      "items": {
+        "properties": {
+          "SimplePropertyCell": {
+            "$ref": "Page/SectionedTable/Control/SimplePropertyCell"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array",
+      "description": "Use for static simple property collections. `MaxItemCount` and `Target` are ignored."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

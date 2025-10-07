@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.DraftEnabled.Save",
+  "title": "ODataService Draft Save",
+  "description": "DraftSave action is used to prepare and activate a draft in the specified OData service. This applies to Online OData only.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.DraftEnabled.Save"
+    }
+  },
+  "required": [
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

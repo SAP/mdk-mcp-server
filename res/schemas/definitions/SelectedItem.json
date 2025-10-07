@@ -1,0 +1,43 @@
+{
+  "$id": "definitions/SelectedItem",
+  "title": "SelectedItem",
+  "description": "`SelectedItem` in the `SummaryView` of ChartContent",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Title": {
+      "type": "string"
+    },
+    "TrendTitle": {
+      "type": "string"
+    },
+    "TrendImage": {
+      "$ref": "definitions/Image"
+    },
+    "SelectedIndex": {
+      "description": "If this is absent, `SelectedItem` is disabled.",
+      "type": "integer"
+    },
+    "Value": {
+      "description": "If this is absent, the `SelectedIndex` of Data series will be picked automatically.",
+      "properties": {
+        "LeadingUnit": {
+          "type": "string"
+        },
+        "TrailingUnit": {
+          "type": "string"
+        },
+        "Metrics": {
+          "description": "If this is absent, data will be picked based on `Data` in `ChartView`.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

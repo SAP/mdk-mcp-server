@@ -1,0 +1,113 @@
+{
+  "$id": "Page/SectionedTable/Common/Header",
+  "title": "Header",
+  "description": "This is a section bar control to add a header bar to a compound or container control.",
+  "additionalProperties": {
+    "proxy": "SectionHeaderProxy"
+  },
+  "properties": {
+    "AccessoryType": {
+      "enum": [
+        {
+          "const": "DisclosureIndicator",
+          "description": "A chevron-shaped control for presenting new content on iOS and web."
+        },
+        {
+          "const": "None",
+          "description": "No accessory view."
+        }
+      ],
+      "type": "string",
+      "description": "Optional accessory icon to be displayed in the cell. Applicable only for iOS and web.",
+      "default": "None"
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Text label for the caption content.\n\nCan't co-exist with `Grid` & `DataTable`."
+    },
+    "Items": {
+      "description": "Limited to 1 item on the left and 1 item on the right.\n\n`Items` has priority over `Caption` if both are defined. Can't co-exist with `Grid` & `DataTable`.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of section header items.",
+          "items": {
+            "$ref": "definitions/HeaderItem"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of SectionHeaderItem in array format."
+        }
+      ]
+    },
+    "Grid": {
+      "type": "object",
+      "description": "Can't co-exist with `Caption`.",
+      "properties": {
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "definitions/GridRowItem"
+          },
+          "description": "Array of GridRowItem that represent columns in the grid header.\n\nRowItems with Image not supported in the header at this time."
+        },
+        "Layout": {
+          "$ref": "definitions/GridRowLayout",
+          "description": "The layout of columns in a Grid Table row.\n\nBy default use the same layout as for the section rows."
+        }
+      },
+      "required": [ "Items" ]
+    },
+    "DataTable": {
+      "type": "object",
+      "description": "Can't co-exist with `Caption`.",
+      "properties": {
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "definitions/DataTableHeaderItem"
+          },
+          "description": "Array of header Columns that represent columns in a data Table header."
+        },
+        "Layout": {
+          "$ref": "definitions/DataTableLayout",
+          "description": "The layout of columns in a Data Table row."
+        }
+      },
+      "required": [ "Items" ]
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be executed when the header view is clicked. The ClientAPI object to be received in rule function is [SectionProxy](../../../../apidoc/classes/sectionproxy.md)."
+    },
+    "UseTopPadding": {
+      "type": "boolean",
+      "description": "For iOS devices, this property shows or hides the top padding of the section header (gray separator).\n\nFor Android devices, this property is not applicable, as there is no gray separator at the top of the header.",
+      "default": true
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for header.",
+      "properties": {
+        "Header": {
+          "type": "string",
+          "$ref": "Styles/HeaderFooterClass",
+          "description": "The string value is a style class name of `Header`. It is used to set the background color of the Section Header."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `Caption`. It is used to style the Caption text on the Section Header."
+        }
+      }
+    },
+    "_Type": {
+      "const": "SectionCommon.Type.Header"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

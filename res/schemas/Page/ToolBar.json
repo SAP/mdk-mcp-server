@@ -1,0 +1,23 @@
+{
+  "$id": "Page/ToolBar",
+  "title": "ToolBar",
+  "description": "A Toolbar is a horizontal container that includes toolbar items and can display buttons, labels, selects, and other input controls.",
+  "additionalProperties": {
+    "proxy": "PageProxy"  
+  },
+  "properties": {
+    "Items": {
+      "items": {
+        "$ref": "Page/ToolBarItem"
+      },
+      "type": "array",
+      "description": "Toolbar items"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of the ToolBar."
+    }
+  },
+  "type": "object"
+}

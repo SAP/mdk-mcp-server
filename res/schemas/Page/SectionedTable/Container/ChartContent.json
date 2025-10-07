@@ -1,0 +1,118 @@
+{
+  "$id": "Page/SectionedTable/Container/ChartContent",
+  "title": "ChartContent",
+  "description": "ChartContent is a container that provides a visual representation of one or more datasets. Should be used when displaying the Chart Floorplan in a non-full-screen context.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.ChartContent"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "ChartContent": {
+      "description": "Chart Content is interactive. In iOS, we can make it non-interactive by setting the `isReadOnly` flag.",
+      "properties": {
+        "Title": {
+          "type": "string"
+        },
+        "Subtitle": {
+          "description": "Subtitle is not supported in Android and supported only for iOS.",
+          "type": "string"
+        },
+        "StatusText": {
+          "type": "string"
+        },
+        "IsReadOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, ChartContent section becomes read-only. This is only for iOS."
+        },
+        "ChartView": {
+          "$ref": "definitions/ChartView"
+        },
+        "SummaryView": {
+          "properties": {
+            "SeriesTitles": {
+              "description": "If this is absent, data will be picked from the `SeriesTitles` of `ChartView`. `SeriesTitle` is not supported in Android.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "AggregateItem": {
+              "$ref": "definitions/AggregateItem"
+            },
+            "SelectedItem": {
+              "$ref": "definitions/SelectedItem",
+              "description": "This property is only valid for read-only ChartContent section in iOS."
+            }
+          },
+          "type": "object"
+        },
+        "Target": {
+          "$ref": "definitions/LinkQueryFunctionTarget",
+          "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+        },
+        "Styles": {
+          "type": "object",
+          "properties": {
+            "Title": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `Title`. iOS only."
+            },
+            "Subtitle": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `Subtitle`. iOS only."
+            },
+            "StatusText": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `StatusText`. iOS only."
+            },
+            "CategoryTitles": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `CategoryTitles`. iOS only."
+            },
+            "NoDataText": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `NoDataText`. Android only. `font-typeface` attribute not supported."
+            }
+          }
+        }
+      },
+      "type": "object"
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

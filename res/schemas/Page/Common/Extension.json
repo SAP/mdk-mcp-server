@@ -1,0 +1,46 @@
+{
+  "$id": "Page/Common/Extension",
+  "title": "Extension",
+  "description": "This control renders a custom control extension.\n\nAll Common Control Properties are supported.",
+  "additionalProperties": {
+    "proxy": "PageProxy"  
+  },
+  "properties": {
+    "Class": {
+      "type": "string",
+      "description": "The name of the exported class in the module control that is to be used for the extension."
+    },
+    "Control": {
+      "type": "string",
+      "description": "The name of the file under the `controls` folder in your module. e.g. `MyExtension`, if your file name is `/extensions/<Module>/controls/MyExtension.ts`. If not specified, module name would be used as the value for this property."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "ExtensionProperties": {
+      "type": "object",
+      "description": "Additional custom properties to be passed to the extension"
+    },
+    "Module": {
+      "type": "string",
+      "description": "The module's folder path under `/extensions/`, e.g. `MyExtModule` or `MyExtLibrary/MyExtModule`. Not required if Extension does not implement TS code under `/extensions/<Module>/controls`."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the control extension is pressed."
+    },
+    "_Name": {
+      "type": "string",
+      "description": "UID to reference this control"
+    },
+    "_Type": {
+      "const": "Control.Type.Extension"
+    }
+  },
+  "required": [
+    "Class",
+    "_Type"
+  ],
+  "type": "object"
+}
