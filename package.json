@@ -26,7 +26,6 @@
     "format:check": "prettier --check src/**/*.ts",
     "lint:all": "npm run lint && npm run format:check",
     "fix:all": "npm run lint:fix && npm run format",
-    "prepare": "npm run build",
     "start": "npx -y supergateway --port 9881 --stdio \"node ./build/start.js\""
   },
   "dependencies": {
