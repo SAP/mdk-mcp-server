@@ -9,7 +9,7 @@
     "url": "git+https://github.com/SAP/mdk-mcp-server.git"
   },
   "author": "SAP SE (https://www.sap.com)",
-  "homepage": "",
+  "homepage": "https://help.sap.com/docs/MDK",
   "bin": {
     "mdk-mcp": "./build/start.js"
   },
