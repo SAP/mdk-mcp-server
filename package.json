@@ -15,7 +15,8 @@
   },
   "files": [
     "build/",
-    "res/"
+    "res/",
+    "images/"  
   ],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && cp -r src/lib build && cp -r src/start.js build",
