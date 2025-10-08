@@ -55,7 +55,7 @@ Use it for AI-assisted development of MDK applications (_agentic coding_).
 
 ## Requirements
 
-See [Getting Started](https://help.sap.com/docs/MDK) on how to jumpstart your development and grow as you go with SAP Mobile Developmet Kit(MDK).
+See [Getting Started](https://help.sap.com/docs/MDK) on how to jumpstart your development and grow as you go with SAP Mobile Development Kit (MDK).
 
 
 
