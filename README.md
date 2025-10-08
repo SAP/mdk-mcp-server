@@ -90,6 +90,21 @@ Example for [OpenCode](https://github.com/sst/opencode):
 }
 ```
 
+### Usage in Cursor
+
+Open file ~/.cursor/mcp.json
+
+```json
+{
+  "mcpServers": {
+    "mdk-mcp": {
+      "command": "mdk-mcp",
+      "args": []
+    },
+  }
+}
+```
+
 Once installed, the AI agent in your IDE will automatically gain access to the MDK MCP server and can start using the tools at its own discretion. Depending on your IDE and settings, you may need to approve the first tool calls.
 
 ### Rules
