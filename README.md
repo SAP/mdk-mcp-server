@@ -11,7 +11,7 @@
 
 ## About This Project
 
-A Model Context Protocol (MCP) server for the [SAP Mobile Developmet Kit(MDK)]
+A Model Context Protocol (MCP) server for the SAP Mobile Development Kit(MDK).
 Use it for AI-assisted development of MDK applications (_agentic coding_).
 
 
