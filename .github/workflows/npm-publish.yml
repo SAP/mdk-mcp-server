@@ -1,0 +1,28 @@
+name: Publish Package to npmjs
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    permissions:
+      contents: read
+      # id-token: write is required for the automatic generation of provenance statements and trusted publisher releasing
+      id-token: write
+    runs-on: ubuntu-latest
+    # The GitHub Actions Environment configured for the trusted publisher
+    environment: <npmjs:@sap/mdk-mcp-server>
+    steps:
+      - uses: actions/checkout@v4
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          # registry-url is required for releasing packages
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+
+      - name: Publish package
+        # --provenance enables the automatic generation of provenance statements (when using trusted publisher, this is automatically enabled and therefore optional) 
+        # --access public is only hard required for the initial release, but it doesn't hurt having it setup
+        # npm version >=11.5.1 required for trusted publisher
+        run: npm publish --provenance --access public
