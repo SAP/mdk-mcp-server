@@ -38,15 +38,9 @@ Assuming you have already installed [node.js](https://nodejs.org/en) on your mac
 npm i -g yo@4.3.1
 ```
 
-For installing the MDK MCP server, we offer two options: 
+For installing the MDK MCP server, 
 
-1. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
- 
-    ```bash
-    npm install -g @sap/mdk-mcp-server 
-    ``` 
-
-2. Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install. 
+Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install. 
 
     ```bash 
     git clone https://github.com/SAP/mdk-mcp-server.git 
