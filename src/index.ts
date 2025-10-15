@@ -279,8 +279,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "mdk-show-qrcode",
-        description:
-          "Show QR code for an MDK application.",
+        description: "Show QR code for an MDK application.",
         inputSchema: {
           type: "object",
           properties: {
