@@ -251,7 +251,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "mdk-build",
-        description: "Build a MDK project.",
+        description: "Build an MDK project.",
         inputSchema: {
           type: "object",
           properties: {
