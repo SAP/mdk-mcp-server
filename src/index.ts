@@ -88,7 +88,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-gen-i18n",
         description:
-          "Returns a prompt to be used for generating i18n files for MDK application. Using the prompt, you need to create files in path i18n/i18n.properties. You can describe texts, labels, messages.",
+          "Returns a prompt to be used for generating i18n files for the MDK application. You can describe texts, labels, messages.",
         inputSchema: {
           type: "object",
           properties: {
@@ -103,7 +103,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-gen-databinding-page",
         description:
-          "Returns a prompt to be used for generating a databinding-enabled MDK page. Using the prompt, you need to create a .page file that describes the page layout, controls and data bindings",
+          "Returns a prompt to be used for generating a databinding-enabled MDK page. Using the prompt, a .page file is created that describes the page layout, controls and data bindings.",
         inputSchema: {
           type: "object",
           properties: {
@@ -139,7 +139,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-gen-layout-page",
         description:
-          "Generates a layout-based MDK page. You can describe the page layout. It saves the response to .page file.",
+          "Generates a layout-based MDK page. You can describe the page layout, controls. It saves the response to `.page` file.",
         inputSchema: {
           type: "object",
           properties: {
@@ -191,7 +191,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-gen-action",
         description:
-          "Returns a prompt to be used for generating an MDK action. Using the prompt, you need to create a .action file that describes the action type and data bindings.",
+          "Returns a prompt to be used for generating an MDK action. Using the prompt, an `.action` file will be created that describes the action type and data bindings.",
         inputSchema: {
           type: "object",
           properties: {
@@ -265,7 +265,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "mdk-deploy",
-        description: "Deploy a MDK project to the Mobile Services.",
+        description: "Deploy an MDK project to the Mobile Services.",
         inputSchema: {
           type: "object",
           properties: {
@@ -280,7 +280,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-show-qrcode",
         description:
-          "Show QR code for a MDK application. The QR code MUST be scanned with the SAP Mobile Services Client app. The QR code cannot be used with the SAP Mobile Start app.",
+          "Show QR code for an MDK application.",
         inputSchema: {
           type: "object",
           properties: {
@@ -294,7 +294,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "mdk-migrate",
-        description: "Migrate a MDK project to the latest MDK version.",
+        description: "Migrate an MDK project to the latest MDK version.",
         inputSchema: {
           type: "object",
           properties: {
@@ -308,7 +308,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "mdk-validate",
-        description: "Validate a MDK project.",
+        description: "Validate an MDK project.",
         inputSchema: {
           type: "object",
           properties: {
