@@ -10,7 +10,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     # The GitHub Actions Environment configured for the trusted publisher
-    environment: <npmjs:@sap/mdk-mcp-server>
+    environment: npmjs:@sap/mdk-mcp-server
     steps:
       - uses: actions/checkout@v4
       # Setup .npmrc file to publish to npm
