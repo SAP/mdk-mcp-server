@@ -47,7 +47,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 4. Configure your MCP client (AI agent) to connect to the server. Configuration will vary depending on the AI agent used.
 
-    **Cline in VS Code:** Example using the Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev). 
+    **Cline in VS Code:** Example using the [Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev). 
     
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
