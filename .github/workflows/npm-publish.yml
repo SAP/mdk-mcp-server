@@ -19,9 +19,8 @@ jobs:
       - name: Check npm version
         run: |
           echo "Current npm version: $(npm --version)"
-          if [ "$(npm --version | cut -d. -f1)" -lt "11" ]; then
-            echo "npm version is too old for trusted publisher, but continuing with available version"
-          fi          
+          echo "Latest npm version: $(npx npm@latest --version)"
+          
       - name: run tests
         run: npm ci
       - name: get version
@@ -37,6 +36,6 @@ jobs:
         with:
           tag: 'v${{ steps.package-version.outputs.current-version }}'
           body: '${{ steps.parse-changelog.outputs.body }}'
-      - run: npm publish --access public
+      - run: npx npm@latest publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
