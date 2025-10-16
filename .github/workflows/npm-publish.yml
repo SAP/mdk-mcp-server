@@ -2,6 +2,7 @@ name: Release
 
 permissions:
   contents: write
+  id-token: write
 
 on:
   workflow_dispatch:
@@ -37,5 +38,3 @@ jobs:
           tag: 'v${{ steps.package-version.outputs.current-version }}'
           body: '${{ steps.parse-changelog.outputs.body }}'
       - run: npx npm@latest publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
