@@ -16,6 +16,12 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+      - name: Check npm version
+        run: |
+          echo "Current npm version: $(npm --version)"
+          if [ "$(npm --version | cut -d. -f1)" -lt "11" ]; then
+            echo "npm version is too old for trusted publisher, but continuing with available version"
+          fi          
       - name: run tests
         run: npm ci
       - name: get version
