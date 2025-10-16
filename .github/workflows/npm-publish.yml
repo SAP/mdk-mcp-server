@@ -12,6 +12,8 @@ jobs:
     # The GitHub Actions Environment configured for the trusted publisher
     environment: npmjs:@sap/mdk-mcp-server
     steps:
+      - name: Install latest npm cli
+        run: npm install -g npm@latest # or @11.5.1 (if you want to pin the version)
       - uses: actions/checkout@v4
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
