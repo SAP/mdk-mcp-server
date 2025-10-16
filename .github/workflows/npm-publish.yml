@@ -1,32 +1,36 @@
-name: Publish Package to npmjs
-on:
-  release:
-    types: [published]
-jobs:
-  build:
-    permissions:
-      contents: read
-      # id-token: write is required for the automatic generation of provenance statements and trusted publisher releasing
-      id-token: write
-    runs-on: ubuntu-latest
-    # The GitHub Actions Environment configured for the trusted publisher
-    environment: npmjs:@sap/mdk-mcp-server
-    steps:
-      - name: Install latest npm cli
-        run: npm install -g npm@latest # or @11.5.1 (if you want to pin the version)
-      - uses: actions/checkout@v4
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-          # registry-url is required for releasing packages
-          registry-url: "https://registry.npmjs.org"
-      - run: npm ci
+name: Release
 
-      - name: Publish package
-        # --provenance enables the automatic generation of provenance statements (when using trusted publisher, this is automatically enabled and therefore optional) 
-        # --access public is only hard required for the initial release, but it doesn't hurt having it setup
-        # npm version >=11.5.1 required for trusted publisher
-        run: npm publish --provenance --access public
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - name: run tests
+        run: npm ci
+      - name: get version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.2.3
+      - name: parse changelog
+        id: parse-changelog
+        uses: schwma/parse-changelog-action@v1.0.0
+        with:
+          version: '${{ steps.package-version.outputs.current-version }}'
+      - name: create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: 'v${{ steps.package-version.outputs.current-version }}'
+          body: '${{ steps.parse-changelog.outputs.body }}'
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
