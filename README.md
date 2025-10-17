@@ -36,21 +36,22 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     npm i -g yo@4.3.1
     ```
 
-3. For installing the MDK MCP server, we offer two options: 
-  a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
- 
-    ```bash
-    npm install -g @sap/mdk-mcp-server 
-    ``` 
+3. For installing the MDK MCP server, we offer two options:
 
-  b. Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install.  
+    a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
+  
+      ```bash
+      npm install -g @sap/mdk-mcp-server 
+      ``` 
 
-    ```bash 
-    git clone https://github.com/SAP/mdk-mcp-server.git 
-    cd mdk-mcp-server 
-    npm i --include=optional 
-    npm i -g @sap/mdk-mcp-server@. 
-    ```
+    b. Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install.  
+
+      ```bash 
+      git clone https://github.com/SAP/mdk-mcp-server.git 
+      cd mdk-mcp-server 
+      npm i --include=optional 
+      npm i -g @sap/mdk-mcp-server@. 
+      ```
 
 4. Configure your MCP client (AI agent) to connect to the server. Configuration will vary depending on the AI agent used.
 
