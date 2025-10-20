@@ -218,8 +218,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 },
             },
             {
-                name: "mdk-build",
-                description: "Build an MDK project.",
+                name: "mdk-project-operation",
+                description: "Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.",
                 inputSchema: {
                     type: "object",
                     properties: {
@@ -227,64 +227,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: "string",
                             description: "The path of the current project root folder.",
                         },
-                    },
-                    required: ["folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-deploy",
-                description: "Deploy an MDK project to the Mobile Services.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        folderRootPath: {
+                        operation: {
                             type: "string",
-                            description: "The path of the current project root folder.",
+                            enum: [
+                                "build",
+                                "deploy",
+                                "validate",
+                                "migrate",
+                                "show-qrcode",
+                                "open-mobile-app-editor",
+                            ],
+                            description: "The operation to perform on the MDK project. Available operations:\n" +
+                                "• build: Build an MDK project\n" +
+                                "• deploy: Deploy an MDK project to the Mobile Services\n" +
+                                "• validate: Validate an MDK project\n" +
+                                "• migrate: Migrate an MDK project to the latest MDK version\n" +
+                                "• show-qrcode: Show QR code for an MDK project\n" +
+                                "• open-mobile-app-editor: Instruct how to open the Mobile App Editor to create .service.metadata file",
                         },
                     },
-                    required: ["folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-show-qrcode",
-                description: "Show QR code for an MDK application.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder.",
-                        },
-                    },
-                    required: ["folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-migrate",
-                description: "Migrate an MDK project to the latest MDK version.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder.",
-                        },
-                    },
-                    required: ["folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-validate",
-                description: "Validate an MDK project.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder.",
-                        },
-                    },
-                    required: ["folderRootPath"],
+                    required: ["folderRootPath", "operation"],
                 },
             },
             {
@@ -350,15 +312,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         },
                     },
                     required: ["component_name"],
-                },
-            },
-            {
-                name: "mdk-open-mobile-app-editor",
-                description: "Instruct how to open the Mobile App Editor to create .service.metadata file.",
-                inputSchema: {
-                    type: "object",
-                    properties: {},
-                    required: [],
                 },
             },
         ],
@@ -686,205 +639,168 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
         }
-        case "mdk-build": {
+        case "mdk-project-operation": {
             try {
                 // Validate all arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-build", request.params.arguments || {});
+                const validatedArgs = validateToolArguments("mdk-project-operation", request.params.arguments || {});
                 const projectPath = validatedArgs.folderRootPath;
+                const operation = validatedArgs.operation;
                 const mdkToolsPath = await getModulePath("mdk-tools");
-                // Construct build command using mdkToolsPath
-                let buildScript = "";
-                if (mdkToolsPath) {
-                    const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
-                    buildScript = `${mdkBinary} build --target zip --project "${projectPath}"`;
+                switch (operation) {
+                    case "build": {
+                        // Construct build command using mdkToolsPath
+                        let buildScript = "";
+                        if (mdkToolsPath) {
+                            const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
+                            const target = "zip";
+                            buildScript = `${mdkBinary} build --target ${target} --project "${projectPath}"`;
+                        }
+                        // Execute build
+                        const buildResult = runCommand(buildScript);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `MDK Build completed successfully.\n\n${buildResult}`,
+                                },
+                            ],
+                        };
+                    }
+                    case "deploy": {
+                        // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
+                        const mobileServiceAppName = getMobileServiceAppNameWithFallback(projectPath);
+                        if (!mobileServiceAppName) {
+                            return {
+                                content: [
+                                    {
+                                        type: "text",
+                                        text: `Error: Unable to read mobile service app name. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists.`,
+                                    },
+                                ],
+                            };
+                        }
+                        // Configuration constants
+                        const CONFIG = {
+                            projectPath: projectPath,
+                            deploymentTarget: "mobile",
+                            projectName: mobileServiceAppName,
+                            showQR: true,
+                        };
+                        // Construct deployment script using mdkToolsPath
+                        let deploymentScript = "";
+                        if (mdkToolsPath) {
+                            const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
+                            deploymentScript = [
+                                `${mdkBinary} deploy`,
+                                `--target ${CONFIG.deploymentTarget}`,
+                                `--name ${CONFIG.projectName}`,
+                                CONFIG.showQR ? "--showqr" : "",
+                                `--project "${CONFIG.projectPath}"`,
+                            ]
+                                .filter(Boolean)
+                                .join(" ");
+                        }
+                        // Execute deployment command
+                        const deployResult = runCommand(deploymentScript);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `MDK Deploy completed successfully.\n\n${deployResult}`,
+                                },
+                            ],
+                        };
+                    }
+                    case "validate": {
+                        // Construct validation command using mdkToolsPath
+                        let validationScript = "";
+                        if (mdkToolsPath) {
+                            const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
+                            validationScript = `${mdkBinary} validate --project "${projectPath}"`;
+                        }
+                        // Execute validation
+                        const validateResult = runCommand(validationScript);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `MDK Validation completed successfully.\n\n${validateResult}`,
+                                },
+                            ],
+                        };
+                    }
+                    case "migrate": {
+                        // Construct migration command using mdkToolsPath
+                        let migrationScript = "";
+                        if (mdkToolsPath) {
+                            const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
+                            migrationScript = `${mdkBinary} migrate --project "${projectPath}"`;
+                        }
+                        // Execute migration
+                        const migrateResult = runCommand(migrationScript);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `MDK Migration completed successfully.\n\n${migrateResult}`,
+                                },
+                            ],
+                        };
+                    }
+                    case "show-qrcode": {
+                        const qrCodePath = `${projectPath}/.build/qrcode.png`;
+                        // Check if QR code exists
+                        if (!fs.existsSync(qrCodePath)) {
+                            return {
+                                content: [
+                                    {
+                                        type: "text",
+                                        text: `QR code not found at ${qrCodePath}. Please deploy the project first to generate a QR code.`,
+                                    },
+                                ],
+                            };
+                        }
+                        const openCommand = `open ${qrCodePath}`;
+                        runCommand(openCommand);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `QR code displayed successfully from ${qrCodePath}`,
+                                },
+                            ],
+                        };
+                    }
+                    case "open-mobile-app-editor": {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Instructions to open Mobile App Editor:\n\n1. Execute "cf login --sso" in a terminal window.\n2. Press "Command+Shift+P" and then select "MDK: Open Mobile App Editor" command.\n3. Create/Select a new/existing mobile app.\n4. Select a destination.\n5. Click "Add App to Project" button.`,
+                                },
+                            ],
+                        };
+                    }
+                    default: {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Unknown operation: ${operation}. Supported operations are: build, deploy, validate, migrate, show-qrcode, open-mobile-app-editor`,
+                                },
+                            ],
+                        };
+                    }
                 }
-                // Execute build
-                const resultText = runCommand(buildScript);
-                // Return success response
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: resultText,
-                        },
-                    ],
-                };
             }
             catch (error) {
                 // Handle errors gracefully
-                console.error("MDK build failed:", error);
+                console.error("MDK project manager operation failed:", error);
                 return {
                     content: [
                         {
                             type: "text",
-                            text: `Build failed: ${error instanceof Error ? error.message : String(error)}`,
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-deploy": {
-            try {
-                // Validate all arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-deploy", request.params.arguments || {});
-                const projectPath = validatedArgs.folderRootPath;
-                // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
-                const mobileServiceAppName = getMobileServiceAppNameWithFallback(projectPath);
-                if (!mobileServiceAppName) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: `Error: Unable to read mobile service app name. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists.`,
-                            },
-                        ],
-                    };
-                }
-                // Configuration constants
-                const CONFIG = {
-                    projectPath: projectPath,
-                    deploymentTarget: "mobile",
-                    projectName: mobileServiceAppName,
-                    showQR: true,
-                };
-                // Get MDK tools path
-                const mdkToolsPath = await getModulePath("mdk-tools");
-                // Construct deployment script using mdkToolsPath
-                let deploymentScript = "";
-                if (mdkToolsPath) {
-                    const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
-                    deploymentScript = [
-                        `${mdkBinary} deploy`,
-                        `--target ${CONFIG.deploymentTarget}`,
-                        `--name ${CONFIG.projectName}`,
-                        CONFIG.showQR ? "--showqr" : "",
-                        `--project "${CONFIG.projectPath}"`,
-                    ]
-                        .filter(Boolean)
-                        .join(" ");
-                }
-                // Execute deployment command
-                const resultText = runCommand(deploymentScript);
-                // Return success response
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: resultText,
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                // Handle deployment errors
-                console.error("MDK deployment failed:", error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Deployment failed: ${error instanceof Error ? error.message : String(error)}`,
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-show-qrcode": {
-            try {
-                // Validate all arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-show-qrcode", request.params.arguments || {});
-                const projectPath = validatedArgs.folderRootPath;
-                const openCommand = `open ${projectPath}/.build/qrcode.png`;
-                runCommand(openCommand);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "QR code displayed successfully.",
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                console.error("QR code display failed:", error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `QR code display failed: ${error instanceof Error ? error.message : String(error)}`,
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-validate": {
-            try {
-                // Validate all arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-validate", request.params.arguments || {});
-                const projectPath = validatedArgs.folderRootPath;
-                const mdkToolsPath = await getModulePath("mdk-tools");
-                // Construct validation command using mdkToolsPath
-                let validationScript = "";
-                if (mdkToolsPath) {
-                    const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
-                    validationScript = `node --no-deprecation ${mdkBinary} validate --project "${projectPath}"`;
-                }
-                // Execute validation
-                //const resultText = runCommand(validationScript);
-                // Return success response
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: validationScript,
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                // Handle errors gracefully
-                console.error("MDK validation failed:", error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Validation failed: ${error instanceof Error ? error.message : String(error)}`,
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-migrate": {
-            try {
-                // Validate all arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-migrate", request.params.arguments || {});
-                const projectPath = validatedArgs.folderRootPath;
-                const mdkToolsPath = await getModulePath("mdk-tools");
-                // Construct migration command using mdkToolsPath
-                let migrationScript = "";
-                if (mdkToolsPath) {
-                    const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdk.cmd" : "mdkcli.js");
-                    migrationScript = `${mdkBinary} migrate --project "${projectPath}"`;
-                }
-                // Execute migration
-                const resultText = runCommand(migrationScript);
-                // Return success response
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: resultText,
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                // Handle errors gracefully
-                console.error("MDK migration failed:", error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Migration failed: ${error instanceof Error ? error.message : String(error)}`,
+                            text: `Operation failed: ${error instanceof Error ? error.message : String(error)}`,
                         },
                     ],
                 };
@@ -1050,16 +966,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     ],
                 };
             }
-        }
-        case "mdk-open-mobile-app-editor": {
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: `1. Execute "cf login --sso" in a terminal window.\n2. Press "Command+Shift+P" and then select "MDK: Open Mobile App Editor" command.\n3. Create/Select a new/existing mobile app.\n4. Select a destination.\n5. Click "Add App to Project" button.`,
-                    },
-                ],
-            };
         }
         default:
             throw new Error("Unknown tool");

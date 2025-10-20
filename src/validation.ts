@@ -44,6 +44,20 @@ export const ValidationSchemas = {
     errorMap: () => ({ message: "Invalid template type" }),
   }),
 
+  operation: z.enum(
+    [
+      "build",
+      "deploy",
+      "validate",
+      "migrate",
+      "show-qrcode",
+      "open-mobile-app-editor",
+    ],
+    {
+      errorMap: () => ({ message: "Invalid operation type" }),
+    }
+  ),
+
   controlType: z.enum(
     [
       "ObjectTable",
@@ -322,6 +336,15 @@ export function validateToolArguments(
     case "mdk-show-qrcode":
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
+      );
+      break;
+
+    case "mdk-project-operation":
+      validatedArgs.folderRootPath = validateSecurePath(
+        String(args.folderRootPath)
+      );
+      validatedArgs.operation = ValidationSchemas.operation.parse(
+        args.operation
       );
       break;
 

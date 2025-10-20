@@ -180,16 +180,11 @@ This release of the MDK MCP server includes the following tools, which can be ac
 | `mdk-gen-layout-page`    | Generates a layout-based MDK page. You can describe the page layout, controls. It saves the response to `.page` file.  | - `folderRootPath:` The path of the current project root folder. <br> -`layoutType:` The type of the layout to be used in the MDK page. |
 | `mdk-gen-entity`    | Generates CRUD or List Detail template metadata for a new entity set.  | - `folderRootPath:` The path of the current project root folder. <br> -`templateType:` The type of the entity template to be used. <br> -`oDataEntitySets:` The OData entity sets are relevant to the user prompt, separated by commas. |
 | `mdk-gen-action`    | Returns a prompt to be used for generating an MDK action. Using the prompt, an `.action` file will be created that describes the action type and data bindings.  | - `folderRootPath:` The path of the current project root folder. <br> -`actionType:` The type of the action. |
-| `mdk-build`    | Build an MDK project.  | - `folderRootPath:` The path of the current project root folder. |
-| `mdk-deploy`    | Deploy an MDK project to the Mobile Services.  | - `folderRootPath:` The path of the current project root folder. |
-| `mdk-show-qrcode`    | Show QR code for an MDK application. | - `folderRootPath:` The path of the current project root folder. |
-| `mdk-migrate`    | Migrate an MDK project to the latest MDK version.  | - `folderRootPath:` The path of the current project root folder. |
-| `mdk-validate`    | Validate an MDK project. | - `folderRootPath:` The path of the current project root folder. |
+| `mdk-project-operation`    | Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.  | - `folderRootPath:` The path of the current project root folder. <br> -`operation:` The operation to perform on the MDK project. Available operations:<br>• `build`: Build an MDK project<br>• `deploy`: Deploy an MDK project to the Mobile Services<br>• `validate`: Validate an MDK project<br>• `migrate`: Migrate an MDK project to the latest MDK version<br>• `show-qrcode`: Show QR code for an MDK project<br>• `open-mobile-app-editor`: Instruct how to open the Mobile App Editor to create .service.metadata file |
 | `mdk-search-documentation`    | Returns the top N results from MDK documentation by semantic search, sorted by relevance.  | - `query:` Search query string. <br> -`N:` Number of results to return. |
 | `mdk-get-component-documentation`    | Returns the schema of an MDK component based on the name of the component.  | - `component_name:` Name of the component. |
 | `mdk-get-property-documentation`    | Returns the documentation of a specific property of an MDK component.  | - `component_name:` Name of the component. <br> -`property_name:` Name of the property. |
 | `mdk-get-example`    | Returns an example usage of an MDK component.  | - `component_name:` Name of the component. |
-| `mdk-open-mobile-app-editor`    | Instruct how to open the Mobile App Editor to create .service.metadata file.  | None |
 
 ## Support, Feedback, Contributing
 
