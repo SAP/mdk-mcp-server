@@ -1,0 +1,47 @@
+{
+  "$id": "Action.Type.ToastMessage",
+  "title": "ToastMessage",
+  "description": "Toast messages appear as pop-ups that are automatically dismissed after a defined duration. In Mobile Development Kit, you can create toast messages and define their behavior. Note: Failure event handlers cannot be defined for toast messages. On the other hand, you must use success event handlers while binding other actions to a toast message. Once the toast message appears, subsequent actions are executed immediately.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Animated": {
+      "description": "If set to true, animation effects will be added to the message. For iOS devices, the default value is False. This parameter is not applicable for Android. By default, toast messages on Android will always be animated.",
+      "type": "boolean"
+    },
+    "Duration": {
+      "description": "Indicates the number of seconds the toast message has to be displayed.",
+      "type": "integer",
+      "default": 2
+    },
+    "Icon": {
+      "description": "This parameter allows the users to define the path to the image file that has to be displayed as icon in the message. Default image is a check-mark. This parameter is not applicable for Android.",
+      "$ref": "definitions/Image"
+    },
+    "IsIconHidden": {
+      "description": "If set to True, the icon is hidden. This parameter is not applicable for Android.",
+      "default": false,
+      "type": "boolean"
+    },
+    "Message": {
+      "description": "Text that conveys the message.",
+      "type": "string"
+    },
+    "NumberOfLines": {
+      "description": "Number of lines to displayed from the text defined in the `Message`.",
+      "default": 1,
+      "type": "integer"
+    },
+    "Style": {
+      "type": "string",
+      "description": "A string value that defines the [style class](../Styles/ImageClass.style.md) name of `Icon`. `Style` is applicable for SAP icon/font icon types (CSS properties like font-size and color are supported)."
+    },
+    "_Type": {
+      "const": "Action.Type.ToastMessage"
+    }
+  },
+  "required": [
+    "Message",
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,72 @@
+{
+  "$id": "Page/FioriToolbar",
+  "title": "FioriToolbar",
+  "description": "A Fiori Toolbar is a horizontal bar displaying at the bottom of the page which can include buttons or icons as toolbar items.",
+  "properties": {
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FioriToolbar"
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Sets the helper text of the Toolbar. For iOS, the HelperText is only supported if there is at least 1 item defined. For Android, the HelperText is only supported if there are 2 items defined, and the HelperText would be displayed at the center between the 2 items."
+    },
+    "OverflowIcon": {
+      "$ref": "definitions/Image",
+      "description": "Not supported on Android. The icon to be displayed on overflow button. Default is ellipsis icon."
+    },
+    "Items": {
+      "description": "Limited to a maximum of 2 items on phone and 3 items on tablet. Excess items are accessible through overflow button. The items are automatically aligned in right to left order, so the first item in the array would always appear on the right most position. For iOS, in phone view, the buttons are equally distributed across the container of the toolbar, while for tablet view, the buttons are aligned to the right side of the container to provide convenient access to the buttons.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of fiori toolbar items.",
+          "items": {
+            "$ref": "definitions/FioriToolbarItem"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `FioriToolbarItem` in array format."
+        }
+      ]
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of the Toolbar."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for toolbar.",
+      "properties": {
+        "FioriToolbar": {
+          "type": "string",
+          "$ref": "Styles/FioriToolbarClass",
+          "description": "The string value is a style class name of `FioriToolbar`. It is used to set the background color of the toolbar."
+        },
+        "HelperText": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `HelperText`. It is used to style the `HelperText` text on the toolbar."
+        },
+        "OverflowIcon": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `OverflowIcon`."
+        }
+      }
+    },
+    "DataSubscriptions": {
+      "$ref": "definitions/DataSubscriptions",
+      "description": "Array of data change events to subscribe to."
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

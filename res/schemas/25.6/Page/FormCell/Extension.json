@@ -1,0 +1,62 @@
+{
+  "$id": "Page/FormCell/Extension",
+  "title": "Extension",
+  "description": "ExtensionFormCell control is used to render an entire custom cell inside a FormCell Container. It gives the application designer the ability to customize the look-and-feel and behavior of the client via their own extensions.",
+  "properties": {
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Module": {
+      "type": "string",
+      "description": "The module's folder name under `/extensions/` e.g. `MyExtModule`. Not required if Extension does not implement TS code under `/extensions/<Module>/controls`."
+    },
+    "Control": {
+      "type": "string",
+      "description": "The name of the file under the `controls` folder in your module. e.g. MyExtension, if your file name is `/extensions/<Module>/controls/MyExtension.ts`. If not specified, module name would be used as the value for this property."
+    },
+    "Class": {
+      "type": "string",
+      "description": "The name of the exported class in the module control that is to be used for the extension."
+    },
+    "ExtensionProperties": {
+      "type": "object",
+      "description": "Additional properties to be passed to the Extension"
+    },
+    "Height": {
+      "type": "integer",
+      "description": "The height of the extension in Device Independent Pixel. The DIP value will be converted to pixels of the platform (based on scale and on density for iOS and Android respectively)."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the extension is pressed"
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to perform after value changed. See [extension implementation](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/advanced/extensions/overview.html#implementing-extensions) for details."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "Binding target for this extension"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Extension"
+    },
+    "_Name": {
+      "type": "string",
+      "description": "UID to reference this control"
+    }
+  },
+  "required": [
+    "_Type",
+    "_Name",
+    "Class"
+  ],
+  "type": "object"
+}

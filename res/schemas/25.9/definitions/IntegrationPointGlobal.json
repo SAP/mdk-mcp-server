@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointGlobal",
+  "title": "IntegrationPointGlobal",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Global"
+    },
+    "Target": {
+      "$ref": "definitions/Global"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

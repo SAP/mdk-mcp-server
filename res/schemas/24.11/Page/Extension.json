@@ -1,0 +1,23 @@
+{
+  "$id": "Page/Extension",
+  "title": "Extension",
+  "allOf": [
+    {
+      "$ref": "Page/Common/Extension"
+    },
+    {
+      "properties": {
+        "_Type": {
+          "const": "Control.Type.Extension"
+        },
+        "_Name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "_Type"
+      ],
+      "type": "object"
+    }
+  ]
+}

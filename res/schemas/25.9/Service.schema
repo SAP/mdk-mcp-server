@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Service",
+  "title": "Service",
+  "description": "This is a .service file that defines an OData Service destination. The `DestinationName` property is used as the suffix to the ServerUrl URL when queries are made using this service.\n\nA service can run in an online or offline mode.\n\nTo configure a service for online mode, set the `OfflineEnabled` in the .service file to false. In this case, the MDK client communicates directly with the OData service. You can configure your apps to perform reads and updates to synchronize the client data.\n\nTo configure a service for offline mode, set the `OfflineEnabled` in the .service file to true. In this case, the MDK client communicates with the OData service via the offline OData provider. You can configure your apps to initialize a data store and synchronize it with the OData service.",
+  "required": ["DestinationName", "ServiceUrl"],
+  "properties": {
+    "DestinationName": {
+      "type": "string",
+      "description": "The destination name of the OData service in the Mobile Services"
+    },
+    "PathSuffix": {
+      "type": "string",
+      "description": "The path suffix that will be appended to the DestinationName and used to initialize the Online Service or Offline store. If OfflineEnabled is set to true, then you must also set OfflineOptions > StoreParameters > StoreName."
+    },
+    "ServiceUrl": {
+      "type": "string",
+      "description": "URL to the OData service (deprecated). Service URL will now be taken from the ServerUrl in brandedSettings.json or overrides.json or Onboarding URL."
+    },
+    "OfflineEnabled": {
+      "type": "boolean",
+      "description": "Indicates if this service runs in offline mode. This is set to false for WebClient.",
+      "default": true
+    },
+    "LanguageURLParam": {
+      "type": "string",
+      "description": "Indicates if this service can accept requests with language parameter"
+    },
+    "OnlineOptions": {
+      "type": "object",
+      "description": "Additional options for the service if `OfflineEnabled` is set to false.",
+      "properties": {
+        "ServiceOptions": {
+          "$ref": "definitions/OnlineServiceOptions",
+          "description": "Online options for interaction with a data service."
+        },
+        "CSDLOptions": {
+          "$ref": "definitions/CSDLOptions",
+          "description": "Options for CSDL Parser"
+        }
+      }
+    },
+    "OfflineOptions": {
+      "type": "object",
+      "description": "Additional options for the service if `OfflineEnabled` is set to true.",
+      "properties": {
+        "ServiceOptions": {
+          "$ref": "definitions/OfflineServiceOptions",
+          "description": "Offline options for interaction with a data service."
+        },
+        "CSDLOptions": {
+          "$ref": "definitions/CSDLOptions",
+          "description": "Options for CSDL Parser"
+        },
+        "StoreParameters": {
+          "$ref": "definitions/StoreParameters",
+          "description": "Offline store OData parameters"
+        }
+      }
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included in all OData requests for the service in key/value pair format. If additional custom headers are defined in an OData action or an OData function in ClientAPI, the service headers merge to the custom headers in the OData action or OData function in ClientAPI.\n\n\n\nIf you are deploying the WebClient App on the NEO environment and you need additional HTTP headers to be forwarded to or from a backend request or backend response, add the header names in the following format to the Config.js file:\n\ne.g.\n\n\"headerWhiteList\": [\"APIKey\"]\n\n\n\nFor more information, see [this](https://help.sap.com/viewer/ea72206b834e4ace9cd834feed6c0e09/Cloud/en-US/df89d9cd06a84905a3a4747f102c5b2c.html)."
+    },
+    "RestService": {
+      "type": "boolean",
+      "description": "Indicates whether this service is a REST service.",
+      "default": false
+    }
+  },
+  "type": "object"
+}

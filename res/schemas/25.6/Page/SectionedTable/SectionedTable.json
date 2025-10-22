@@ -1,0 +1,101 @@
+{
+  "$id": "Page/SectionedTable/SectionedTable",
+  "title": "SectionedTable",
+  "properties": {
+    "Sections": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "Page/SectionedTable/Container/ButtonTable"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/Calendar"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ContactTable"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/Extension"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/FormCell"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/GridTable"
+          },          
+          {
+            "$ref": "Page/SectionedTable/Container/ImageCollection"
+          },     
+          {
+            "$ref": "Page/SectionedTable/Container/Image"
+          },                
+          {
+            "$ref": "Page/SectionedTable/Container/KeyValue"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ObjectCollection"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ObjectHeader"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ObjectTable"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ProfileHeader"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/SimplePropertyCollection"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/Timeline"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/TimelinePreview"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/ObjectCardCollection"
+          },
+          {
+            "$ref": "Page/SectionedTable/Container/CardCollection"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "LoadingIndicator": {
+      "$ref": "definitions/LoadingIndicator",
+      "description": "Configure the loading indicator shown at the initial page loading."
+    },
+    "OnRendered": {
+      "description": "The event handler that will be triggered when the section table is fully rendered for the first time and even also whenever the redraw is triggered after that.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "Filters": {
+      "description": "The filters to be applied on the Sectioned Table, this property can only be set with a rule. It accepts only an array of FilterCriteria that must be returned from the assigned rule.",
+      "$ref": "definitions/Rule"
+    },
+    "FilterFeedbackBar": {
+      "description": "The filter feedback bar to be displayed on the Sectioned Table. Specifically for iOS, `FilterFeedbackBar` cannot be displayed if `FilterFeedbackBar` is defined on `SectionedTable` with 'ObjectHeader` as first section.",
+      "$ref": "definitions/FilterFeedbackBar"
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. The binding context of each section from the `Section` template is the entries from the target binding. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return a target definition."
+    },
+    "Section": {
+      "type": "object",
+      "description": "The `Section` is a template for dynamic sections binding. It accepts a single control definition that can be any one of the available section controls such as Object Table, Chart Content, and more. It can also accept a rule which returns a different section type based on business logic. The rule must ultimately return a single section control definition."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.SectionedTable"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

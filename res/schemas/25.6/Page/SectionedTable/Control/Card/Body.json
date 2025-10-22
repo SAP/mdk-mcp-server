@@ -1,0 +1,92 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Body",
+  "title": "CardBody",
+  "description": "The card body is the central part of the card that is used to display additional information alongside the content shown in the card header.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "Separators": {
+      "description": "Card separators.",
+      "properties": {
+        "HeaderSeparator": {
+          "type": "boolean",
+          "description": "Separator between card header and body.",
+          "default": false
+        },
+        "BodySeparator": {
+          "type": "boolean",
+          "description": "Separator between card body contents.",
+          "default": false
+        },
+        "FooterSeparator": {
+          "type": "boolean",
+          "description": "Separator between card body and footer.",
+          "default": false
+        },
+        "Styles": {
+          "description": "Style to be applied on the card body separators.",
+          "properties": {
+            "HeaderSeparator": {
+              "type": "string",
+              "$ref": "Styles/SeparatorClass",
+              "description": "The string value is a style class name for `HeaderSeparator`."
+            },
+            "BodySeparator": {
+              "type": "string",
+              "$ref": "Styles/SeparatorClass",
+              "description": "The string value is a style class name for `BodySeparator`."
+            },
+            "FooterSeparator": {
+              "type": "string",
+              "$ref": "Styles/SeparatorClass",
+              "description": "The string value is a style class name for `FooterSeparator`."
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "Content": {
+      "description": "Dynamic binding of Content. The content can be text, label bar, space, and separator. `Content` must be paired with `BindingCollection`.",
+      "anyOf": [
+        {
+          "$ref": "Page/SectionedTable/Control/Card/BodyContent"
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `BodyContent`."
+        }
+      ]
+    },
+    "BindingCollection": {
+      "description": "Definition of the BindingCollection to dynamically populate the collection. You can set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items.",
+      "$ref": "definitions/Bindable"
+    },
+    "Contents": {
+      "description": "Static binding of Content. The content can be text, label bar, space, and separator. `Contents` is ignored if `Content` and `BindingCollection` are defined.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of content.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Card/BodyContent"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `BodyContent` in array format."
+        }
+      ]
+    },
+    "_Type": {
+      "const": "Card.Type.Body"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

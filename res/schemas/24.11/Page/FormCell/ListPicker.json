@@ -1,0 +1,159 @@
+{
+  "$id": "Page/FormCell/ListPicker",
+  "title": "ListPicker",
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disables or enables the selection of empty value set.\n\nIn Android, this is not supported. Empty selection is always possible on List Pickers that `AllowMultipleSelection` and never possible otherwise.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well.\n\nIn iOS, the back button will be hidden if this property is set to false, and it will only become visible when an item is selected.\n\nIn Web, setting this property to false automatically selects the first item, ensuring one item is always selected and cannot be deselected."
+    },
+    "AllowMultipleSelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disables or enables the selection of multiple entries.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well."
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "Label": {
+      "type": "string",
+      "description": "Displays label when being displayed as selected item on filter feedback bar."
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Disables or enables interaction."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over the `ControlSeparator` in section, only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "IsSelectedSectionEnabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables the section containing the selected entries at the top of the list.\n\nIn Android, this is only supported on List Pickers that `AllowMultipleSelection`. Otherwise, the selected section is never displayed."
+    },
+    "IsSearchCancelledAfterSelection": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables the List Picker to exit the search mode automatically after users select/deselect an item under search mode.\n\nThis property only takes effect when `AllowMultipleSelection` is false.\n\nWhen `IsPickerDismissedOnSelection` is true, the automatic dismission of list view overrides the effect of exiting the search mode."
+    },
+    "IsPickerDismissedOnSelection": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables automatic dismission of lisk view after selecting an entry of the list.\n\nThis only takes effect when `AllowMultipleSelection` is false. Otherwise, automatic dismission of list view is not enabled."
+    },
+    "AllowDefaultValueIfOneItem": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables automatic selection of default value for the List Picker if only one item is present. If `AllowDefaultValueIfOneItem` is true, the List Picker OnValueChange event will be triggered when the default value is selected automatically."
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed after value is changed."
+    },
+    "PickerItems": {
+      "description": "An array of items for this picker. It can be simple key and value items or Object Cell items.",
+      "anyOf": [
+        {
+          "$ref": "definitions/EntitySetTarget"
+        },
+        {
+          "$ref": "definitions/FixedCollection"
+        },
+        {
+          "$ref": "Page/Common/ObjectCellEntitySetTarget"
+        },
+        {
+          "$ref": "Page/Common/FixedObjectCellCollection"
+        }
+      ]
+    },
+    "PickerPrompt": {
+      "type": "string",
+      "description": "Text to display when nothing is selected."
+    },
+    "Search": {
+      "$ref": "definitions/ListPickerSearch"
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "When not specified or not found in the `PickerItems` no selection is made. An array of the above values can be used to specify multiple selection."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueClass",
+          "description": "The string value is a style class name of `Value`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string",
+      "description": "The `_Name` value will also function as `CustomQueryGroup` to match with `FastFilters` in `FilterFeedbackBar`."
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.ListPicker"
+    },
+    "FilterProperty": {
+      "type": "string",
+      "description": "The name of the property for filter on. This property only has effect when the List Picker is used in a Filter page (see [Filter Action](../../Action/Filter.schema.md) for details).\n\nIn a Filter Page, every ListPicker or Filter must have a **unique** `FilterProperty`."
+    },
+    "FilterValue": {
+      "description": "This is a **read-only** property. This property is only valid when the List Picker is used in a Filter page, and should be only used in `TargetPath` to retrieve filter value. See example below on how to read this property via `TargetPath`.",
+      "examples": ["#Page:ProductFilterPage/#Control:CategoryListPicker/#FilterValue"]
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ],
+  "description": "A list picker allows the selection of one or more options among values within a defined category.\n\nIf ObjectCell is used in `PickerItems`, then the `Title` property is required (to dispaly value in listpicker form cell and search), and the following properties / events are not supported: `AccessoryType`, `ProgressIndicator`, `OnPress`, `OnAccessoryButtonPress`."
+}

@@ -1,7 +1,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, ListPromptsRequestSchema, } from "@modelcontextprotocol/sdk/types.js";
-import { runCommand, getModulePath, generateTemplateBasedMetadata, getServiceDataWithFallback, getMobileServiceAppNameWithFallback, } from "./utils.js";
+import { runCommand, getModulePath, generateTemplateBasedMetadata, getServiceDataWithFallback, getMobileServiceAppNameWithFallback, getSchemaVersion, getServerConfig, } from "./utils.js";
 import { validateToolArguments } from "./validation.js";
 import path from "path";
 import fs from "fs";
@@ -259,13 +259,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: "string",
                             description: "Search query string.",
                         },
+                        folderRootPath: {
+                            type: "string",
+                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
+                        },
                         N: {
                             type: "number",
                             description: "Number of results to return.",
                             default: 5,
                         },
                     },
-                    required: ["query"],
+                    required: ["query", "folderRootPath"],
                 },
             },
             {
@@ -278,8 +282,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: "string",
                             description: "Name of the component.",
                         },
+                        folderRootPath: {
+                            type: "string",
+                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
+                        },
                     },
-                    required: ["component_name"],
+                    required: ["component_name", "folderRootPath"],
                 },
             },
             {
@@ -296,8 +304,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: "string",
                             description: "Name of the property.",
                         },
+                        folderRootPath: {
+                            type: "string",
+                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
+                        },
                     },
-                    required: ["component_name", "property_name"],
+                    required: ["component_name", "property_name", "folderRootPath"],
                 },
             },
             {
@@ -310,8 +322,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: "string",
                             description: "Name of the component.",
                         },
+                        folderRootPath: {
+                            type: "string",
+                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
+                        },
                     },
-                    required: ["component_name"],
+                    required: ["component_name", "folderRootPath"],
                 },
             },
         ],
@@ -812,7 +828,56 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const validatedArgs = validateToolArguments("mdk-search-documentation", request.params.arguments || {});
                 const query = validatedArgs.query;
                 const N = validatedArgs.N;
-                const results = await search(query, N);
+                // Get server configuration
+                const serverConfig = getServerConfig();
+                // Validate the required folderRootPath and check schema version
+                try {
+                    const folderPath = validatedArgs.folderRootPath;
+                    // Additional validation: Check if path exists and is accessible
+                    if (!fs.existsSync(folderPath)) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified project path does not exist: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    if (!fs.lstatSync(folderPath).isDirectory()) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified path is not a directory: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    const schemaVersion = getSchemaVersion(folderPath);
+                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
+                    if (schemaVersion !== serverConfig.schemaVersion) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
+                                },
+                            ],
+                        };
+                    }
+                }
+                catch (error) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
+                            },
+                        ],
+                    };
+                }
+                const results = await search(query, N, serverConfig.schemaVersion);
                 const resultText = printResults(results);
                 return {
                     content: [
@@ -840,7 +905,56 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 // Validate arguments using comprehensive validation
                 const validatedArgs = validateToolArguments("mdk-get-component-documentation", request.params.arguments || {});
                 const component_name = validatedArgs.component_name;
-                const _results = await searchNames(component_name, 1);
+                // Get server configuration
+                const serverConfig = getServerConfig();
+                // Validate the required folderRootPath and check schema version
+                try {
+                    const folderPath = validatedArgs.folderRootPath;
+                    // Additional validation: Check if path exists and is accessible
+                    if (!fs.existsSync(folderPath)) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified project path does not exist: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    if (!fs.lstatSync(folderPath).isDirectory()) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified path is not a directory: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    const schemaVersion = getSchemaVersion(folderPath);
+                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
+                    if (schemaVersion !== serverConfig.schemaVersion) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
+                                },
+                            ],
+                        };
+                    }
+                }
+                catch (error) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
+                            },
+                        ],
+                    };
+                }
+                const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
                 for (const file of filenameList) {
                     if (file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
                         (file.endsWith(".json") || file.endsWith(".schema"))) {
@@ -882,7 +996,56 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const validatedArgs = validateToolArguments("mdk-get-property-documentation", request.params.arguments || {});
                 const component_name = validatedArgs.component_name;
                 const property_name = validatedArgs.property_name;
-                const searchResults = await searchNames(component_name, 1);
+                // Get server configuration
+                const serverConfig = getServerConfig();
+                // Validate the required folderRootPath and check schema version  
+                try {
+                    const folderPath = validatedArgs.folderRootPath;
+                    // Additional validation: Check if path exists and is accessible
+                    if (!fs.existsSync(folderPath)) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified project path does not exist: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    if (!fs.lstatSync(folderPath).isDirectory()) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified path is not a directory: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    const schemaVersion = getSchemaVersion(folderPath);
+                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
+                    if (schemaVersion !== serverConfig.schemaVersion) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
+                                },
+                            ],
+                        };
+                    }
+                }
+                catch (error) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
+                            },
+                        ],
+                    };
+                }
+                const searchResults = await searchNames(component_name, 1, serverConfig.schemaVersion);
                 for (const file of filenameList) {
                     if (file
                         .toLowerCase()
@@ -932,7 +1095,56 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 // Validate arguments using comprehensive validation
                 const validatedArgs = validateToolArguments("mdk-get-example", request.params.arguments || {});
                 const component_name = validatedArgs.component_name;
-                const _results = await searchNames(component_name, 1);
+                // Get server configuration
+                const serverConfig = getServerConfig();
+                // Validate the required folderRootPath and check schema version
+                try {
+                    const folderPath = validatedArgs.folderRootPath;
+                    // Additional validation: Check if path exists and is accessible
+                    if (!fs.existsSync(folderPath)) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified project path does not exist: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    if (!fs.lstatSync(folderPath).isDirectory()) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: The specified path is not a directory: ${folderPath}`,
+                                },
+                            ],
+                        };
+                    }
+                    const schemaVersion = getSchemaVersion(folderPath);
+                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
+                    if (schemaVersion !== serverConfig.schemaVersion) {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
+                                },
+                            ],
+                        };
+                    }
+                }
+                catch (error) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
+                            },
+                        ],
+                    };
+                }
+                const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
                 for (const file of filenameList) {
                     if (file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
                         file.endsWith(".example.md")) {
@@ -984,8 +1196,14 @@ export default async function run(_options = {}) {
     const transport = new StdioServerTransport();
     await server.connect(transport);
     console.error("MDK MCP server running...");
-    if (!fs.existsSync(path.join(projectRoot, "build/embeddings/schema-chunks.bin"))) {
-        retrieveAndStore(path.join(projectRoot, "res/schemas"));
+    // Get server configuration
+    const serverConfig = getServerConfig();
+    const schemaPath = path.join(projectRoot, "res/schemas");
+    // Check if embeddings exist for the version, if not initialize the configured version
+    const versionEmbeddingPath = path.join(projectRoot, `build/embeddings/schema-chunks-${serverConfig.schemaVersion}.bin`);
+    if (!fs.existsSync(versionEmbeddingPath)) {
+        console.error("Initializing schema embeddings for the configured version...");
+        retrieveAndStore(schemaPath, serverConfig.schemaVersion);
     }
-    [filenameList, contentList] = getDocuments();
+    [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
 }

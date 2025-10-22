@@ -1,0 +1,59 @@
+{
+  "$id": "Page/SectionedTable/Container/KPIHeader",
+  "title": "KPIHeader",
+  "description": "KPIHeader is a container that manages and displays the different Key Performance Indicators (KPI)\n\nA page can have one or more KPIHeader section. On IOS we currently have a limitation where we support only one KPI Header.",
+  "type": "object",
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.KPIHeader"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "KPIHeader": {
+      "type": "object",
+      "properties": {
+        "KPIItems": {
+          "description": "In case of iOS, a maximum of four KPI items can be displayed in the header. In case of Android,there is no such limitation.\n\nWhen both KPIView and KPIProgressView items are provided, the items are sorted such that the KPIProgressViews are displayed first, followed by the KPIViews.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/KPIItem",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "Styles": {
+          "properties": {
+            "TintColor":{
+              "type": "string",
+              "$ref": "Styles/TintColorClass",
+              "description": "Change the color of the KPI items.\n\nFor Android: Use `color` in the stylesheet to color KPIView and KPIProgressView.\n\nFor iOS: If the KPIView is disabled (i.e. those without an `OnPress` property), use `tint-color-disabled`; If the KPIView is enabled, use `tint-color`. If the KPIProgressView is disabled, use `tint-color-disabled`; If the KPIProgressView is enabled, use `color` to style MetricItems and CaptionLabel. Use `progress-tint-color` to style the progress indicator when KPIProgressView is enabled; This will also override the styling specified in `tint-color-disabled` for the progress indicator when KPIProgressView is disabled."
+            },
+            "BackgroundColor": {
+              "type": "string",
+              "$ref": "Styles/BackgroundClass",
+              "description": "The string value is a style class name for BackgroundColor."
+            },
+            "Icon": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name of `Icon` in KPIItems."
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    }
+  },
+  "required": [
+    "_Type"
+  ]
+}

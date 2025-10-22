@@ -1,0 +1,33 @@
+{
+  "$id": "Page/SectionedTable/Common/Separators",
+  "title": "Separators",
+  "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines.",
+  "properties": {
+    "TopSectionSeparator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line at the top of the section. iOS only.",
+      "default": false
+    },
+    "BottomSectionSeparator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line at the bottom of the section. Default value for iOS is false, for Android and Web it is true.",
+      "default": true
+    },
+    "HeaderSeparator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line between the header and section.",
+      "default": true
+    },
+    "FooterSeparator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line between the footer and section.",
+      "default": true
+    },
+    "ControlSeparator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator lines between controls inside a section.",
+      "default": true
+    }
+  },
+  "type": "object"
+}

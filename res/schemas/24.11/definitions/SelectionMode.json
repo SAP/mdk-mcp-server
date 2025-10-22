@@ -1,0 +1,31 @@
+{
+  "$id": "definitions/Selection",
+  "title": "Selection",
+  "description": "`Selection` property which defined in the `Section` of SectionedTable.",
+  "properties": {
+    "Mode": {
+      "type": "string",
+      "description": "Set selection mode for the section.",
+      "enum": [
+        "None",
+        "Multiple"
+      ],
+      "default": "None"
+    },
+    "LongPressToEnable": {
+      "type": "string",
+      "description": "Set selection mode for the section when the user longpress on the cell.",
+      "enum": [
+        "None",
+        "Multiple"
+      ],
+      "default": "None"
+    },
+    "ExitOnLastDeselect": {
+      "type": "boolean",
+      "description": "Toggle off the selection mode when deselect last item of the section.",
+      "default": true
+    }
+  },
+  "type": "object"
+}

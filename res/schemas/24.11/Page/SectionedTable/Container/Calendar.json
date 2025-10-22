@@ -1,0 +1,107 @@
+{
+  "$id": "Page/SectionedTable/Container/Calendar",
+  "title": "Calendar",
+  "description": "Calendar is a container that provides a calendar view for the users to select a date or scroll between months/weeks.",
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.Calendar"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Sets the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "Visibility of the separator lines can be controlled to provide more flexibility to render controls and sections."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "CalendarType": {
+      "type": "string",
+      "enum": [ "Week", "Month", "Expandable" ],
+      "default": "Month",
+      "description": "Choose how you want the calendar view to be displayed. Supported only in iOS and Android. In Web, only Month is supported."
+    },
+    "StartDayOfWeek": {
+      "type": "string",
+      "enum": [ "Sun", "Sat", "Mon" ],
+      "description": "Choose the start day of the week for the calendar view. Supported only in iOS and Android. In Web, it is always Sun.\n\nIf no value is provided, the device's local calendar settings determine the default StartDayOfWeek. Only Friday, Saturday, and Sunday are supported as start days. If the local start day of the week doesn't match these supported values, Sunday is selected as default."
+    },
+    "StartDate": {
+      "type": "string",
+      "description": "Start date of the calendar. Users cannot scroll or select beyond the specified date. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf no value is set, the default `StartDate` will be January 1st of two years prior to the initially selected date. The `StartDate` will be set to the first day of the same year as the `EndDate` if the value of this property is later than the `EndDate`."
+    },
+    "EndDate": {
+      "type": "string",
+      "description": "End date of the calendar. Users cannot scroll or select beyond the specified date. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf no value is set, the default `EndDate` will be December 31st of two years following the initially selected date. The `StartDate` will be set to the first day of the same year as the `EndDate` if the value of this property is earlier than the `StartDate`."
+    },
+    "IsPersistentSelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set whether the date selection should be persistent when scrolling through the calendar. \n\nWhen set to false, the selected date will change to the 1st day of the month or week that you have scrolled to. For example, if the selected date is May 10, 2023, and you scroll to June 2023, the selected date will change to June 1, 2023. \n\n When set to true, the selected date will remain as it is when you scroll the calendar to another month or week. For example, if the selected date is May 10, 2023, and you scroll to June 2023, the selected date will remain as May 10, 2023. \n\nSupported in iOS and Android only. In Web, by default, it is set to true."
+    },
+    "SelectedDate": {
+      "type": "string",
+      "description": "Default selected date when the calendar is rendered. If not set, today's date will be selected by default. If the value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device. For example, 2016-01-01T00:00:00Z.\n\nWhen the calendar is redrawn, the selected date is retained."
+    },
+    "OnSelectedDateChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the selected date is changed, including scenarios where the selected date is adjusted to the nearest date within the range specified by `StartDate` and `EndDate`."
+    },
+    "Styles": {
+      "properties": {
+        "Calendar": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `Calendar`. This applies the color to main calendar background."
+        },
+        "ExpandableHandle": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `ExpandableHandle`. This applies the color to the expandable handle for the calendar's expandable view. Supported only in Android."
+        },
+        "Buttons": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `Buttons`. This applies the color styling for the buttons in the calendar's header. Supported only in Android."
+        },
+        "InnerMonthLabel": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `InnerMonthLabel`. This applies the font color and style to the month name label embedded in calendar month view. Supported only in iOS."
+        },
+        "WeekDayLabel": {
+          "type": "string",
+          "$ref": "Styles/CalendarClass",
+          "description": "The string value is a style class name of `WeekDayLabel`. This applies the font styling to the days of the week."
+        },
+        "Header": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `Header`. This applies the fonts styling and background color to the calendar header."
+        },
+        "Dates": {
+          "type": "string",
+          "$ref": "Styles/CalendarDatesClass",
+          "description": "The string value is a style class name of `Dates`. This applies the fonts styling and colors to the dates specified in the style class."
+        }
+      },
+      "type": "object",
+      "description": "A style to be applied to the CalendarSection. Not support Web but Mobile only."
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

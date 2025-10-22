@@ -89,19 +89,19 @@ function splitDocuments(docs: Document[]): Chunk[] {
  *   4. Store the chunks and their embeddings in the vector database.
  * This is the main function to be called to populate the vector database with MDK schema data.
  */
-export function retrieveAndStore(folderPath: string): void {
-  const docs = loadDocumentsFromFolder(folderPath);
+export function retrieveAndStore(folderPath: string, version: string): void {
+  const docs = loadDocumentsFromFolder(folderPath + `/${version}`);
   const chunks = splitDocuments(docs);
 
   const texts = chunks.map(chunk => chunk.source + "\n" + chunk.content);
-  createEmbeddings("schema-chunks", texts);
+  createEmbeddings(`schema-chunks-${version}`, texts);
 
   const names = docs.map(doc => {
     const parts = doc.source.split("/");
     const last = parts.pop();
     return last ? last.split(".")[0] : "";
   });
-  createEmbeddings("name-chunks", names);
+  createEmbeddings(`name-chunks-${version}`, names);
 }
 
 /**
@@ -113,9 +113,10 @@ export function retrieveAndStore(folderPath: string): void {
  */
 export async function search(
   query: string,
-  topN: number = 5
+  topN: number,
+  version: string
 ): Promise<SearchResult[]> {
-  const chunks = await loadChunks("schema-chunks");
+  const chunks = await loadChunks(`schema-chunks-${version}`);
   const embeddingResults: SearchResult[] = (
     await searchEmbeddings(query, chunks)
   ).slice(0, topN);
@@ -132,9 +133,10 @@ export async function search(
  */
 export async function searchNames(
   query: string,
-  topN: number = 1
+  topN: number,
+  version: string
 ): Promise<SearchResult[]> {
-  const chunks = await loadChunks("name-chunks");
+  const chunks = await loadChunks(`name-chunks-${version}`);
   const embeddingResults: SearchResult[] = (
     await searchEmbeddings(query, chunks)
   ).slice(0, topN);
@@ -173,7 +175,7 @@ export function printResults(results: SearchResult[]): string {
   return JSON.stringify(searchResults, null, 2);
 }
 
-export function getDocuments(): [string[], string[]] {
+export function getDocuments(version: string): [string[], string[]] {
   /**Load all documentation files into a global list.*/
   const filenameList: string[] = [];
   const contentList: string[] = [];
@@ -203,6 +205,6 @@ export function getDocuments(): [string[], string[]] {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const projectRoot = path.resolve(__dirname, "..");
-  walkDirectory(path.join(projectRoot, "res/schemas"));
+  walkDirectory(path.join(projectRoot, "res/schemas", version));
   return [filenameList, contentList];
 }

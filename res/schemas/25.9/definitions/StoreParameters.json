@@ -1,0 +1,45 @@
+{
+    "$id": "definitions/StoreParameters",
+    "title": "StoreParameters",
+    "type": "object",
+    "properties": {
+        "AutoRegisterClient": {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies whether or not to enable Client Registrations."
+        },
+        "EnableBackgroundDataTransfer": {
+            "type": "boolean",
+            "default": true,
+            "description": "Specifies whether or not to enable background data transfer. Applicable only for iOS devices."
+        },
+        "EnableIndividualErrorArchiveDeletion": {
+            "type": "boolean",
+            "default": false,
+            "description": "By default, deletion of an individual ErrorArchive entity will clear all entities in the ErrorArchive and all pending requests related to them will also be removed from the requests queue. If set to true, deletion of an individual ErrorArchive entity will only delete that entity and its dependent entities. In addition, pending requests associated with the deleted entities in the ErrorArchive are also removed from the requests queue. All other non-related entities will not be removed."
+        },
+        "EnableRepeatableRequests": {
+            "type": "boolean",
+            "default": true,
+            "description": "Specifies whether the OData backend or mobile services supports repeatable requests."
+        },
+        "EnableRequestQueueOptimization": {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies whether or not to enable request queue optimization."
+        },
+        "EnableUndoLocalCreation": {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies whether or not to enable an optimization such that deleting an entity that was created locally but not yet uploaded undoes the creation."
+        },
+        "StoreName": {
+            "type": "string",
+            "description": "By default, the service destination name will be used as Store Name. The StoreName must be defined if service PathSuffix is defined."
+        },
+        "Timeout": {
+            "type": "number",
+            "description": "Defines the timeout value in seconds. If the timeout is set too low (less than 30 seconds), it would increase network traffic for checking the liveness of the connection which each timeout period to ensure that the connection is still active. If omitted, it will be no timeout."
+        }
+    }
+}

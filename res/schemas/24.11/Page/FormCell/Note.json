@@ -1,0 +1,101 @@
+{
+  "$id": "Page/FormCell/Note",
+  "title": "Note",
+  "description": "The Note FormCell is a multi-line text entry control.",
+  "properties": {
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "description": "Rule to perform on value."
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control. In Android, if the caption is not specified or left empty, it will maintain the spacing between the caption and note."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "MaxNumberOfLines": {
+      "type": "integer",
+      "description": "The maximum number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 2. Any value less than or equal to zero is considered as no limit.",
+      "default": 2
+    },
+    "MinNumberOfLines": {
+      "type": "integer",
+      "description": "The minimum number of lines in which the text is displayed. The height of the cell is restricted to the specified limit and the text is displayed within the line limit. The default value is 1 on the mobile platform and 4 on the web platform. Any value less than or equal to zero is not considered or is ignored.",
+      "default": 1
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Sets the editability of the control. The text field will have a gray background if this property is false. Only applicable if the `Enabled` property is true, otherwise this property will be treated as false regardless of the value set.",
+      "default": true
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Disables or enables interaction. The control will have a reduced opacity if this property is false.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over the `ControlSeparator` in section, only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "PlaceHolder": {
+      "type": "string",
+      "description": "Placeholder text to display if value is empty."
+    },
+    "Value": {
+      "type": "string",
+      "description": "Text to display"
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueInputClass",
+          "description": "The string value is a style class name of `Value`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Note"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

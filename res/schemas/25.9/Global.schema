@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Global",
+  "title": "Global",
+  "description": "Global is a type of `constant` definition, that can be accessed anywhere in the app. It's useful for storing shared hard-coded value.",
+  "properties": {
+    "Value": {
+      "type": [
+        "boolean",
+        "number",
+        "string"
+      ]
+    },
+    "_Type": {
+      "enum": [
+        "Boolean",
+        "boolean",
+        "Number",
+        "number",
+        "String",
+        "string"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "Value",
+    "_Type"
+  ],
+  "type": "object"
+}

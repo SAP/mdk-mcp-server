@@ -1,0 +1,28 @@
+{
+    "$id": "definitions/PullDown",
+    "title": "PullDown",
+    "description": "The event that will be executed when the page pull down operation is performed i.e. when user swipes down on the page.\n\nNot supported on parent page of BottomNavigation, parent page of Tabs, and ObjectHeader with Tabs scenarios.",
+    "properties": {
+        "OnPulledDown": {
+            "type": "string",
+            "description": "Specify path to a valid rule or action. PLT formatter is supported."
+        },
+        "Styles": {
+            "type": "object",
+            "properties": {
+                "IndicatorColor": {
+                    "type": "string",
+                    "description": "The color of the Pull down indicator as a hexadecimal string, e.g. \"#ffffff\"."
+                },
+                "BackgroundColor": {
+                    "type": "string",
+                    "description": "The Background color of the Pull down indicator as a hexadecimal string, e.g. \"#ffffff\"."
+                }
+            }
+        }
+    },
+    "required": [
+        "OnPulledDown"
+    ],
+    "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "$id": "definitions/DownloadOptions",
+  "title": "DownloadOptions",
+  "properties": {
+    "WriteToFilePath": {
+      "description": "Specify either the full or relative file path where the downloaded data should be stored. If a relative file path is used, the file is stored in the path relative to the platform's internal [documents](https://docs.nativescript.org/api/namespace/knownFolders#documents) folder. In iOS, this property is needed if you want to support background download for larger file. This property is supported only in iOS and Android.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "WriteToFilePath"
+  ],
+  "type": "object"
+}

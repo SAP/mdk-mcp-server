@@ -1,0 +1,56 @@
+{
+  "$id": "Page/SectionedTable/Control/ExtendedHeader",
+  "title": "ExtendedHeader",
+  "description": "Contains additional elements that provide more information. These elements can be labels, status, rating controls, tags, text.",
+  "properties": {
+    "ItemSeparator": {
+      "type": "boolean",
+      "default": false,
+      "description": "To visually separate the items by adding a separator dot between the items. The `ItemSeparator` is only working for Label item type."
+    },
+    "ItemType": {
+      "type": "string",
+      "enum": [
+        {
+          "const": "Label",
+          "description": "To display label(s) as extended header."
+        },
+        {
+          "const": "Rating",
+          "description": "To display rating(s) as extended header. Only the first rating item would be displayed, others would be ignored."
+        },
+        {
+          "const": "Tag",
+          "description": "To display tag(s) as extended header."
+        }
+      ],
+      "description": "`ItemType` is to define the type for `Items` defined in `ExtendedHeader`. For now, only same item type is supported for all items under the `ExtendedHeader`."
+    },
+    "Items": {
+      "description": "Contains items to be displayed in a row of `ExtendedHeader`. These items can be labels, status, rating controls, tags, text.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of extended header item. In Android, if there are more than one [RatingItem](RatingItem.schema.md) defined in the array, only the first rating will be displayed.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Card/ExtendedHeaderItem"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `ExtendedHeaderItem` in array format."
+        }
+      ]
+    },
+    "_Type": {
+      "const": "CardHeader.Type.ExtendedHeader"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "ItemType"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/TargetPath",
+  "title": "TargetPath",
+  "type": "string",
+  "pattern": "^#Page:.+\/#Control:.+\/#.+$",
+  "description": "Target path is a string interpreted at runtime and comprises segments, which are resolved one after another (with the result of one being used for the evaluation of the next). The result of the last segment is also the result of the target path. Each of these results (or \"contexts\") has two pieces of information: a data binding and, if appropriate, an associated UI element. Target paths are often used in metadata to retrieve a data binding that already exists somewhere in the app, but may also be used in Rules to access data bindings or UI elements.\n"
+}

@@ -1,0 +1,113 @@
+{
+  "$id": "Page/FormCell/DurationPicker",
+  "title": "DurationPicker",
+  "description": "Duration Picker allows the users to specify a duration by selecting a start time and an end time.",
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "description": "If specified, the given rule executes when control is initialized or value changes.",
+      "default": ""
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disables or enables interaction.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Unit": {
+      "enum": [
+        {
+          "const": "M",
+          "description": "Minute"
+        },
+        {
+          "const": "Min",
+          "description": "Minute"
+        },
+        {
+          "const": "H",
+          "description": "Hour"
+        },
+        {
+          "const": "Hour",
+          "description": "Hour"
+        }
+      ],
+      "type": "string",
+      "description": "Unit of duration. It can be hour or minute."
+    },
+    "MinuteInterval": {
+      "type": "integer",
+      "description": "Picker interval in minutes. The initial state of DurationPicker `MinuteInterval` is 1 min, 0 min and 00 min for iOS, Android and web respectively.",
+      "maximum": 30,
+      "default": 5
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "Value": {
+      "type": "number",
+      "description": "Duration value in hours or minutes depending on the unit."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueClass",
+          "description": "The string value is a style class name of `Value`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.DurationPicker"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Caption",
+    "Unit"
+  ]
+}

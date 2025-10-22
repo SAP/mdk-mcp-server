@@ -1,0 +1,62 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Body/LabelBar",
+  "title": "LabelBar",
+  "description": "Contains label bar and its items.",
+  "properties": {
+    "ItemSeparator": {
+      "type": "boolean",
+      "default": false,
+      "description": "To visually separate the items by adding a separator dot between the items. Only applicable to horizontal layout."
+    },
+    "Layout": {
+      "description": "Card body content label bar layout properties.",
+      "properties": {
+        "LayoutType": {
+          "type": "string",
+          "enum": [
+            "Horizontal",
+            "Vertical"
+          ],
+          "description": "Layout orientation for the label bar items",
+          "default": "Horizontal"
+        }
+      },
+      "type": "object"
+    },
+    "Item": {
+      "description": "Dynamic binding of Item. The item can only be label bar item. `Item` must be paired with `BindingCollection`.",
+      "$ref": "Page/SectionedTable/Control/Card/Body/LabelBarItem"
+    },
+    "BindingCollection": {
+      "description": "Definition of the BindingCollection to dynamically populate the collection. You can set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items.",
+      "$ref": "definitions/Bindable"
+    },
+    "Items": {
+      "description": "Contains items to be displayed in a row of `LabelBar`. `Items` is ignored if `Item` and `BindingCollection` are defined.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of label bar item.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Card/Body/LabelBarItem"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `LabelBarItem` in array format."
+        }
+      ]
+    },
+    "_Type": {
+      "const": "CardBodyContent.Type.LabelBar"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "Items"
+  ]
+}

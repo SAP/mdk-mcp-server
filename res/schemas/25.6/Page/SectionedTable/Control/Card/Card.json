@@ -1,0 +1,49 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Card",
+  "title": "Card",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only valid for static section, will be ignored in dynamic sections and List pickers."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the card is pressed. The ClientAPI object to be received in rule function is [CardProxy](../../../../../apidoc/classes/cardproxy.md)."
+    },
+    "Media": {
+      "$ref": "Page/SectionedTable/Control/Card/Media",
+      "description": "An optional decorative element that allows you to include an image that matches the card context."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Control/Card/Header",
+      "description": "The card header is the uppermost part of the card that provides important information about the card and its related content on the detail page."
+    },
+    "Body": {
+      "$ref": "Page/SectionedTable/Control/Card/Body",
+      "description": "The card body is the central part of the card that is used to display additional information alongside the content shown in the card header."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Control/Card/Footer",
+      "description": "The card footer, also referred to as card toolbar, is the bottom part of a card that contains important or routine actions that directly impact the card, such as “Approve” or “Submit”. The footer can accommodate a maximum of two action buttons."
+    },
+    "Styles": {
+      "description": "Style to be applied on the card.",
+      "properties": {
+        "Card": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name for `Card`. "
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "CardCollection.Type.Card"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

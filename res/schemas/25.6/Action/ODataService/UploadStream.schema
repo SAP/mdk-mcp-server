@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.UploadStream",
+  "title": "ODataService UploadStream",
+  "description": "UploadStream action is used to upload data stream to OData Properties with type Edm.Stream of an OData entity.\n\nThis action can upload data stream to multiple Edm.Stream properties but only to a single entity, therefore, the result of the Target binding should only return a single entity, otherwise an error will be thrown.\n\nNote: This action cannot be used to upload the associated data stream of a Media Entity (EntityType with HasStream=\"true\"). Please use Action.Type.ODataService.CreateMedia instead.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "Properties": {
+      "type": "object",
+      "description": "A list of the target entity's property names and values in key/value pairs format. Key is the name of the OData property with Edm.Stream type, Each value is a media content object in the following structure: {\"content\": binary, \"contentType\": string}. If an array is passed in, it's assumed it will contain the media content object and only the first item of the array will be used, the rest will be ignored."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.UploadStream"
+    }
+  },
+  "type": "object",
+  "required": [
+    "Target",
+    "_Type",
+    "Properties"
+  ]
+}

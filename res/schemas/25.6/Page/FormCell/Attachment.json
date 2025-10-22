@@ -1,0 +1,106 @@
+{
+  "$id": "Page/FormCell/Attachment",
+  "title": "Attachment",
+  "description": "This container item allows users to add or take a photo as an attachment.",
+  "properties": {
+    "AttachmentActionType": {
+      "items": {
+        "enum": [
+          {
+            "const": "AddPhoto",
+            "description": "Only supported on iOS and Android"
+          },
+          {
+            "const": "TakePhoto",
+            "description": "Only supported on iOS and Android"
+          },
+          {
+            "const": "SelectFile",
+            "description": "Supported on iOS, Android and Web"
+          } 
+        ],
+        "type": "string"
+      },
+      "type": "array",
+      "description": "List of supported attachment types."
+    },
+    "AttachmentTitle": {
+      "type": "string",
+      "description": "String for the attachment header. Parameterized strings are accepted as well, e.g. 'Photos [%d]', where the parameter is substituted by the number of attachments.",
+      "default": "Attachments (%d)"
+    },
+    "AttachmentAddTitle": {
+      "type": "string",
+      "default": "Add",
+      "description": "Title string for the add attachment popover. Android / web only."
+    },
+    "AttachmentCancelTitle": {
+      "type": "string",
+      "default": "Cancel",
+      "description": "iOS compact mode (phone) only. Title string for the cancel button on the add attachment popover."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after a new attchment is added or an existing attachment is deleted."
+    },
+    "OnPress": {
+      "description": "Action/Rule to be triggered when the existing attachment is pressed. This event is supported only on mobile platforms.\n\nThe clientAPI in rule function is object with [AttachmentEntryProxy](../../../apidoc/classes/attachmententryproxy.md) definition.\n\nThe action binding information from page proxy is stored pressed attachment object with the interface [IAttachment](../../../apidoc/interfaces/iattachment.md) and index of the pressed attachment item.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "Value": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array",
+      "description": "List of resources which are to be added by default. Each item is in accordance with the interface [IAttachment](../../../apidoc/interfaces/iattachment.md) definition."
+    },
+    "AllowedFileTypes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "description": "List of file types which can be uploaded. Only applicable when `AttachmentActionType` is SelectFile.\n\nRefer to [Android file types](#android-platforms-file-types-list) and [iOS file types](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1) for details.\n\nIf the customized file types are not supported by Android or iOS, you can assign an empty array, i.e. [], to allow choosing all files.\n\nIn iOS, since odt, docx, xlsx and pptx are all actually contained in a zip file wrapper, they also conform to 'zip' format. So, when you specify 'zip' in the list, it also includes all other types that conform to 'zip' format."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Attachment"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Name",
+    "_Type",
+    "AttachmentActionType"
+  ]
+}

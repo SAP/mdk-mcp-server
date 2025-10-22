@@ -1,0 +1,20 @@
+{
+  "$id": "Page/SectionedTable/Control/Avatar",
+  "title": "Avatar",
+  "properties": {
+    "Image": {
+      "type": "string",
+      "description": "Image to be displayed in the avatar of the object cell.",
+      "$ref": "definitions/Image"
+    },
+    "ImageText": {
+      "description": "Text to be shown in an image container when avatar image is not present.",
+      "type": "string"
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is either a [style class name of `Image`](../../../Styles/ImageClass.style.md) or a [style class name of `ImageText`](../../../Styles/ImageTextClass.style.md) (supported CSS properties are background-color and color)."
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,38 @@
+{
+  "$id": "Page/SectionedTable/Control/KPIItem",
+  "title": "KPIItem",
+  "properties": {
+    "CaptionLabel": {
+      "type": "string"
+    },
+    "MetricItems": {
+      "items": {
+        "$ref": "Page/SectionedTable/Control/MetricItem"
+      },
+      "description": "On Android, we currently have a limitation where we only support a maximum of 2 `MetricItem`s. Additionally, on Android, `LeadingUnit` of `MetricItem` is supported only when there is exactly 1 `MetricItem` in the array.",
+      "type": "array"
+    },
+    "Icon": {
+      "$ref": "definitions/Image"
+    },
+    "ShowProgress": {
+      "description": "This determines if the KPI Progress View should be enabled",
+      "type": "boolean"
+    },
+    "Progress": {
+      "description": "This is used only when `ShowProgress` is enabled and only used in iOS",
+      "type": "number"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the item is pressed."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

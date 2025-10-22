@@ -55,17 +55,17 @@ function splitDocuments(docs) {
  *   4. Store the chunks and their embeddings in the vector database.
  * This is the main function to be called to populate the vector database with MDK schema data.
  */
-export function retrieveAndStore(folderPath) {
-    const docs = loadDocumentsFromFolder(folderPath);
+export function retrieveAndStore(folderPath, version) {
+    const docs = loadDocumentsFromFolder(folderPath + `/${version}`);
     const chunks = splitDocuments(docs);
     const texts = chunks.map(chunk => chunk.source + "\n" + chunk.content);
-    createEmbeddings("schema-chunks", texts);
+    createEmbeddings(`schema-chunks-${version}`, texts);
     const names = docs.map(doc => {
         const parts = doc.source.split("/");
         const last = parts.pop();
         return last ? last.split(".")[0] : "";
     });
-    createEmbeddings("name-chunks", names);
+    createEmbeddings(`name-chunks-${version}`, names);
 }
 /**
  * Search the vector database for the most similar documents to the query.
@@ -74,8 +74,8 @@ export function retrieveAndStore(folderPath) {
  * Lower distance means more similarity.
  * This is mainly used in the server to search for MDK components based on queries that may not match the exact component description.
  */
-export async function search(query, topN = 5) {
-    const chunks = await loadChunks("schema-chunks");
+export async function search(query, topN, version) {
+    const chunks = await loadChunks(`schema-chunks-${version}`);
     const embeddingResults = (await searchEmbeddings(query, chunks)).slice(0, topN);
     return embeddingResults;
 }
@@ -86,8 +86,8 @@ export async function search(query, topN = 5) {
  * Lower distance means more similarity.
  * This is mainly used in the server to correct any typos if a function requires an exact component name, such as get_component_documentation().
  */
-export async function searchNames(query, topN = 1) {
-    const chunks = await loadChunks("name-chunks");
+export async function searchNames(query, topN, version) {
+    const chunks = await loadChunks(`name-chunks-${version}`);
     const embeddingResults = (await searchEmbeddings(query, chunks)).slice(0, topN);
     return embeddingResults;
 }
@@ -113,7 +113,7 @@ export function printResults(results) {
     }
     return JSON.stringify(searchResults, null, 2);
 }
-export function getDocuments() {
+export function getDocuments(version) {
     /**Load all documentation files into a global list.*/
     const filenameList = [];
     const contentList = [];
@@ -138,6 +138,6 @@ export function getDocuments() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const projectRoot = path.resolve(__dirname, "..");
-    walkDirectory(path.join(projectRoot, "res/schemas"));
+    walkDirectory(path.join(projectRoot, "res/schemas", version));
     return [filenameList, contentList];
 }

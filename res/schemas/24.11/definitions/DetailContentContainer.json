@@ -1,0 +1,25 @@
+{
+  "$id": "definitions/DetailContentContainer",
+  "title": "DetailContentContainer",
+  "description": "Container to hold extensions. Can only be used in ObjectHeader.",
+  "properties": {
+    "Controls": {
+      "items": {
+        "$ref": "Page/SectionedTable/Container/Extension"
+      },
+      "type": "array",
+      "description": "The extension collection. Currently it can only contain one extension."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Name"
+  ],
+  "type": "object"
+}

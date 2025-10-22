@@ -1,0 +1,23 @@
+{
+  "$id": "Page/SectionedTable/Control/ActivityItem",
+  "title": "ActivityItem",
+  "properties": {
+    "ActivityType": {
+      "enum": [
+        { "const": "Detail", "description": "Detailed note." },
+        { "const": "Email", "description": "Email address. On iOS and web (Mac), the Mail app will be opened. On Android and web (Windows), user is asked to choose an email client to complete the action." },
+        { "const": "Message", "description": "SMS by a phone number. On iOS and Android, the Messages app will be opened. On web (Mac), user is asked to open the Messages app. On web (Windows), do nothing." }, 
+        { "const": "Phone", "description": "Phone call by a number. On iOS and Android, the Phone app will be opened. On web (Mac), user is asked to make a call using the Skype app. On web (Windows), currently do nothing." },
+        { "const": "VideoCall", "description": "Video call by a number. On iOS, FaceTime app will be opened. On Android, this option is currently disabled. On web, Microsoft Teams app will be opened." }
+      ],
+      "type": "string"
+    },
+    "ActivityValue": {
+      "type": "string"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

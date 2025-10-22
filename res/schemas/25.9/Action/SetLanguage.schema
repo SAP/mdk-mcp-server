@@ -1,0 +1,20 @@
+{
+  "$id": "Action.Tpye.SetLanguage",
+  "title": "SetLanguage",
+  "description": "Defines the language to use while localizing the application display. Since regions have variations in a language, it may contain a region specifier, e.g. \"fr_CA\".\n\nThis does not impact the device language. All the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Language": {
+      "type": "string",
+      "description": "The language code to be set.\n\nExamples: \"en\", \"de\", \"fr_CA\", \"zh_HK\""
+    },
+    "_Type": {
+      "const": "Action.Type.SetLanguage"
+    }
+  },
+  "required": [
+    "Language",
+    "_Type"
+  ],
+  "type": "object"
+}

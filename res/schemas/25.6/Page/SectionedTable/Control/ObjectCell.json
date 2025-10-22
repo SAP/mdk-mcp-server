@@ -1,0 +1,265 @@
+{
+  "$id": "Page/SectionedTable/Control/ObjectCell",
+  "title": "ObjectCell",
+  "properties": {
+    "Visible": {
+        "type": "boolean",
+        "default": true,
+        "description": "Only valid for static section, will be ignored in dynamic sections and List pickers."
+    },
+    "AccessoryButtonIcon": {
+        "$ref": "definitions/Image",
+        "type": "string",
+        "description": "Optional accessory button icon to be displayed in the cell. `AccessoryButtonIcon` would override the values defined on `AccessoryButtonText`, `AccessoryType` and `ProgressIndicator`."
+    },
+    "AccessoryButtonText": {
+        "type": "string",
+        "description": "iOS and Web only. Optional accessory text button to be displayed in the cell. Maximum length for the value is 10 characters. `AccessoryButtonText` would override the values defined on `AccessoryType` and `ProgressIndicator`."
+    },
+    "AccessoryType": {
+        "enum": [
+            {
+                "const": "Checkmark",
+                "description": "A checkmark icon."
+            },
+            {
+                "const": "DetailButton",
+                "description": "An information icon."
+            },
+            {
+                "const": "DetailDisclosureButton",
+                "description": "An information icon and a disclosure (chevron) control on iOS and web. An information icon only on Android."
+            },
+            {
+                "const": "DisclosureIndicator",
+                "description": "A chevron-shaped control for presenting new content on iOS and web. Display as blank on Android."
+            },
+            {
+                "const": "None",
+                "description": "No accessory view."
+            }
+        ],
+        "type": "string",
+        "description": "Optional accessory icon to be displayed in the cell. If both `AccessoryType` and `ProgressIndicator` are set, only the `ProgressIndicator` is shown."
+    },
+    "ProgressIndicator": {
+        "description": "Shows progress indicator icon in the cell. If both `AccessoryType` and `ProgressIndicator` are set, only the `ProgressIndicator` is shown. It is not supported when being used in ObjectCollection.",
+        "enum": [
+            "InProgress",
+            "ToDownload",
+            "Open"
+        ],
+        "type": "string"
+    },
+    "DetailImage": {
+        "description": "This property is deprecated, use `Image` property of `Avatar` in `AvatarStack`. Image to be displayed in the cell.",
+        "$ref": "definitions/Image"
+    },
+    "DetailImageIsCircular": {
+        "type": "boolean",
+        "default": false,
+        "description": "This property is deprecated, use `ImageIsCircular` property of `Avatar` in `AvatarStack`. If the value is true, the image is displayed in a circular shape."
+    },
+    "DetailImageText": {
+        "description": "This property is deprecated, use `ImageText` property of `Avatar` in `AvatarStack`. Text to be shown in image container when detail image is not present",
+        "type": "string"
+    },
+    "Description": {
+        "description": "Would not be displayed if control is rendered within FlexibleColumnLayout (except for last column). Specifically, in regular mode on iOS (iPhone in landscape, or iPad), it will not be displayed if Larger Accessibility Sizes are used.",
+        "type": "string"
+    },
+    "DisplayDescriptionInMobile": {
+        "description": "If the value is true, description will be displayed on mobile.",
+        "default": true,
+        "type": "boolean"
+    },
+    "Footnote": {
+        "description": "Text of footnote, which is initially hidden. Setting a non-empty string would no longer hide the label.",
+        "type": "string"
+    },
+    "Icons": {
+        "description": "Array of images to be rendered in Icons Stack. Each icon/image size is set to be 16px by 16px. Count of visible images is limited to the count of active labels in the main stack.",
+        "items": {
+            "$ref": "definitions/Image"
+        },
+        "type": "array"
+    },
+    "HorizontalIcons": {
+        "description": "Array of images to be rendered in a horizontal icons row under substatus. Each icon/image size is set to be 16px by 16px. Maximum number of images is 4.",
+        "items": {
+            "$ref": "definitions/Image"
+        },
+        "type": "array"
+    },
+    "OnPress": {
+        "$ref": "definitions/ActionOrRule",
+        "description": "Action/Rule to be triggered when the object cell is pressed."
+    },
+    "OnAccessoryButtonPress": {
+        "description": "Action or rule to be performed when an accessory button is pressed, i.e. `AccessoryType` (`DetailButton` or `DetailDisclosureButton`), `ProgressIndicator`, `AccessoryButtonIcon` or `AccessoryButtonText`.",
+        "$ref": "definitions/ActionOrRule"
+    },        
+    "PreserveIconStackSpacing": {
+        "description": "When it’s set to true, spacing is preserved for iconStack even when there’s no icons/images added to the icon stack.",
+        "type": "boolean",
+        "default": true
+    },
+    "StatusImage": {
+        "description": "A status image displayed in the status view.",
+        "$ref": "definitions/Image"
+    },
+    "StatusText": {
+        "description": "A status label displayed in the status view. Would not be displayed if control is rendered within FlexibleColumnLayout (except for last column), use `StatusImage` instead.",
+        "type": "string"
+    },
+    "Styles": {
+        "description": "A style to be applied on the title",
+        "properties": {
+            "Description": {
+                "type": "string",
+                "$ref": "Styles/TextPaintClass",
+                "description": "The string value is a style class name of `Description`. It is supported only for Android, if it is used in ObjectCollection."
+            },
+            "Footnote": {
+                "type": "string",
+                "$ref": "Styles/TextPaintClass",
+                "description": "The string value is a style class name of `Footnote`."
+            },
+            "StatusText": {
+                "type": "string",
+                "$ref": "Styles/ValueClass",
+                "description": "The string value is a style class name of `StatusText`."
+            },
+            "Subhead": {
+                "type": "string",
+                "$ref": "Styles/TextPaintClass",
+                "description": "The string value is a style class name of `Subhead`."
+            },
+            "SubstatusText": {
+                "type": "string",
+                "$ref": "Styles/ValueClass",
+                "description": "The string value is a style class name of `SubstatusText`."
+            },
+            "Title": {
+                "type": "string",
+                "$ref": "Styles/TextPaintClass",
+                "description": "The string value is a style class name of `Title`."
+            },
+            "DetailImage": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `DetailImage`."
+            },
+            "DetailImageText": {
+                "type": "string",
+                "$ref": "Styles/AvatarClass",
+                "description": "The string value is a style class name of `DetailImageText`. Supported CSS properties are color and background-color."
+            },
+            "StatusImage": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `StatusImage`."
+            },
+            "SubstatusImage": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `SubstatusImage`."
+            },
+            "AccessoryButtonIcon": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `AccessoryButtonIcon`."
+            },
+            "Icons": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `Icons`."
+            },
+            "HorizontalIcons": {
+                "type": "string",
+                "$ref": "Styles/ImageClass",
+                "description": "The string value is a style class name of `HorizontalIcons`."
+            },
+            "BackgroundColor": {
+                "type": "string",
+                "$ref": "Styles/BackgroundClass",
+                "description": "The string value is a style class name of `BackgroundColor`."
+            }
+        },
+        "type": "object"
+    },
+    "Subhead": {
+        "description": "A sub-header label in the main view.",
+        "type": "string"
+    },
+    "SubstatusImage": {
+        "description": "A substatus image displayed below status view.",
+        "$ref": "definitions/Image"
+    },
+    "SubstatusText": {
+        "description": "A substatus label displayed below status view. Would not be displayed if control is rendered within FlexibleColumnLayout (except for last column), use `SubStatusImage` instead.",
+        "type": "string"
+    },
+    "Title": {
+        "type": "string",
+        "description": "Title text to be displayed on the cell"
+    },
+    "Tags": {
+        "description": "An array of tags related to object cell to be displayed below footnote.",
+        "items": {
+            "properties": {
+                "Text":{
+                    "type": "string",
+                    "description": "The text to be displayed in the tag"
+                },
+                "Color": {
+                    "enum": [
+                        "Red",
+                        "Blue",
+                        "Green",
+                        "Pink",
+                        "Indigo",
+                        "Mango",
+                        "Teal",
+                        "Grey"
+                    ],
+                    "type": "string",
+                    "description": "Only these 8 colors are available for tags. By default if no color is defined, tag color will be grey."
+                }
+            },
+            "required": ["Text"],
+            "type": "object"
+        },
+        "type": "array"
+    },
+    "ContextMenu": {
+      "$ref": "definitions/ContextMenu",
+      "description": "Define the contextmenu for the Object Cell. This item is only applicable for the dynamic ObjectTable."
+    },
+    "Selected": {
+        "type": "boolean",
+        "default": false,
+        "description": "The cell will be automatically selected when the list has been switched to Mulitple Selection Mode. More information please refer to `Selection` property of the ObjectTable."
+    },
+    "AvatarStack": {
+        "$ref": "Page/SectionedTable/Control/AvatarStack",
+        "description": "AvatarStack contains avatars to be displayed at the image portion on the left hand side of the object cell. Either 1 or 2 avatar(s) will be rendered.\n\n1 Avatar is displayed in AvatarStack if array contain 1 avatar. 2 Avatars are displayed if array has more than 2 avatars. (Double Avatar display is not supported on web).\n\nProperties can be defined and applied to the displayed avatars in the stack."
+    },
+    "AvatarGrid": {
+        "$ref": "Page/SectionedTable/Control/AvatarGrid",
+        "description": "AvatarGrid contains avatars to be displayed below tags.\n\nProperties can be defined and applied to all the displayed avatars in the grid."
+    },
+    "_Type": {
+        "enum": [
+            "ObjectTable.Type.ObjectCell",
+            "ObjectCollection.Type.ObjectCell"
+        ],
+        "type": "string",
+        "description": "The types supported for ObjectCell"
+    },
+    "_Name": {
+        "type": "string"
+    }
+  },
+  "type": "object"
+}

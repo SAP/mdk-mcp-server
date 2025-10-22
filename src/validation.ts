@@ -351,6 +351,11 @@ export function validateToolArguments(
     case "mdk-search-documentation":
       validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
       validatedArgs.N = ValidationSchemas.resultCount.parse(args.N || 5);
+      if (args.folderRootPath) {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
+      }
       break;
 
     case "mdk-get-component-documentation":
@@ -358,6 +363,11 @@ export function validateToolArguments(
       validatedArgs.component_name = ValidationSchemas.componentName.parse(
         args.component_name
       );
+      if (args.folderRootPath) {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
+      }
       break;
 
     case "mdk-get-property-documentation":
@@ -367,6 +377,11 @@ export function validateToolArguments(
       validatedArgs.property_name = ValidationSchemas.propertyName.parse(
         args.property_name
       );
+      if (args.folderRootPath) {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
+      }
       break;
 
     default:

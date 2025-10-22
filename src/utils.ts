@@ -553,3 +553,55 @@ export function getServiceDataWithFallback(
     return null;
   }
 }
+
+/**
+ * Get server configuration from package.json
+ * @returns MDK server configuration object with defaults
+ */
+export function getServerConfig(): {
+  schemaVersion: string;
+} {
+  try {
+    const packageJsonPath = path.join(projectRoot, "package.json");
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+
+    // Return configuration from package.json or defaults
+    return packageJson.mdkConfig;
+  } catch (error) {
+    console.error(
+      "Error reading server configuration from package.json:",
+      error
+    );
+    // Return default configuration on error
+    return {
+      schemaVersion: "25.9",
+    };
+  }
+}
+
+/**
+ * Get schema version from _SchemaVersion property in Application.app file
+ * @param projectPath - The path of the project root folder
+ * @returns Schema version as string, uses server default if not found
+ */
+export function getSchemaVersion(projectPath: string): string {
+  try {
+    const applicationAppPath = path.join(projectPath, "Application.app");
+
+    if (fs.existsSync(applicationAppPath)) {
+      const applicationContent = fs.readFileSync(applicationAppPath, "utf-8");
+      const applicationConfig = JSON.parse(applicationContent);
+
+      // Check if _SchemaVersion property exists
+      if (applicationConfig._SchemaVersion) {
+        return applicationConfig._SchemaVersion as string;
+      }
+    }
+
+    return "25.9";
+  } catch (error) {
+    console.error("Error reading schema version from Application.app:", error);
+    // Return server default value on error
+    return "25.9";
+  }
+}

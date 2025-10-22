@@ -1,0 +1,105 @@
+{
+  "$id": "Page/SectionedTable/Container/GridTable",
+  "title": "GridTable",
+  "description": "Grid Table is a table view container in which labeled columns in a grid are used to present numbers, text, or even images in rows in a tabular format. Grid Table will automatically convert to an Object Table when displaying on a phone due to space constraints. Note: Grid Table does not support static content, `Target` binding must be used to populate the table rows.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Visibility of the Grid Table"
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "Row": {
+      "type": "object",
+      "properties": {
+        "AccessoryType": {
+          "enum": [
+            {
+                "const": "Checkmark",
+                "description": "A checkmark icon."
+            },
+            {
+                "const": "DetailButton",
+                "description": "An information icon."
+            },
+            {
+                "const": "DetailDisclosureButton",
+                "description": "An information icon and a disclosure (chevron) control on iOS and web. An information icon only on Android."
+            },
+            {
+                "const": "DisclosureIndicator",
+                "description": "A chevron-shaped control for presenting new content on iOS and web. Display as blank on Android."
+            },
+            {
+                "const": "None",
+                "description": "No accessory view."
+            }
+          ],
+          "type": "string",
+          "description": "Optional accessory icon to be displayed in the cell. If both `AccessoryType` and `ProgressIndicator` are set, only the `ProgressIndicator` is shown."
+        },
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "definitions/GridRowItem"
+          },
+          "description": "Array of GridRowItem that represent columns in the grid row"
+        },
+        "Layout": {
+          "$ref": "definitions/GridLayout",
+          "description": "The layout of columns in a Grid Table row.\n\nIf no `Layout` is specified, the space will be divided evenly among the row items.\n\nIf no `Layout` is specified for this section's `Header`, this one will be used for the header."
+        },
+        "OnPress": {
+          "$ref": "definitions/ActionOrRule",
+          "description": "Event triggered when the grid row is pressed"
+        },
+        "OnAccessoryButtonPress": {
+          "$ref": "definitions/ActionOrRule",
+          "description": "In iOS, it is only triggered by pressing the 'detail button' if `AccessoryType` is set to detailButton or detailDisclosureButton. In Android, it is triggered for any `AccessoryType`."
+        }
+      }
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the Grid Table."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "The binding target for the Grid Table. For each entry in the result of the binding, a grid row will be generated based on the Row configuration."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Type": {
+      "const": "Section.Type.GridTable"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+      "_Type",
+      "Row",
+      "Target"
+    ], 
+  "type": "object"
+}

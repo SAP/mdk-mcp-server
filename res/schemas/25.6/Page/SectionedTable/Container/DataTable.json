@@ -1,0 +1,95 @@
+{
+  "$id": "Page/SectionedTable/Container/DataTable",
+  "title": "DataTable",
+  "description": "A Data Table is a range of labeled columns and rows used to present numbers, text or even images. Generally, it is a grid layout of columns and rows. Data Table control is supported on mobile platform only. By default it scrolls horizontally and diagonally.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Visibility of the Data Table."
+    },
+    "StickyColumn":{
+      "type": "boolean",
+      "description": "Allows the first column to stick in place, even when the Data Table is scrolled horizontally."
+    },
+    "EditMode": {
+      "type": "string",
+      "description": "Set edit mode for the section.\n\nEditable Data Table supports the inline EditMode using Simple Property, List Picker, Duration Picker, Time Picker and Date Picker Form Cell controls.\n\nIn addition to defining the metadata for the editable data table, developers also need to add buttons on the page with the necessary rules using the APIs ([DataTableProxy](https://help.sap.com/doc/3642933ef2e1478fb1578ef2acba4ae9/Latest/en-US/reference/apidoc/classes/datatableproxy.html), ([DataTableRowProxy](https://help.sap.com/doc/3642933ef2e1478fb1578ef2acba4ae9/Latest/en-US/reference/apidoc/classes/datatablerowproxy.html), [DataTableCellProxy](https://help.sap.com/doc/3642933ef2e1478fb1578ef2acba4ae9/Latest/en-US/reference/apidoc/classes/datatablecellproxy.html) , [DataTableListPickerCellProxy](https://help.sap.com/doc/3642933ef2e1478fb1578ef2acba4ae9/Latest/en-US/reference/apidoc/classes/datatablelistpickercellproxy.html)) to, at a minimum, provide a save option to get the changes and save the changes to the backend service. Additional buttons can also be added to switch between display only and edit mode for the data table.",
+      "enum": [
+        "None",
+        "Inline"
+      ],
+      "default": "None"
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section. `Header` is a must in Android while data can be viewed without `Header` in iOS."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "Row": {
+      "type": "object",
+      "properties": {
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "definitions/DataTableColumn"
+          },
+          "description": "Array of data items that represent columns in a data Table."
+        },
+        "Layout": {
+          "$ref": "definitions/DataTableLayout",
+          "description": "The layout of columns in a Data Table row."
+        },
+        "OnPress": {
+          "$ref": "definitions/ActionOrRule",
+          "description": "Event triggered when the Data Table row is pressed."
+        },
+        "_Name": {
+          "type": "string"
+        },
+        "_Type": {
+          "const": "DataTable.Type.Row"
+        }
+      }
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list while loading next page of data, and page size for fetching the data.\n Paging is currently not supported in iOS platform, user needs to specify the entire data as the page size.\n Paging is supported in Android platform when DataTable is the only section in SectionedTable. Loading indicator is not supported in Android platform."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the DataTable. If more than one searchable section is provided in the SectionedTable, then the search definition from the first searchable section is used in defining the search bar behavior in the SectionedTable. If there is a `Search` object defined with `Enabled` set to true, search will be enabled. In iOS, when an DataTable is used alongside a header control (KPIHeader/ProfileHeader/ObjectHeader), search bar is not enabled."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "The binding target for the Data Table. For each entry in the result of the binding, a Data Table row will be generated based on the Row configuration."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Type": {
+      "const": "Section.Type.DataTable"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+      "_Type",
+      "Row",
+      "Target",
+      "Header"
+    ], 
+  "type": "object"
+}
