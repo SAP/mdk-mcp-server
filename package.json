@@ -60,6 +60,6 @@
     "tough-cookie": "^5.0.0"
   },
   "mdkConfig": {
-    "schemaVersion": "25.6"
+    "schemaVersion": "25.9"
   }
 }
