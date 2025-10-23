@@ -249,7 +249,7 @@ export function validateToolArguments(toolName, args) {
         case "mdk-show-qrcode":
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             break;
-        case "mdk-project-operation":
+        case "mdk-manage":
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             validatedArgs.operation = ValidationSchemas.operation.parse(args.operation);
             break;

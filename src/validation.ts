@@ -339,7 +339,7 @@ export function validateToolArguments(
       );
       break;
 
-    case "mdk-project-operation":
+    case "mdk-manage":
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );

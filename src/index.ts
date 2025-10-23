@@ -252,7 +252,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "mdk-project-operation",
+        name: "mdk-manage",
         description:
           "Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.",
         inputSchema: {
@@ -793,11 +793,11 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-project-operation": {
+    case "mdk-manage": {
       try {
         // Validate all arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-project-operation",
+          "mdk-manage",
           request.params.arguments || {}
         );
 
