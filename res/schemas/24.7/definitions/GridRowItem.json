@@ -1,0 +1,109 @@
+{
+  "$id": "definitions/GridRowItem",
+  "title": "GridRowItem",
+  "properties": {
+    "Image": {
+      "$ref": "definitions/Image"
+    },
+    "ImageSizeAffectsRowHeight": {
+      "type": "boolean",
+      "description": "Sets whether the image size will affect the GridRow's height. This property is only supported in iOS. On Android, the image size is preset within a 40dp frame which does not affect the row height. On Web, the image size will always affect the row height."
+    },
+    "LineBreakMode": {
+      "enum": [
+        {
+          "const": "WordWrapping",
+          "description": "The value that indicates wrapping occurs at word boundaries, unless the word doesn't fit on a single line."
+        },
+        {
+          "const": "CharWrapping",
+          "description": "The value that indicates wrapping occurs before the first character that doesn't fit."
+        },
+        {
+          "const": "Clipping",
+          "description": "The value that indicates lines don’t extend past the edge of the text container."
+        },
+        {
+          "const": "TruncatingHead",
+          "description": "The value that indicates that a line displays so that the end fits in the container and an ellipsis glyph indicates the missing text at the beginning of the line."
+        },
+        {
+          "const": "TruncatingTail",
+          "description": "The value that indicates a line displays so that the beginning fits in the container and an ellipsis glyph indicates the missing text at the end of the line."
+        },
+        {
+          "const": "TruncatingMiddle",
+          "description": "The value that indicates that a line displays so that the beginning and end fit in the container and an ellipsis glyph indicates the missing text in the middle."
+        }
+      ],
+      "type": "string",
+      "default": "WordWrapping"
+    },
+    "NumberOfLines": {
+      "type": "integer"
+    },
+    "Style": {
+      "description": "The string value is a [style class name of `Text`](../Styles/TextClass.style.md) or a [style class name of `Image`](../Styles/ImageClass.style.md).",
+      "type": "string"
+    },
+    "Text": {
+      "type": "string"
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center"
+    },
+    "BindTo": {
+      "enum": [
+        {
+          "const": "StatusImage",
+          "description": "This GridRowItem's `Image` is used as an ObjectCell or ObjectHeader's `StatusImage`."
+        },
+        {
+          "const": "SubstatusImage",
+          "description": "This GridRowItem's `Image` is used as an ObjectCell or ObjectHeader's `SubstatusImage`."
+        },
+        {
+          "const": "DetailImage",
+          "description": "This GridRowItem's `Image` is used as an ObjectCell or ObjectHeader's `DetailImage`."
+        },
+        {
+          "const": "FirstIcon",
+          "description": "This GridRowItem's `Image` is used as the first icon in an ObjectCell's `Icons`."
+        },
+        {
+          "const": "SecondIcon",
+          "description": "This GridRowItem's `Image` is used as the second icon in an ObjectCell's `Icons`."
+        },
+        {
+          "const": "ThirdIcon",
+          "description": "This GridRowItem's `Image` is used as the third icon in an ObjectCell's `Icons`."
+        },
+        {
+          "const": "Headline",
+          "description": "This GridRowItem's `Text` is used as an ObjectHeader or ObjectHeader's `HeadlineText`."
+        },
+        {
+          "const": "Subheadline",
+          "description": "This GridRowItem's `Text` is used as an ObjectHeader's `Subhead`."
+        },
+        {
+          "const": "Footnote",
+          "description": "This GridRowItem's `Text` is used as an ObjectCell or ObjectHeader's `Footnote`."
+        },
+        {
+          "const": "Status",
+          "description": "This GridRowItem's `Text` is used as an ObjectCell's `Status` or an ObjectHeader's `StatusText`."
+        },
+        {
+          "const": "Substatus",
+          "description": "This GridRowItem's `Text` is used for an ObjectCell or ObjectHeader's `SubstatusText`."
+        }
+      ],
+      "type": "string",
+      "description": "The property name of an [ObjectCell](../Page/SectionedTable/Control/ObjectCell.schema.md) or [ObjectHeader](../Page/SectionedTable/Container/ObjectHeader.schema.md) to which this GridRowItem is bound."
+    }
+  },
+  "type": "object"
+}

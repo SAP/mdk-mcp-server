@@ -1,0 +1,36 @@
+{
+  "$id": "definitions/CardCollectionLayout",
+  "title": "CardCollectionLayout",
+    "type": "object",
+    "description": "Layout properties for a collection view used in CardCollection section.",
+    "properties": {
+      "LayoutType": {
+        "type": "string",
+        "enum": [
+          {
+            "const": "HorizontalScroll",
+            "description": "Display the cards in horizontally scrollable list."
+          },
+          {
+            "const": "Vertical",
+            "description": "Display the cards in vertical list."
+          },
+          {
+            "const": "Masonry",
+            "description": "Display the cards in grid-like structure with flexible arrangement with each card adapting to the available space while maintaining alignment with adjacent cards."
+          }
+        ],
+        "default": "Vertical"
+      },
+      "UseSameHeight": {
+        "type": "boolean",
+        "default": false,
+        "description": "To apply same height for all cards based on the tallest visible card. Only applicable for `HorizontalScroll` layout type."
+      },
+      "NumberOfColumns": {
+        "type": "integer",
+        "description": "The number of columns to be displayed.\n\n* In iOS, this default value is set to 2 in portrait and 3 in landscape in regular mode (iPad). In compact mode (iPhone), the default value is set to 1 column. \n* In Android, when current screen width is larger than 600dp and screen height is larger than 480dp, the default value is set to 2 in portrait mode and 3 in landscape mode. Otherwise, the default value will be set to 1 column. \n\n Only applicable for `Masonry` layout type.",
+        "default": 2
+      }
+    }
+  }

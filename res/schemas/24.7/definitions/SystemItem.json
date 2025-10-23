@@ -1,0 +1,41 @@
+{
+  "$id": "definitions/SystemItem",
+  "title": "SystemItem",
+  "description": "SystemItem can be used on ActionBar and ToolBar.\n\nSpecifically for Android, ActionBar will render the SystemItem with black icon due to the default white background, while ToolBar will render the SystemItem with blue icon due to the white background.\n\nAdditional platform specific System Item codes:\n* Android - [drawable](https://developer.android.com/reference/android/R.drawable) and [Material Icons] (https://fonts.google.com/icons)\n* iOS - [SAP Fiori for iOS Icons](https://experience.sap.com/fiori-design-ios/article/iconography/#sap-fiori-for-ios-icons) and [SF Symbols](https://developer.apple.com/sf-symbols/).\n\nNotes:\n* When using platform specific system item code, it will only be rendered for specific platform, and for other unsupported platform it will fallback to use image/caption.\n* For SF Symbols, the symbol is corresponding to iOS version, so please check to ensure the symbol exists in all iOS versions that the app supported.",
+  "anyOf":[
+    {
+      "enum": [
+        "Action",
+        "Add",
+        "Bookmarks",
+        "Camera",
+        "Cancel",
+        "Compose",
+        "Done",
+        "Edit",
+        "FastForward",
+        "Organize",
+        "Pause",
+        "Play",
+        "Redo",
+        "Refresh",
+        "Reply",
+        "Rewind",
+        "Save",
+        "Search",
+        "Stop",
+        "Trash",
+        "Undo"
+      ],
+      "type": "string"
+    },
+    {
+      "enum": [
+        "FixedSpace",
+        "FlexibleSpace"
+      ],
+      "description": "Supported in iOS devices only. On Android devices, these values are ignored unless `Width`, `Image` or `Caption` is set, in which case the fallback image or caption are rendered.",
+      "type": "string"
+    }
+  ]
+}

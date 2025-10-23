@@ -1,0 +1,81 @@
+{
+  "$id": "Page/TabControl/Tabs/Tabs",
+  "title": "Tabs",
+  "properties": {
+    "Items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "Page/TabControl/TabItem"
+          },
+          "description": "List of tab items defined for the tab control."
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Return result in TabItemArray format. Rule will not be triggered again when Tabs redraw."
+        }
+      ]
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `TabStrip`.",
+      "properties": {
+        "TabStrip": {
+          "type": "string",
+          "$ref": "Styles/TabStripClass",
+          "description": "The string value is a style class name of `TabStrip`. TabStrip style has specific CSS properties such as `selected-item-color` (for active tab item), `un-selected-item-color` (for inactive tab items) and `highlight-color` (for highlight line of active tab item on Tabs only)."
+        },
+        "TabItemImage": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for image in TabItem."
+        }
+      }
+    },
+    "Position": {
+      "type": "string",
+      "enum": [
+        "Top",
+        "Bottom"
+      ]
+    },
+    "SwipeEnabled": {
+      "type": "boolean",
+      "description": "Enables swipe gesture to switch between tabs."
+    },
+    "TabStripType": {
+      "type": "string",
+      "enum": [
+        {
+          "const": "Normal",
+          "description": "The default tab strip used in tabs."
+        },
+        {
+          "const": "Segmented",
+          "description": "Use segment control as tab strip. All tabs will be shown on the page, it is not scrollable, and the tab text may possibly be truncated. It will use the full width of the screen, and each tab will be divided into equal portions based on the number of tabs. Image in tab item will be ignored. (iOS only, this property will be ignored for Android and web platforms, and Tabs appear as \"Normal\" type)."
+        }
+      ],
+      "default": "Normal",
+      "description": "The tab strip types of the tabs."
+    },
+    "PreloadTabs": {
+      "description": "Array of tab indices which needs to be preloaded. Tab indexes starts from 0. Specifying [-1] will preload all the tabs. User can also use a rule to specify tabs that needs to be preloaded.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.Tabs"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object",
+  "description": "This control renders a list of tab items along with content for each tab.\n\nThe control will always render as a full screen control taking over the entire space of the page.\n\nTabs is mainly used for organizing or allow navigation between group of content that are related and at the same level of hierarchy. Each tab page should contain content that is distinct from other tab pages in a set. Tabs is used to create sort of pager to browse between items that have the same context.\n\nTabs can support unlimited tab items. Tabs supports positioning of the tab bar (Top/Bottom), and Swipe gesture to switch between tab pages.\n\nThe tab pages of the Tabs would preserve its last state once the tab page is loaded, so that when user switch to another tab item and switch back to the previous tab item, they return to the last screen viewed.\n\nTabs does not support inner navigation (navigation on tab page level), any navigation action triggered from the tab page content would result in a navigation on the parent page level or similar to outer navigation on BottomNavigation.\n\nParent Page with Tabs may have Toolbar control defined on the same page.\nTabs has nested Tabs support. It is not recommended to display BottomNavigation as nested control of Tabs."
+}

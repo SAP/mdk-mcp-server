@@ -1,0 +1,13 @@
+{
+  "$id": "definitions/EditorSetting",
+  "title": "EditorSetting",
+  "properties": {
+    "ReferenceApplications": {
+      "items": {
+        "$ref": "definitions/ReferenceApplication"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}

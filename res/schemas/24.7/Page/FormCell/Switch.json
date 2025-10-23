@@ -1,0 +1,71 @@
+{
+  "$id": "Page.FormCell.Switch",
+  "title": "Switch",
+  "description": "The switch control is used to toggle two mutually exclusive states, On and Off.",
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The key name of the property"
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disables or enables interaction",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed"
+    },
+    "Value": {
+      "type": "boolean",
+      "description": "Set the switch in on/off mode",
+      "default": false
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Switch` and `Caption`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Switch": {
+          "type": "string",
+          "$ref": "Styles/SwitchClass",
+          "description": "The string value is a style class name of `Switch`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Switch"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$id": "Action.Type.OpenDocument",
+  "title": "OpenDocument",
+  "description": "Enable the app user to open a file at a specified location with a selected third party application.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Path": {
+      "description": "Path to the location of the file. Value can be: Prefixed with res:// (file is embedded in the main bundle); A full path (file is located in the application's sandbox system); Https url (http not supported)",
+      "type": "string"
+    },
+    "MimeType": {
+      "description": "Specify the MIME type of the target document, only needed when opening document via OData Media direct binding on OData Service that doesn't support media content type annotation (@odata.mediaContentType).\n\nFor more information, see [this](http://docs.oasis-open.org/odata/odata-json-format/v4.0/cs01/odata-json-format-v4.0-cs01.html#_Toc365464709). This value is required if the value of media content type annotation is not a valid Mime Type.\n\nThe file extension is determined based on the MIME type to create a local temporary file for iOS and Android. For Android, the MIME types must be supported by the apps installed on the device. The system will launch the appropriate application to view the content based on the MIME type. For iOS, the QLPreviewController is used to view documents, and the file extension determines how QLPreviewController displays the document. For Web, this is not required.",
+      "type": "string",
+      "default": "image/jpeg"
+    },
+    "_Type": {
+      "const": "Action.Type.OpenDocument"
+    }
+  },
+  "required": [
+    "Path",
+    "_Type"
+  ],
+  "type": "object"
+}

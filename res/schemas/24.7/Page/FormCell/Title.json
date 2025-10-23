@@ -1,0 +1,79 @@
+{
+  "$id": "Page/FormCell/Title",
+  "title": "Title",
+  "description": "This is a single-line text entry control.",
+  "properties": {
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Indicates if the cell’s value may be modified.",
+      "default": true
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Android Only. Disables or enables interaction.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "PlaceHolder": {
+      "type": "string",
+      "description": "Placeholder text to display if value is empty."
+    },
+    "Value": {
+      "type": "string",
+      "description": "Text to display"
+    },
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "description": "Apply rule on Formcell."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueInputClass",
+          "description": "The string value is a style class name of `Value`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Title"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Value"
+  ]
+}

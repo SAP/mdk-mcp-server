@@ -1,0 +1,28 @@
+{
+  "$id": "Action.Type.Filter",
+  "title": "Filter",
+  "description": "A filter action can help users narrow down the items displayed in a collection control.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action. \n\nSupported only on ObjectTable, ObjectCollection, ContactCell, Data Table, Grid Table and ExtensionCollection",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Filterable": {
+      "description": "Targetpath to the filterable control.",
+      "type": "string"
+    },
+    "ModalPageFullscreen": {
+      "description": "How to display the filter options modal page. By design on iPhone, a modal page appears only in fullscreen.",
+      "default": false,
+      "type": "boolean"
+    },
+    "PageToOpen": {
+      "description": "The model filter options page.",
+      "$ref": "definitions/Page"
+    },
+    "_Type": {
+      "const": "Action.Type.Filter"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

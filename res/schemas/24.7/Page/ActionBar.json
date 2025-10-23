@@ -1,0 +1,18 @@
+{
+  "$id": "Page/ActionBar",
+  "title": "ActionBar",
+  "description": "ActionBar is the navigation bar that appear at the top of a page. Action items can be added to the action bar to execute actions on the context of the page. Back navigation button will be automatically added to the action bar when navigation occurred.",
+  "properties": {
+    "Items": {
+      "items": {
+        "$ref": "Page/ActionBarItem"
+      },
+      "type": "array",
+      "description": "Each item represents a button displayed in the navigation bar."
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

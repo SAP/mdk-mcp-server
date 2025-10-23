@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.Download",
+  "title": "OfflineOData Download",
+  "description": "OfflineOData Download action is used to perform delta download of data from the backend and update the local offline store.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "DefiningRequests": {
+      "items": {
+        "$ref": "definitions/DefiningRequest"
+      },
+      "type": "array",
+      "description": "List of defining requests. A defining request is an OData read request that the Offline OData will use to retrieves data from the target OData Service and populate in the local offline database"
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.Download"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

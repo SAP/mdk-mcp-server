@@ -1,0 +1,42 @@
+{
+  "$id": "definitions/Target",
+  "title": "Target",
+  "description": "This document describes the metadata properties available to read an OData EntitySet. A Target entity can be used in many parts of a MDK application to specify an entity set to be retrieved. For example, a Target may define a query that is used to populate a list of items, or to provide the binding for a section inside a SectionedTable control. Either ReadLink or QueryOptions is required.",
+  "properties": {
+    "EntitySet": {
+      "description": "EntitySet name to use for this update entity operation",
+      "type": "string"
+    },
+    "Service": {
+      "description": "The service to use for the update entity operation",
+      "$ref": "definitions/Service"
+    },
+    "UniqueIdType": {
+      "description": "This property is deprecated. Specifies the type of the Unique Id.",
+      "enum": ["Integer", "String"],
+      "type": "string"
+    },
+    "QueryOptions": {
+      "type": "string",
+      "description": "String with query options like filter or Orderby to use to identify the entity. MUST resolve to a unique entity. Can't use together with ReadLink or EditLink."
+    },
+    "ReadLink": {
+      "type": "string",
+      "description": "Entity's Read Link. This is the entity ID path that uniquely identify the entity e.g. `Product(10235)`. This property can't be used together with QueryOptions or EditLink."
+    },
+    "EditLink": {
+      "type": "string",
+      "description": "Entity's Edit Link. This is the entity ID path that uniquely identify the entity for editing e.g. `Product(10235)`. Currently, only `Action.Type.OfflineOData.UndoPendingChanges` support this property. This property can't be used together with QueryOptions or ReadLink."
+    },
+    "ServerSidePaging": {
+      "type": "boolean",
+      "description": "A property to specify if the Target service supports pagination via skipToken. If this property is set to true, then QueryOptions should not contain 'skip' and 'top' for pagination to work.",
+      "default": false
+    }
+  },
+  "required": [
+    "EntitySet",
+    "Service"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,71 @@
+{
+  "$id": "Page/SectionedTable/Container/Extension",
+  "title": "Extension",
+  "description": "Extension can be added to a section of a SectionedTable. It allows custom extension to be rendered in that section.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Visibility of the extension"
+    },
+    "Height": {
+      "type": "integer",
+      "description": "Height of the extension (pt in iOS / dp in Android)"
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Binding target for this extension. The result of this binding will be stored in the form of an Observable array and it can be accessed in the extension class via `context.binding` property of the base class, e.g. `this.context.binding`."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Module": {
+      "type": "string",
+      "description": "The module's folder path under `/extensions/`, e.g. `MyExtModule` or `MyExtLibrary/MyExtModule`. Not required if Extension does not implement TS code under `/extensions/controls`."
+    },
+    "Control": {
+      "type": "string",
+      "description": "The name of the file under the `controls` folder in your module. e.g. MyExtension, if your file name is `/extensions/controls/MyExtension.ts`. If not specified, module name would be used as the value for this property."
+    },
+    "Class": {
+      "type": "string",
+      "description": "The name of the exported class in the module control that is to be used for the extension."
+    },
+    "ExtensionProperties": {
+      "type": "object",
+      "description": "Additional custom properties to be passed to the extension"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the extension is pressed"
+    },
+    "_Type": {
+      "const": "Section.Type.Extension"
+    },
+    "_Name": {
+      "type": "string",
+      "description": "UID to reference this control."
+    }
+  },
+  "required": [
+    "_Type",
+    "Class"
+  ],
+  "type": "object"
+}

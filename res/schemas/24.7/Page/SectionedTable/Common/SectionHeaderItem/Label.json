@@ -1,0 +1,44 @@
+{
+  "$id": "Page/SectionedTable/Common/SectionHeaderItem/Label",
+  "title": "Label",
+  "description": "A label to show the caption or title for the section header.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Position": {
+      "type": "string",
+      "enum": [ "Left", "Right" ],
+      "default": "Left",
+      "description": "Display position of the label in the section header."
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for label.",
+      "properties": {
+        "Label": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `Label`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "SectionHeaderItem.Type.Label"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Title"
+  ]
+}

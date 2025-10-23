@@ -1,0 +1,41 @@
+{
+  "$id": "definitions/MenuItem",
+  "title": "MenuItem",
+  "description": "`MenuItem` in the `MenuItem` of ContextMenu",
+  "properties": {
+    "_Name": {
+      "type": "string",
+      "description": "The unique name for the action button."
+    },
+    "Text": {
+      "type": "string",
+      "description": "The text displayed on the action button only on the iOS platform. It will be displayed when `Image` is defined and `Title`, `SubHead` and `Footnote` are defined for Object Cell."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The image to display in the action button."
+    },
+    "Style": {
+      "type": "string",
+      "description": "A style that will be applied to the action button. MDK supports `background-color` and `font-color` for icon."
+    },
+    "Mode": {
+      "type": "string",
+      "enum": [
+        "Normal",
+        "Deletion"
+      ],
+      "default": "Normal",
+      "description": "Constants indicating the style information that is applied to the action button. `Deletion` means an action that deletes data or performs some type of destructive task."
+    },
+    "OnSwipe": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the user selects the action"
+    }
+  },
+  "required": [
+    "_Name",
+    "Image"
+  ],
+  "type": "object"
+}

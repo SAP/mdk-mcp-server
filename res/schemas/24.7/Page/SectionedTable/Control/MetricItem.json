@@ -1,0 +1,22 @@
+{
+  "$id": "Page/SectionedTable/Control/MetricItem",
+  "title": "MetricItem",
+  "properties": {
+    "LeadingUnit": {
+      "type": "string",
+      "description": "On Android, this property is supported only when there is exactly 1 `MetricItem` in the `MetricItems` array."
+      
+    },
+    "Value": {
+      "type": "string",
+      "pattern": "^\\s*[+-]?(\\d*[.])?\\d+\\s*$|^[+-]?(\\d*[.])?\\d+\\s*/\\s*[+-]?(\\d*[.])?\\d+$"
+    },
+    "TrailingUnit": {
+      "type": "string"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

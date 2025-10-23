@@ -1,0 +1,28 @@
+{
+  "$id": "definitions/Search",
+  "title": "Search",
+  "description": "Search over all properties of the objects displayed in the section. Specifically for iOS, `Search` cannot be displayed if `Search` is defined in section within `SectionedTable` with 'ObjectHeader` as first section.",
+  "properties": {
+    "BarcodeScanner": {
+      "type": "boolean",
+      "description": "Enables the use of a barcode scanner in search."
+    },
+    "Delay": {
+      "type": "integer",
+      "description": "`Delay` represents the number of milliseconds to delay. As a user is adding or deleting characters in the search text entry field, it will be used to delay the execution of the search.\n\nIf `Delay` is set to zero or not defined then no delay will be used and the search will be executed as soon as the user enters the minimum character count.\n\nIf `Delay` is greater than zero, then the delay will be reset each time the user enters or deletes a character under the minimum character count."
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Enables search on the ListPicker."
+    },
+    "MinimumCharacterThreshold": {
+      "type": "number",
+      "description": "The `MinimumCharacterThreshold` is limited to a non-negative integer number and represents the minimum number of characters required before a search is executed.\n\nIf the `MinimumCharacterThreshold` is zero then every character will be searched.\n\nIf `MinimumCharacterThreshold` is greater than 0, a minimum of Y characters will be accepted in the search field before executing the search."
+    },
+    "Placeholder": {
+      "type": "string",
+      "description": "Placeholder text for the search field of the list picker when the field is empty."
+    }
+  },
+  "type": "object"
+}
