@@ -1,5 +1,21 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
+import {
+  search,
+  searchNames,
+  getDocuments,
+  printResults,
+  retrieveAndStore,
+} from "../../build/vector.js";
+import { getSchemaVersion, getServerConfig } from "../../build/utils.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory where this module is located, then go up to find project root
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, "../..");
 
 describe("index.ts - MCP Server", () => {
   describe("Tool Configuration Validation", () => {
@@ -11,25 +27,18 @@ describe("index.ts - MCP Server", () => {
         "mdk-gen-layout-page",
         "mdk-gen-entity",
         "mdk-gen-action",
-        "mdk-build",
-        "mdk-deploy",
-        "mdk-show-qrcode",
-        "mdk-validate",
-        "mdk-migrate",
-        "mdk-search-documentation",
-        "mdk-get-component-documentation",
-        "mdk-get-property-documentation",
-        "mdk-get-example",
+        "mdk-manage",
+        "mdk-documentation",
       ];
 
       // Verify we have the expected number of tools
-      assert.strictEqual(expectedTools.length, 15);
+      assert.strictEqual(expectedTools.length, 8);
 
       // Verify specific tools are included
       assert.ok(expectedTools.includes("mdk-gen-project"));
-      assert.ok(expectedTools.includes("mdk-search-documentation"));
-      assert.ok(expectedTools.includes("mdk-build"));
-      assert.ok(expectedTools.includes("mdk-deploy"));
+      assert.ok(expectedTools.includes("mdk-documentation"));
+      assert.ok(expectedTools.includes("mdk-manage"));
+      assert.ok(expectedTools.includes("mdk-gen-entity"));
     });
 
     test("should have correct template types for mdk-gen-project", _t => {
@@ -163,10 +172,7 @@ describe("index.ts - MCP Server", () => {
         "mdk-gen-databinding-page":
           "Generate a mdk action creating a new product.",
         "mdk-gen-layout-page": "Generate a mdk section page.",
-        "mdk-build": "Build current MDK project.",
-        "mdk-deploy": "Deploy current MDK project to the Mobile Services",
-        "mdk-validate": "Validate current MDK project.",
-        "mdk-migrate": "Migrate current MDK project.",
+        "mdk-manage": "Manage MDK project operations like build, deploy, validate.",
       };
 
       // Test that defaults are reasonable and not empty
@@ -185,8 +191,7 @@ describe("index.ts - MCP Server", () => {
       assert.ok(defaultPrompts["mdk-gen-project"].includes("customers"));
       assert.ok(defaultPrompts["mdk-gen-entity"].includes("products"));
       assert.ok(defaultPrompts["mdk-gen-i18n"].includes("Chinese"));
-      assert.ok(defaultPrompts["mdk-build"].includes("Build"));
-      assert.ok(defaultPrompts["mdk-deploy"].includes("Deploy"));
+      assert.ok(defaultPrompts["mdk-manage"].includes("build"));
     });
   });
 
@@ -650,6 +655,283 @@ describe("index.ts - MCP Server", () => {
       const result = extractProperty(invalidJson, "Title");
 
       assert.strictEqual(result, null);
+    });
+  });
+
+  describe("MDK Documentation Integration Tests", () => {
+    // Test server configuration
+    test("should get server configuration correctly", _t => {
+      const serverConfig = getServerConfig();
+      
+      assert.ok(serverConfig);
+      assert.ok(serverConfig.schemaVersion);
+      assert.ok(typeof serverConfig.schemaVersion === "string");
+      assert.ok(serverConfig.schemaVersion.match(/^\d+\.\d+$/)); // Format like "24.7", "25.6"
+    });
+
+    // Test document loading
+    test("should load MDK documentation files", _t => {
+      const serverConfig = getServerConfig();
+      const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+      
+      assert.ok(Array.isArray(filenameList));
+      assert.ok(Array.isArray(contentList));
+      assert.strictEqual(filenameList.length, contentList.length);
+      assert.ok(filenameList.length > 0, "Should load at least some documentation files");
+      
+      // Check that we have expected file types
+      const hasJsonFiles = filenameList.some(file => file.endsWith(".json"));
+      const hasSchemaFiles = filenameList.some(file => file.endsWith(".schema"));
+      const hasExampleFiles = filenameList.some(file => file.endsWith(".example.md"));
+      
+      assert.ok(hasJsonFiles || hasSchemaFiles, "Should have schema definition files");
+      assert.ok(hasExampleFiles, "Should have example files");
+    });
+
+    // Test search functionality
+    test("should perform semantic search on MDK documentation", async _t => {
+      const serverConfig = getServerConfig();
+      const schemaPath = path.join(projectRoot, "res/schemas");
+      
+      // Ensure embeddings exist for testing
+      const versionEmbeddingPath = path.join(
+        projectRoot,
+        `build/embeddings/schema-chunks-${serverConfig.schemaVersion}.bin`
+      );
+      
+      if (!fs.existsSync(versionEmbeddingPath)) {
+        console.log("Initializing embeddings for testing...");
+        retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+      }
+      
+      const searchResults = await search("ObjectHeader", 3, serverConfig.schemaVersion);
+      
+      assert.ok(Array.isArray(searchResults));
+      assert.ok(searchResults.length > 0, "Should return search results");
+      assert.ok(searchResults.length <= 3, "Should respect the limit parameter");
+      
+      // Check result structure
+      const firstResult = searchResults[0];
+      assert.ok(firstResult.content);
+      assert.ok(typeof firstResult.similarity === "number");
+      assert.ok(firstResult.similarity >= 0 && firstResult.similarity <= 1);
+    });
+
+    // Test name search functionality
+    test("should search component names", async _t => {
+      const serverConfig = getServerConfig();
+      const schemaPath = path.join(projectRoot, "res/schemas");
+      
+      // Ensure embeddings exist for testing
+      const versionEmbeddingPath = path.join(
+        projectRoot,
+        `build/embeddings/name-chunks-${serverConfig.schemaVersion}.bin`
+      );
+      
+      if (!fs.existsSync(versionEmbeddingPath)) {
+        console.log("Initializing name embeddings for testing...");
+        retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+      }
+      
+      const nameResults = await searchNames("ObjectHeader", 1, serverConfig.schemaVersion);
+      
+      assert.ok(Array.isArray(nameResults));
+      assert.ok(nameResults.length > 0, "Should return name search results");
+      assert.strictEqual(nameResults.length, 1, "Should respect the limit parameter");
+      
+      // Check result structure
+      const firstResult = nameResults[0];
+      assert.ok(firstResult.content);
+      assert.ok(typeof firstResult.similarity === "number");
+    });
+
+    // Test result formatting
+    test("should format search results correctly", async _t => {
+      const serverConfig = getServerConfig();
+      const searchResults = await search("FormCell", 2, serverConfig.schemaVersion);
+      
+      const formattedResults = printResults(searchResults);
+      
+      assert.ok(typeof formattedResults === "string");
+      assert.ok(formattedResults.length > 0);
+      
+      // Should be valid JSON
+      const parsed = JSON.parse(formattedResults);
+      assert.ok(Array.isArray(parsed));
+      
+      if (parsed.length > 0) {
+        const firstResult = parsed[0];
+        assert.ok(firstResult.source);
+        assert.ok(firstResult.distance);
+        assert.ok(firstResult.content);
+        assert.ok(typeof firstResult.source === "string");
+        assert.ok(typeof firstResult.distance === "string");
+        assert.ok(typeof firstResult.content === "string");
+      }
+    });
+
+    // Test schema version detection
+    test("should detect schema version from project structure", _t => {
+      // Test with a mock project structure
+      const testProjectPath = path.join(projectRoot, "test-project");
+      
+      // Create temporary test structure
+      if (!fs.existsSync(testProjectPath)) {
+        fs.mkdirSync(testProjectPath, { recursive: true });
+      }
+      
+      // Get the current server configuration to use the actual schema version
+      const serverConfig = getServerConfig();
+      const expectedVersion = serverConfig.schemaVersion;
+      
+      // Create a mock .project.json file with the current schema version
+      const mockProjectJson = {
+        "MDKProjectPath": testProjectPath,
+        "SchemaVersion": expectedVersion
+      };
+      fs.writeFileSync(
+        path.join(testProjectPath, ".project.json"), 
+        JSON.stringify(mockProjectJson, null, 2)
+      );
+      
+      try {
+        const detectedVersion = getSchemaVersion(testProjectPath);
+        assert.strictEqual(detectedVersion, expectedVersion);
+      } finally {
+        // Clean up test files
+        fs.rmSync(testProjectPath, { recursive: true, force: true });
+      }
+    });
+
+    // Test component documentation lookup
+    test("should find component files in documentation", _t => {
+      const serverConfig = getServerConfig();
+      const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+      
+      // Test finding a component file
+      function findComponentFile(componentName) {
+        return filenameList.find(
+          file =>
+            file.toLowerCase().includes(componentName.toLowerCase()) &&
+            (file.endsWith(".json") || file.endsWith(".schema"))
+        );
+      }
+      
+      // Look for common MDK components
+      const possibleComponents = ["ObjectHeader", "FormCell", "Button", "Section"];
+      let foundComponent = null;
+      
+      for (const component of possibleComponents) {
+        const found = findComponentFile(component);
+        if (found) {
+          foundComponent = found;
+          break;
+        }
+      }
+      
+      if (foundComponent) {
+        assert.ok(foundComponent.endsWith(".json") || foundComponent.endsWith(".schema"));
+        
+        // Get the content of the found component
+        const componentIndex = filenameList.indexOf(foundComponent);
+        const componentContent = contentList[componentIndex];
+        
+        assert.ok(componentContent);
+        assert.ok(componentContent.length > 0);
+        
+        // Should be valid JSON for schema files
+        if (foundComponent.endsWith(".json") || foundComponent.endsWith(".schema")) {
+          const parsed = JSON.parse(componentContent);
+          assert.ok(typeof parsed === "object");
+        }
+      }
+    });
+
+    // Test example file lookup
+    test("should find example files in documentation", _t => {
+      const serverConfig = getServerConfig();
+      const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+      
+      // Test finding example files
+      const exampleFiles = filenameList.filter(file => file.endsWith(".example.md"));
+      
+      if (exampleFiles.length > 0) {
+        assert.ok(exampleFiles.length > 0, "Should have example files");
+        
+        // Check content of first example file
+        const firstExampleIndex = filenameList.indexOf(exampleFiles[0]);
+        const exampleContent = contentList[firstExampleIndex];
+        
+        assert.ok(exampleContent);
+        assert.ok(exampleContent.length > 0);
+        assert.ok(typeof exampleContent === "string");
+      }
+    });
+
+    // Test property extraction from schema
+    test("should extract component properties from schema", _t => {
+      const serverConfig = getServerConfig();
+      const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+      
+      // Find a schema file with properties
+      let schemaWithProperties = null;
+      let schemaContent = null;
+      
+      for (let i = 0; i < filenameList.length; i++) {
+        const filename = filenameList[i];
+        if (filename.endsWith(".json") || filename.endsWith(".schema")) {
+          try {
+            const content = contentList[i];
+            const parsed = JSON.parse(content);
+            if (parsed.properties && Object.keys(parsed.properties).length > 0) {
+              schemaWithProperties = filename;
+              schemaContent = parsed;
+              break;
+            }
+          } catch (error) {
+            // Skip invalid JSON files
+            continue;
+          }
+        }
+      }
+      
+      if (schemaWithProperties && schemaContent) {
+        assert.ok(schemaContent.properties);
+        assert.ok(typeof schemaContent.properties === "object");
+        
+        const propertyNames = Object.keys(schemaContent.properties);
+        assert.ok(propertyNames.length > 0, "Should have at least one property");
+        
+        // Test property structure
+        const firstProperty = schemaContent.properties[propertyNames[0]];
+        assert.ok(typeof firstProperty === "object");
+      }
+    });
+
+    // Test embeddings file existence
+    test("should create and use embeddings files", _t => {
+      const serverConfig = getServerConfig();
+      const embeddingsDir = path.join(projectRoot, "build/embeddings");
+      
+      // Check if embeddings directory exists
+      if (fs.existsSync(embeddingsDir)) {
+        const files = fs.readdirSync(embeddingsDir);
+        const schemaEmbeddings = files.filter(file => 
+          file.startsWith(`schema-chunks-${serverConfig.schemaVersion}`)
+        );
+        const nameEmbeddings = files.filter(file => 
+          file.startsWith(`name-chunks-${serverConfig.schemaVersion}`)
+        );
+        
+        // If embeddings exist, they should have proper structure
+        if (schemaEmbeddings.length > 0) {
+          assert.ok(schemaEmbeddings.some(file => file.endsWith('.bin')));
+        }
+        
+        if (nameEmbeddings.length > 0) {
+          assert.ok(nameEmbeddings.some(file => file.endsWith('.bin')));
+        }
+      }
     });
   });
 });

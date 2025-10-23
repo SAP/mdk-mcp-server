@@ -113,6 +113,9 @@ export const ValidationSchemas = {
     ], {
         errorMap: () => ({ message: "Invalid action type" }),
     }),
+    documentationOperation: z.enum(["search", "component", "property", "example"], {
+        errorMap: () => ({ message: "Invalid documentation operation type" }),
+    }),
     oDataEntitySets: z
         .string()
         .min(1, "Entity sets cannot be empty")
@@ -228,10 +231,6 @@ export function validateToolArguments(toolName, args) {
             validatedArgs.oDataEntitySets = ValidationSchemas.oDataEntitySets.parse(args.oDataEntitySets);
             break;
         case "mdk-gen-i18n":
-        case "mdk-build":
-        case "mdk-deploy":
-        case "mdk-validate":
-        case "mdk-migrate":
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             break;
         case "mdk-gen-databinding-page":
@@ -246,34 +245,48 @@ export function validateToolArguments(toolName, args) {
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             validatedArgs.actionType = ValidationSchemas.actionType.parse(args.actionType);
             break;
-        case "mdk-show-qrcode":
-            validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
-            break;
         case "mdk-manage":
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             validatedArgs.operation = ValidationSchemas.operation.parse(args.operation);
             break;
-        case "mdk-search-documentation":
-            validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
-            validatedArgs.N = ValidationSchemas.resultCount.parse(args.N || 5);
-            if (args.folderRootPath) {
-                validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
+        case "mdk-documentation": {
+            validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
+            validatedArgs.operation = ValidationSchemas.documentationOperation.parse(args.operation);
+            // Validate operation-specific parameters
+            const operation = validatedArgs.operation;
+            if (operation === "search") {
+                if (!args.query) {
+                    throw new ValidationError("query", args.query, [
+                        "Query is required for search operation",
+                    ]);
+                }
+                validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
+                validatedArgs.N = ValidationSchemas.resultCount.parse(args.N || 5);
+            }
+            else if (operation === "component" || operation === "example") {
+                if (!args.component_name) {
+                    throw new ValidationError("component_name", args.component_name, [
+                        "Component name is required for this operation",
+                    ]);
+                }
+                validatedArgs.component_name = ValidationSchemas.componentName.parse(args.component_name);
+            }
+            else if (operation === "property") {
+                if (!args.component_name) {
+                    throw new ValidationError("component_name", args.component_name, [
+                        "Component name is required for property operation",
+                    ]);
+                }
+                if (!args.property_name) {
+                    throw new ValidationError("property_name", args.property_name, [
+                        "Property name is required for property operation",
+                    ]);
+                }
+                validatedArgs.component_name = ValidationSchemas.componentName.parse(args.component_name);
+                validatedArgs.property_name = ValidationSchemas.propertyName.parse(args.property_name);
             }
             break;
-        case "mdk-get-component-documentation":
-        case "mdk-get-example":
-            validatedArgs.component_name = ValidationSchemas.componentName.parse(args.component_name);
-            if (args.folderRootPath) {
-                validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
-            }
-            break;
-        case "mdk-get-property-documentation":
-            validatedArgs.component_name = ValidationSchemas.componentName.parse(args.component_name);
-            validatedArgs.property_name = ValidationSchemas.propertyName.parse(args.property_name);
-            if (args.folderRootPath) {
-                validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
-            }
-            break;
+        }
         default:
             throw new ValidationError("toolName", toolName, ["Unknown tool name"]);
     }

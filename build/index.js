@@ -250,84 +250,43 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 },
             },
             {
-                name: "mdk-search-documentation",
-                description: "Returns the top N results from MDK documentation by semantic search, sorted by relevance.",
+                name: "mdk-documentation",
+                description: "Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.",
                 inputSchema: {
                     type: "object",
                     properties: {
+                        operation: {
+                            type: "string",
+                            enum: ["search", "component", "property", "example"],
+                            description: "The type of documentation operation to perform:\n" +
+                                "• search: Returns the top N results from MDK documentation by semantic search, sorted by relevance\n" +
+                                "• component: Returns the schema of an MDK component based on the name of the component\n" +
+                                "• property: Returns the documentation of a specific property of an MDK component\n" +
+                                "• example: Returns an example usage of an MDK component",
+                        },
+                        folderRootPath: {
+                            type: "string",
+                            description: "The path of the current project root folder. Used to determine the appropriate MDK schema version.",
+                        },
                         query: {
                             type: "string",
-                            description: "Search query string.",
+                            description: "Search query string (required for 'search' operation).",
                         },
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
-                        },
-                        N: {
-                            type: "number",
-                            description: "Number of results to return.",
-                            default: 5,
-                        },
-                    },
-                    required: ["query", "folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-get-component-documentation",
-                description: "Returns the schema of an MDK component based on the name of the component.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
                         component_name: {
                             type: "string",
-                            description: "Name of the component.",
-                        },
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
-                        },
-                    },
-                    required: ["component_name", "folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-get-property-documentation",
-                description: "Returns the documentation of a specific property of an MDK component.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        component_name: {
-                            type: "string",
-                            description: "Name of the component.",
+                            description: "Name of the component (required for 'component', 'property', and 'example' operations).",
                         },
                         property_name: {
                             type: "string",
-                            description: "Name of the property.",
+                            description: "Name of the property (required for 'property' operation).",
                         },
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
-                        },
-                    },
-                    required: ["component_name", "property_name", "folderRootPath"],
-                },
-            },
-            {
-                name: "mdk-get-example",
-                description: "Returns an example usage of an MDK component.",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        component_name: {
-                            type: "string",
-                            description: "Name of the component.",
-                        },
-                        folderRootPath: {
-                            type: "string",
-                            description: "The path of the current project root folder (optional). Used to determine the appropriate MDK schema version.",
+                        N: {
+                            type: "number",
+                            description: "Number of results to return for search operation.",
+                            default: 5,
                         },
                     },
-                    required: ["component_name", "folderRootPath"],
+                    required: ["operation", "folderRootPath"],
                 },
             },
         ],
@@ -822,17 +781,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
         }
-        case "mdk-search-documentation": {
+        case "mdk-documentation": {
             try {
                 // Validate arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-search-documentation", request.params.arguments || {});
-                const query = validatedArgs.query;
-                const N = validatedArgs.N;
+                const validatedArgs = validateToolArguments("mdk-documentation", request.params.arguments || {});
+                const operation = validatedArgs.operation;
+                const folderPath = validatedArgs.folderRootPath;
                 // Get server configuration
                 const serverConfig = getServerConfig();
                 // Validate the required folderRootPath and check schema version
                 try {
-                    const folderPath = validatedArgs.folderRootPath;
                     // Additional validation: Check if path exists and is accessible
                     if (!fs.existsSync(folderPath)) {
                         return {
@@ -877,298 +835,127 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         ],
                     };
                 }
-                const results = await search(query, N, serverConfig.schemaVersion);
-                const resultText = printResults(results);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: resultText,
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                console.error(`MDK documentation search failed:`, error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: error instanceof Error ? error.toString() : String(error),
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-get-component-documentation": {
-            try {
-                // Validate arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-get-component-documentation", request.params.arguments || {});
-                const component_name = validatedArgs.component_name;
-                // Get server configuration
-                const serverConfig = getServerConfig();
-                // Validate the required folderRootPath and check schema version
-                try {
-                    const folderPath = validatedArgs.folderRootPath;
-                    // Additional validation: Check if path exists and is accessible
-                    if (!fs.existsSync(folderPath)) {
+                // Handle different operations
+                switch (operation) {
+                    case "search": {
+                        const query = validatedArgs.query;
+                        const N = validatedArgs.N;
+                        const results = await search(query, N, serverConfig.schemaVersion);
+                        const resultText = printResults(results);
                         return {
                             content: [
                                 {
                                     type: "text",
-                                    text: `Error: The specified project path does not exist: ${folderPath}`,
+                                    text: resultText,
                                 },
                             ],
                         };
                     }
-                    if (!fs.lstatSync(folderPath).isDirectory()) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Error: The specified path is not a directory: ${folderPath}`,
-                                },
-                            ],
-                        };
-                    }
-                    const schemaVersion = getSchemaVersion(folderPath);
-                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
-                    if (schemaVersion !== serverConfig.schemaVersion) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
-                                },
-                            ],
-                        };
-                    }
-                }
-                catch (error) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
-                            },
-                        ],
-                    };
-                }
-                const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
-                for (const file of filenameList) {
-                    if (file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
-                        (file.endsWith(".json") || file.endsWith(".schema"))) {
-                        const content = contentList[filenameList.indexOf(file)];
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: content,
-                                },
-                            ],
-                        };
-                    }
-                }
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Component ${component_name} not found.`,
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                console.error(`MDK component documentation retrieval failed:`, error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: error instanceof Error ? error.toString() : String(error),
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-get-property-documentation": {
-            try {
-                // Validate arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-get-property-documentation", request.params.arguments || {});
-                const component_name = validatedArgs.component_name;
-                const property_name = validatedArgs.property_name;
-                // Get server configuration
-                const serverConfig = getServerConfig();
-                // Validate the required folderRootPath and check schema version
-                try {
-                    const folderPath = validatedArgs.folderRootPath;
-                    // Additional validation: Check if path exists and is accessible
-                    if (!fs.existsSync(folderPath)) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Error: The specified project path does not exist: ${folderPath}`,
-                                },
-                            ],
-                        };
-                    }
-                    if (!fs.lstatSync(folderPath).isDirectory()) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Error: The specified path is not a directory: ${folderPath}`,
-                                },
-                            ],
-                        };
-                    }
-                    const schemaVersion = getSchemaVersion(folderPath);
-                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
-                    if (schemaVersion !== serverConfig.schemaVersion) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
-                                },
-                            ],
-                        };
-                    }
-                }
-                catch (error) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
-                            },
-                        ],
-                    };
-                }
-                const searchResults = await searchNames(component_name, 1, serverConfig.schemaVersion);
-                for (const file of filenameList) {
-                    if (file
-                        .toLowerCase()
-                        .includes(searchResults[0].content.toLowerCase()) &&
-                        (file.endsWith(".json") || file.endsWith(".schema"))) {
-                        const content = contentList[filenameList.indexOf(file)];
-                        const parsedContent = JSON.parse(content);
-                        if ("properties" in parsedContent &&
-                            property_name in parsedContent.properties) {
-                            return {
-                                content: [
-                                    {
-                                        type: "text",
-                                        text: JSON.stringify(parsedContent.properties[property_name], null, 2),
-                                    },
-                                ],
-                            };
+                    case "component": {
+                        const component_name = validatedArgs.component_name;
+                        const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
+                        for (const file of filenameList) {
+                            if (file
+                                .toLowerCase()
+                                .includes(_results[0].content.toLowerCase()) &&
+                                (file.endsWith(".json") || file.endsWith(".schema"))) {
+                                const content = contentList[filenameList.indexOf(file)];
+                                return {
+                                    content: [
+                                        {
+                                            type: "text",
+                                            text: content,
+                                        },
+                                    ],
+                                };
+                            }
                         }
-                        else {
-                            break;
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Component ${component_name} not found.`,
+                                },
+                            ],
+                        };
+                    }
+                    case "property": {
+                        const component_name = validatedArgs.component_name;
+                        const property_name = validatedArgs.property_name;
+                        const searchResults = await searchNames(component_name, 1, serverConfig.schemaVersion);
+                        for (const file of filenameList) {
+                            if (file
+                                .toLowerCase()
+                                .includes(searchResults[0].content.toLowerCase()) &&
+                                (file.endsWith(".json") || file.endsWith(".schema"))) {
+                                const content = contentList[filenameList.indexOf(file)];
+                                const parsedContent = JSON.parse(content);
+                                if ("properties" in parsedContent &&
+                                    property_name in parsedContent.properties) {
+                                    return {
+                                        content: [
+                                            {
+                                                type: "text",
+                                                text: JSON.stringify(parsedContent.properties[property_name], null, 2),
+                                            },
+                                        ],
+                                    };
+                                }
+                                else {
+                                    break;
+                                }
+                            }
                         }
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `No property called ${property_name} found in ${component_name}.`,
+                                },
+                            ],
+                        };
+                    }
+                    case "example": {
+                        const component_name = validatedArgs.component_name;
+                        const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
+                        for (const file of filenameList) {
+                            if (file
+                                .toLowerCase()
+                                .includes(_results[0].content.toLowerCase()) &&
+                                file.endsWith(".example.md")) {
+                                return {
+                                    content: [
+                                        {
+                                            type: "text",
+                                            text: contentList[filenameList.indexOf(file)],
+                                        },
+                                    ],
+                                };
+                            }
+                        }
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: "No examples found for this component.",
+                                },
+                            ],
+                        };
+                    }
+                    default: {
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Unknown documentation operation: ${operation}`,
+                                },
+                            ],
+                        };
                     }
                 }
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `No property called ${property_name} found in ${component_name}.`,
-                        },
-                    ],
-                };
             }
             catch (error) {
-                console.error(`MDK property documentation retrieval failed:`, error);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: error instanceof Error ? error.toString() : String(error),
-                        },
-                    ],
-                };
-            }
-        }
-        case "mdk-get-example": {
-            try {
-                // Validate arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-get-example", request.params.arguments || {});
-                const component_name = validatedArgs.component_name;
-                // Get server configuration
-                const serverConfig = getServerConfig();
-                // Validate the required folderRootPath and check schema version
-                try {
-                    const folderPath = validatedArgs.folderRootPath;
-                    // Additional validation: Check if path exists and is accessible
-                    if (!fs.existsSync(folderPath)) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Error: The specified project path does not exist: ${folderPath}`,
-                                },
-                            ],
-                        };
-                    }
-                    if (!fs.lstatSync(folderPath).isDirectory()) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Error: The specified path is not a directory: ${folderPath}`,
-                                },
-                            ],
-                        };
-                    }
-                    const schemaVersion = getSchemaVersion(folderPath);
-                    // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
-                    if (schemaVersion !== serverConfig.schemaVersion) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
-                                },
-                            ],
-                        };
-                    }
-                }
-                catch (error) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: `Error validating project path: ${error instanceof Error ? error.message : String(error)}`,
-                            },
-                        ],
-                    };
-                }
-                const _results = await searchNames(component_name, 1, serverConfig.schemaVersion);
-                for (const file of filenameList) {
-                    if (file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
-                        file.endsWith(".example.md")) {
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: contentList[filenameList.indexOf(file)],
-                                },
-                            ],
-                        };
-                    }
-                }
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "No examples found for this component.",
-                        },
-                    ],
-                };
-            }
-            catch (error) {
-                console.error(`MDK example retrieval failed:`, error);
+                console.error(`MDK documentation operation failed:`, error);
                 return {
                     content: [
                         {
