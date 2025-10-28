@@ -30,7 +30,7 @@
     "start": "npx -y supergateway --port 9881 --stdio \"node ./build/start.js\""
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.7.2",
+    "@huggingface/transformers": "^3.7.6",
     "@modelcontextprotocol/sdk": "^1.20.2",
     "@sap/mdk-tools": "^1.14.0",
     "@sap/generator-mdk": "1.0.0-2",
