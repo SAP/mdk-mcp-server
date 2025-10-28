@@ -250,7 +250,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 },
             },
             {
-                name: "mdk-documentation",
+                name: "mdk-docs",
                 description: "Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.",
                 inputSchema: {
                     type: "object",
@@ -781,10 +781,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
         }
-        case "mdk-documentation": {
+        case "mdk-docs": {
             try {
                 // Validate arguments using comprehensive validation
-                const validatedArgs = validateToolArguments("mdk-documentation", request.params.arguments || {});
+                const validatedArgs = validateToolArguments("mdk-docs", request.params.arguments || {});
                 const operation = validatedArgs.operation;
                 const folderPath = validatedArgs.folderRootPath;
                 // Get server configuration

@@ -286,7 +286,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "mdk-documentation",
+        name: "mdk-docs",
         description:
           "Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.",
         inputSchema: {
@@ -955,11 +955,11 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-documentation": {
+    case "mdk-docs": {
       try {
         // Validate arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-documentation",
+          "mdk-docs",
           request.params.arguments || {}
         );
 

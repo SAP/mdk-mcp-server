@@ -345,7 +345,7 @@ export function validateToolArguments(
       );
       break;
 
-    case "mdk-documentation": {
+    case "mdk-docs": {
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );

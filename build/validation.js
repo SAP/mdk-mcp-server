@@ -249,7 +249,7 @@ export function validateToolArguments(toolName, args) {
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             validatedArgs.operation = ValidationSchemas.operation.parse(args.operation);
             break;
-        case "mdk-documentation": {
+        case "mdk-docs": {
             validatedArgs.folderRootPath = validateSecurePath(String(args.folderRootPath));
             validatedArgs.operation = ValidationSchemas.documentationOperation.parse(args.operation);
             // Validate operation-specific parameters

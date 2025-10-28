@@ -28,7 +28,7 @@ describe("index.ts - MCP Server", () => {
         "mdk-gen-entity",
         "mdk-gen-action",
         "mdk-manage",
-        "mdk-documentation",
+        "mdk-docs",
       ];
 
       // Verify we have the expected number of tools
@@ -36,7 +36,7 @@ describe("index.ts - MCP Server", () => {
 
       // Verify specific tools are included
       assert.ok(expectedTools.includes("mdk-gen-project"));
-      assert.ok(expectedTools.includes("mdk-documentation"));
+      assert.ok(expectedTools.includes("mdk-docs"));
       assert.ok(expectedTools.includes("mdk-manage"));
       assert.ok(expectedTools.includes("mdk-gen-entity"));
     });
