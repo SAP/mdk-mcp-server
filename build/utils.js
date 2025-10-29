@@ -420,15 +420,41 @@ export function getServiceDataWithFallback(projectPath) {
     }
 }
 /**
- * Get server configuration from package.json
+ * Get server configuration from package.json with command line argument override
  * @returns MDK server configuration object with defaults
  */
 export function getServerConfig() {
     try {
+        // Check for schema version in command line arguments first
+        const args = process.argv.slice(2);
+        let schemaVersionFromArgs = null;
+        // Look for --schema-version argument
+        const schemaVersionIndex = args.findIndex(arg => arg === '--schema-version');
+        if (schemaVersionIndex !== -1 && schemaVersionIndex + 1 < args.length) {
+            schemaVersionFromArgs = args[schemaVersionIndex + 1];
+        }
+        // Also check for --schema-version=value format
+        const schemaVersionArg = args.find(arg => arg.startsWith('--schema-version='));
+        if (schemaVersionArg) {
+            schemaVersionFromArgs = schemaVersionArg.split('=')[1];
+        }
+        // Validate schema version if provided via command line
+        if (schemaVersionFromArgs) {
+            const availableVersions = ['24.7', '24.11', '25.6', '25.9'];
+            if (!availableVersions.includes(schemaVersionFromArgs)) {
+                console.warn(`Warning: Invalid schema version '${schemaVersionFromArgs}' provided via command line. ` +
+                    `Available versions: ${availableVersions.join(', ')}. Using default from package.json.`);
+                schemaVersionFromArgs = null;
+            }
+        }
+        // Read configuration from package.json
         const packageJsonPath = path.join(projectRoot, "package.json");
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
-        // Return configuration from package.json or defaults
-        return packageJson.mdkConfig;
+        // Use command line argument if valid, otherwise use package.json config
+        const schemaVersion = schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "25.9";
+        return {
+            schemaVersion,
+        };
     }
     catch (error) {
         console.error("Error reading server configuration from package.json:", error);

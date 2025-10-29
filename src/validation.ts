@@ -41,7 +41,7 @@ export const ValidationSchemas = {
     .default(false),
 
   templateType: z.enum(["crud", "list detail", "base"], {
-    errorMap: () => ({ message: "Invalid template type" }),
+    message: "Invalid template type",
   }),
 
   operation: z.enum(
@@ -54,7 +54,7 @@ export const ValidationSchemas = {
       "open-mobile-app-editor",
     ],
     {
-      errorMap: () => ({ message: "Invalid operation type" }),
+      message: "Invalid operation type",
     }
   ),
 
@@ -76,7 +76,7 @@ export const ValidationSchemas = {
       "Calendar",
     ],
     {
-      errorMap: () => ({ message: "Invalid control type" }),
+      message: "Invalid control type",
     }
   ),
 
@@ -90,7 +90,7 @@ export const ValidationSchemas = {
       "Extension",
     ],
     {
-      errorMap: () => ({ message: "Invalid layout type" }),
+      message: "Invalid layout type",
     }
   ),
 
@@ -138,14 +138,14 @@ export const ValidationSchemas = {
       "Filter",
     ],
     {
-      errorMap: () => ({ message: "Invalid action type" }),
+      message: "Invalid action type",
     }
   ),
 
   documentationOperation: z.enum(
     ["search", "component", "property", "example"],
     {
-      errorMap: () => ({ message: "Invalid documentation operation type" }),
+      message: "Invalid documentation operation type",
     }
   ),
 

@@ -29,7 +29,7 @@ export const ValidationSchemas = {
     })
         .default(false),
     templateType: z.enum(["crud", "list detail", "base"], {
-        errorMap: () => ({ message: "Invalid template type" }),
+        message: "Invalid template type",
     }),
     operation: z.enum([
         "build",
@@ -39,7 +39,7 @@ export const ValidationSchemas = {
         "show-qrcode",
         "open-mobile-app-editor",
     ], {
-        errorMap: () => ({ message: "Invalid operation type" }),
+        message: "Invalid operation type",
     }),
     controlType: z.enum([
         "ObjectTable",
@@ -57,7 +57,7 @@ export const ValidationSchemas = {
         "TimelinePreview",
         "Calendar",
     ], {
-        errorMap: () => ({ message: "Invalid control type" }),
+        message: "Invalid control type",
     }),
     layoutType: z.enum([
         "Section",
@@ -67,7 +67,7 @@ export const ValidationSchemas = {
         "Tabs",
         "Extension",
     ], {
-        errorMap: () => ({ message: "Invalid layout type" }),
+        message: "Invalid layout type",
     }),
     actionType: z.enum([
         "CreateODataEntity",
@@ -111,10 +111,10 @@ export const ValidationSchemas = {
         "Banner",
         "Filter",
     ], {
-        errorMap: () => ({ message: "Invalid action type" }),
+        message: "Invalid action type",
     }),
     documentationOperation: z.enum(["search", "component", "property", "example"], {
-        errorMap: () => ({ message: "Invalid documentation operation type" }),
+        message: "Invalid documentation operation type",
     }),
     oDataEntitySets: z
         .string()
