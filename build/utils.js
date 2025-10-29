@@ -429,21 +429,21 @@ export function getServerConfig() {
         const args = process.argv.slice(2);
         let schemaVersionFromArgs = null;
         // Look for --schema-version argument
-        const schemaVersionIndex = args.findIndex(arg => arg === '--schema-version');
+        const schemaVersionIndex = args.findIndex(arg => arg === "--schema-version");
         if (schemaVersionIndex !== -1 && schemaVersionIndex + 1 < args.length) {
             schemaVersionFromArgs = args[schemaVersionIndex + 1];
         }
         // Also check for --schema-version=value format
-        const schemaVersionArg = args.find(arg => arg.startsWith('--schema-version='));
+        const schemaVersionArg = args.find(arg => arg.startsWith("--schema-version="));
         if (schemaVersionArg) {
-            schemaVersionFromArgs = schemaVersionArg.split('=')[1];
+            schemaVersionFromArgs = schemaVersionArg.split("=")[1];
         }
         // Validate schema version if provided via command line
         if (schemaVersionFromArgs) {
-            const availableVersions = ['24.7', '24.11', '25.6', '25.9'];
+            const availableVersions = ["24.7", "24.11", "25.6", "25.9"];
             if (!availableVersions.includes(schemaVersionFromArgs)) {
                 console.warn(`Warning: Invalid schema version '${schemaVersionFromArgs}' provided via command line. ` +
-                    `Available versions: ${availableVersions.join(', ')}. Using default from package.json.`);
+                    `Available versions: ${availableVersions.join(", ")}. Using default from package.json.`);
                 schemaVersionFromArgs = null;
             }
         }
