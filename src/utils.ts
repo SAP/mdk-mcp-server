@@ -36,7 +36,7 @@ const ALLOWED_COMMANDS = {
     ],
   },
   mdk: {
-    executable: "mdk.cmd",
+    executable: "mdkcli.cmd",
     allowedArgs: [
       "build",
       "deploy",
@@ -136,10 +136,17 @@ export function runCommand(
   options: { cwd?: string; timeout?: number } = {}
 ): string {
   try {
-    // Parse command and arguments
-    const parts = command.trim().split(/\s+/);
-    const baseCommand = parts[0];
-    const args = parts.slice(1);
+    // Parse command and arguments, handling quoted arguments properly
+    const parts = command.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+    if (parts.length === 0) {
+      throw new Error("Invalid command: Command cannot be empty");
+    }
+
+    const baseCommand = parts[0]?.replace(/"/g, "") || ""; // Remove quotes from command
+    if (!baseCommand) {
+      throw new Error("Invalid command: Command cannot be empty");
+    }
+    const args = parts.slice(1).map(arg => arg.replace(/"/g, "")); // Remove quotes from args
 
     // Security: Validate the command and arguments
     validateCommandArgs(baseCommand, args);
@@ -158,13 +165,23 @@ export function runCommand(
       commandTimeout = options.timeout || 120000; // 2 minutes for deploy/build commands
     }
 
-    const output = execSync(command, {
+    // For Windows, handle shell selection properly
+    const execOptions: any = {
       cwd: safeCwd,
       env: process.env,
       stdio: "pipe",
       encoding: "utf-8",
       timeout: commandTimeout,
-    });
+    };
+
+    // On Windows, ensure we use the correct shell for .cmd files
+    if (process.platform === "win32") {
+      if (baseCommand.endsWith(".cmd") || baseCommand === "yo") {
+        execOptions.shell = true;
+      }
+    }
+
+    const output = execSync(command, execOptions);
     return output;
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
@@ -197,13 +214,24 @@ export async function getModulePath(modueName: string): Promise<string> {
       const binPath = path.join(localModulePath, "lib");
       const binPathCmd = path.join(localModulePath, "bin");
 
-      if (fs.existsSync(binPath)) {
-        return binPath;
-      } else if (fs.existsSync(binPathCmd)) {
-        return binPathCmd;
+      // Return binPath for Unix systems, binPathCmd for Windows
+      if (process.platform === "win32") {
+        // Windows: prefer bin directory, fallback to lib
+        if (fs.existsSync(binPathCmd)) {
+          return binPathCmd;
+        } else if (fs.existsSync(binPath)) {
+          return binPath;
+        }
+      } else {
+        // Unix systems: prefer lib directory, fallback to bin
+        if (fs.existsSync(binPath)) {
+          return binPath;
+        } else if (fs.existsSync(binPathCmd)) {
+          return binPathCmd;
+        }
       }
 
-      // If no bin directory, return the package root
+      // If no bin/lib directory, return the package root
       return localModulePath;
     }
 
@@ -331,9 +359,9 @@ export async function generateTemplateBasedMetadata(
   } = { services: [] };
 
   // Extract project name from path
-  const paths = projectPath.split("/");
+  const paths = projectPath.split(path.sep);
   oConfig.projectName = paths.pop();
-  oConfig.target = paths.join("/");
+  oConfig.target = paths.join(path.sep);
   oConfig.type = "headless";
   oConfig.newEntity = entity;
 
@@ -407,7 +435,7 @@ export async function generateTemplateBasedMetadata(
   if (mdkToolsPath) {
     const mdkBinary = path.join(
       mdkToolsPath,
-      process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+      process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
     );
     script += ` --tool ${mdkBinary}`;
   }

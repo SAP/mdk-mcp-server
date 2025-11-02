@@ -56,14 +56,13 @@ function splitDocuments(docs) {
  * This is the main function to be called to populate the vector database with MDK schema data.
  */
 export function retrieveAndStore(folderPath, version) {
-    const docs = loadDocumentsFromFolder(folderPath + `/${version}`);
+    const docs = loadDocumentsFromFolder(path.join(folderPath, version));
     const chunks = splitDocuments(docs);
     const texts = chunks.map(chunk => chunk.source + "\n" + chunk.content);
     createEmbeddings(`schema-chunks-${version}`, texts);
     const names = docs.map(doc => {
-        const parts = doc.source.split("/");
-        const last = parts.pop();
-        return last ? last.split(".")[0] : "";
+        const filename = path.basename(doc.source);
+        return filename ? filename.split(".")[0] : "";
     });
     createEmbeddings(`name-chunks-${version}`, names);
 }
@@ -104,9 +103,8 @@ export function printResults(results) {
         };
         const index = result.content.indexOf("\n");
         const source = result.content.substring(0, index);
-        const parts = source.split("/");
-        const last = parts.pop();
-        searchResult.source = last ? last.split(".")[0].toLowerCase() : "";
+        const filename = path.basename(source);
+        searchResult.source = filename ? filename.split(".")[0].toLowerCase() : "";
         searchResult.distance = result.similarity.toFixed(2);
         searchResult.content = result.content.substring(index + 1);
         searchResults.push(searchResult);

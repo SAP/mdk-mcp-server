@@ -769,10 +769,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // Construct build command using mdkToolsPath
             let buildScript: string = "";
             if (mdkToolsPath) {
-              const mdkBinary = path.join(
-                mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
-              );
+            const mdkBinary = path.join(
+              mdkToolsPath,
+              process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
+            );
               const target = "zip";
               buildScript = `${mdkBinary} build --target ${target} --project "${projectPath}"`;
             }
@@ -817,7 +817,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               deploymentScript = [
                 `${mdkBinary} deploy`,
@@ -848,7 +848,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               validationScript = `${mdkBinary} validate --project "${projectPath}"`;
             }
@@ -871,7 +871,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               migrationScript = `${mdkBinary} migrate --project "${projectPath}"`;
             }
@@ -1042,6 +1042,27 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           case "component": {
             const component_name = validatedArgs.component_name as string;
 
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(component_name.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: content,
+                    },
+                  ],
+                };
+              }
+            }
+
+            // If direct matching fails, try search-based matching
             const _results = await searchNames(
               component_name,
               1,
@@ -1080,6 +1101,37 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             const component_name = validatedArgs.component_name as string;
             const property_name = validatedArgs.property_name as string;
 
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(component_name.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                const parsedContent = JSON.parse(content);
+                if (
+                  "properties" in parsedContent &&
+                  property_name in parsedContent.properties
+                ) {
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: JSON.stringify(
+                          parsedContent.properties[property_name],
+                          null,
+                          2
+                        ),
+                      },
+                    ],
+                  };
+                }
+              }
+            }
+
+            // If direct matching fails, try search-based matching
             const searchResults = await searchNames(
               component_name,
               1,
@@ -1129,6 +1181,26 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           case "example": {
             const component_name = validatedArgs.component_name as string;
 
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(component_name.toLowerCase()) &&
+                file.endsWith(".example.md")
+              ) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: contentList[filenameList.indexOf(file)],
+                    },
+                  ],
+                };
+              }
+            }
+
+            // If direct matching fails, try search-based matching
             const _results = await searchNames(
               component_name,
               1,

@@ -8,8 +8,8 @@ import { z } from "zod";
 const MAX_STRING_LENGTH = 10000;
 const MAX_PATH_LENGTH = 1000;
 const MAX_ENTITY_SETS = 50;
-// Allowed characters for different input types
-const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\s]+$/;
+// Allowed characters for different input types - support Windows paths with drive letters and backslashes
+const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\\s:()]+$/;
 const SAFE_PROMPT_REGEX = /^[\w\s.-_,;:!?()[\]{}"'=+/<>@#$%&*`~\n\r\t]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
@@ -182,17 +182,17 @@ export function validateSecurePath(inputPath) {
     }
     // Additional security checks
     const resolvedPath = path.resolve(inputPath);
-    // Check for suspicious patterns
+    // Check for suspicious patterns (handle both Windows and Unix paths)
     const suspiciousPatterns = [
         /\.\./, // Directory traversal
-        /\/proc\//, // Linux proc filesystem
-        /\/sys\//, // Linux sys filesystem
-        /\/dev\//, // Device files
-        /\/etc\//, // System configuration
-        /C:\\Windows/i, // Windows system directory
-        /C:\\System32/i, // Windows system32
-        /\/Library\//, // macOS system library
-        /\/System\//, // macOS system directory
+        /[\/\\]proc[\/\\]/, // Linux proc filesystem
+        /[\/\\]sys[\/\\]/, // Linux sys filesystem
+        /[\/\\]dev[\/\\]/, // Device files
+        /[\/\\]etc[\/\\]/, // System configuration
+        /C:[\/\\]Windows/i, // Windows system directory
+        /C:[\/\\]System32/i, // Windows system32
+        /[\/\\]Library[\/\\]/, // macOS system library
+        /[\/\\]System[\/\\]/, // macOS system directory
     ];
     for (const pattern of suspiciousPatterns) {
         if (pattern.test(resolvedPath)) {

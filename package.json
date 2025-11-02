@@ -19,7 +19,7 @@
     "images/"  
   ],
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && cp -r src/lib build && cp -r src/start.js build",
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
     "test": "node --test --test-concurrency=1 src/tests/*.test.js",
     "lint": "eslint 'src/**/*.ts' --ignore-pattern 'src/**/*.d.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --ignore-pattern 'src/**/*.d.ts' --fix",
