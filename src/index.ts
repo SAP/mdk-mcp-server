@@ -903,7 +903,19 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               };
             }
 
-            const openCommand = `open ${qrCodePath}`;
+            // Use platform-specific command to open the QR code image
+            let openCommand: string;
+            if (process.platform === "win32") {
+              // Windows: use 'start' command
+              openCommand = `start "${qrCodePath}"`;
+            } else if (process.platform === "darwin") {
+              // macOS: use 'open' commanSd
+              openCommand = `open "${qrCodePath}"`;
+            } else {
+              // Linux/Unix: use 'xdg-open' command
+              openCommand = `xdg-open "${qrCodePath}"`;
+            }
+
             runCommand(openCommand);
 
             return {

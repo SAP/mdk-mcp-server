@@ -52,6 +52,14 @@ const ALLOWED_COMMANDS = {
     executable: "open",
     allowedArgs: [], // Will be validated separately for file paths
   },
+  start: {
+    executable: "start",
+    allowedArgs: [], // Will be validated separately for file paths
+  },
+  "xdg-open": {
+    executable: "xdg-open",
+    allowedArgs: [], // Will be validated separately for file paths
+  },
 };
 
 /**

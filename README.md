@@ -13,7 +13,7 @@ The SAP Mobile Development Kit (MDK) is a powerful framework that enables develo
 Some of SAP’s larger and complex mobile apps are built using MDK. An example is [SAP Service and Asset Manager](https://www.sap.com/sea/products/scm/asset-manager.html).
 
 > [!NOTE]
-> This MCP server is an early release version of the MDK. Right now it can only run properly on Mac, it will be on Windows soon. You may encounter bugs or unfinished features. We'd love your feedback to make it better! Please report issues or share suggestions via [GitHub issues](https://github.com/sap/mdk-mcp-server/issues).
+> This MCP server is an early release version of the MDK. It can run on both Mac and Windows. You may encounter bugs or unfinished features. We'd love your feedback to make it better! Please report issues or share suggestions via [GitHub issues](https://github.com/sap/mdk-mcp-server/issues).
 
 ## Table of Contents
 
