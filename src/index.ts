@@ -889,7 +889,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "show-qrcode": {
-            const qrCodePath = `${projectPath}/.build/qrcode.png`;
+            const qrCodePath = path.join(projectPath, ".build", "qrcode.png");
 
             // Check if QR code exists
             if (!fs.existsSync(qrCodePath)) {
@@ -916,13 +916,11 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               openCommand = `xdg-open "${qrCodePath}"`;
             }
 
-            runCommand(openCommand);
-
             return {
               content: [
                 {
                   type: "text",
-                  text: `QR code displayed successfully from ${qrCodePath}`,
+                  text: `${openCommand}`,
                 },
               ],
             };
