@@ -769,10 +769,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // Construct build command using mdkToolsPath
             let buildScript: string = "";
             if (mdkToolsPath) {
-            const mdkBinary = path.join(
-              mdkToolsPath,
-              process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
-            );
+              const mdkBinary = path.join(
+                mdkToolsPath,
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
+              );
               const target = "zip";
               buildScript = `${mdkBinary} build --target ${target} --project "${projectPath}"`;
             }
@@ -1057,9 +1057,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // First try direct filename matching
             for (const file of filenameList) {
               if (
-                file
-                  .toLowerCase()
-                  .includes(component_name.toLowerCase()) &&
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
                 (file.endsWith(".json") || file.endsWith(".schema"))
               ) {
                 const content = contentList[filenameList.indexOf(file)];
@@ -1116,9 +1114,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // First try direct filename matching
             for (const file of filenameList) {
               if (
-                file
-                  .toLowerCase()
-                  .includes(component_name.toLowerCase()) &&
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
                 (file.endsWith(".json") || file.endsWith(".schema"))
               ) {
                 const content = contentList[filenameList.indexOf(file)];
@@ -1196,9 +1192,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // First try direct filename matching
             for (const file of filenameList) {
               if (
-                file
-                  .toLowerCase()
-                  .includes(component_name.toLowerCase()) &&
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
                 file.endsWith(".example.md")
               ) {
                 return {

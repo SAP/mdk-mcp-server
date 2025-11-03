@@ -234,14 +234,14 @@ export function validateSecurePath(inputPath: string): string {
   // Check for suspicious patterns (handle both Windows and Unix paths)
   const suspiciousPatterns = [
     /\.\./, // Directory traversal
-    /[\/\\]proc[\/\\]/, // Linux proc filesystem
-    /[\/\\]sys[\/\\]/, // Linux sys filesystem
-    /[\/\\]dev[\/\\]/, // Device files
-    /[\/\\]etc[\/\\]/, // System configuration
-    /C:[\/\\]Windows/i, // Windows system directory
-    /C:[\/\\]System32/i, // Windows system32
-    /[\/\\]Library[\/\\]/, // macOS system library
-    /[\/\\]System[\/\\]/, // macOS system directory
+    /[/\\]proc[/\\]/, // Linux proc filesystem
+    /[/\\]sys[/\\]/, // Linux sys filesystem
+    /[/\\]dev[/\\]/, // Device files
+    /[/\\]etc[/\\]/, // System configuration
+    /C:[/\\]Windows/i, // Windows system directory
+    /C:[/\\]System32/i, // Windows system32
+    /[/\\]Library[/\\]/, // macOS system library
+    /[/\\]System[/\\]/, // macOS system directory
   ];
 
   for (const pattern of suspiciousPatterns) {

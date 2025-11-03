@@ -153,7 +153,7 @@ export function runCommand(command, options = {}) {
             }
         }
         const output = execSync(command, execOptions);
-        return output;
+        return output.toString();
     }
     catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -352,14 +352,20 @@ async function getEntitySetsFromODataString(data) {
             if (error) {
                 reject(error);
             }
-            const parsedResult = result; // eslint-disable-line @typescript-eslint/no-explicit-any
-            if (parsedResult["edmx:Edmx"]["edmx:DataServices"]) {
-                const entitySets = parsedResult["edmx:Edmx"]["edmx:DataServices"][0].Schema[0]
-                    .EntityContainer[0].EntitySet;
-                const simSets = entitySets.map((_set) => {
-                    return _set.$.Name;
-                });
-                resolve(simSets);
+            const parsedResult = result;
+            if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
+                const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
+                if (Array.isArray(dataServices) &&
+                    dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet) {
+                    const entitySets = dataServices[0].Schema[0].EntityContainer[0].EntitySet;
+                    const simSets = entitySets.map((_set) => {
+                        return _set.$.Name;
+                    });
+                    resolve(simSets);
+                }
+                else {
+                    reject("OData not supported yet");
+                }
             }
             else {
                 reject("OData not supported yet");

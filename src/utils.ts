@@ -174,7 +174,7 @@ export function runCommand(
     }
 
     // For Windows, handle shell selection properly
-    const execOptions: any = {
+    const execOptions: Record<string, unknown> = {
       cwd: safeCwd,
       env: process.env,
       stdio: "pipe",
@@ -190,7 +190,7 @@ export function runCommand(
     }
 
     const output = execSync(command, execOptions);
-    return output;
+    return output.toString();
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     throw new Error(`Command failed: ${command}\n${errorMessage}`);
@@ -457,15 +457,22 @@ async function getEntitySetsFromODataString(data: string): Promise<string[]> {
         reject(error);
       }
 
-      const parsedResult = result as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-      if (parsedResult["edmx:Edmx"]["edmx:DataServices"]) {
-        const entitySets =
-          parsedResult["edmx:Edmx"]["edmx:DataServices"][0].Schema[0]
-            .EntityContainer[0].EntitySet;
-        const simSets = entitySets.map((_set: { $: { Name: string } }) => {
-          return _set.$.Name;
-        });
-        resolve(simSets);
+      const parsedResult = result as Record<string, unknown>;
+      if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
+        const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
+        if (
+          Array.isArray(dataServices) &&
+          dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet
+        ) {
+          const entitySets =
+            dataServices[0].Schema[0].EntityContainer[0].EntitySet;
+          const simSets = entitySets.map((_set: { $: { Name: string } }) => {
+            return _set.$.Name;
+          });
+          resolve(simSets);
+        } else {
+          reject("OData not supported yet");
+        }
       } else {
         reject("OData not supported yet");
       }

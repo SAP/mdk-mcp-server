@@ -868,9 +868,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         const component_name = validatedArgs.component_name;
                         // First try direct filename matching
                         for (const file of filenameList) {
-                            if (file
-                                .toLowerCase()
-                                .includes(component_name.toLowerCase()) &&
+                            if (file.toLowerCase().includes(component_name.toLowerCase()) &&
                                 (file.endsWith(".json") || file.endsWith(".schema"))) {
                                 const content = contentList[filenameList.indexOf(file)];
                                 return {
@@ -915,9 +913,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         const property_name = validatedArgs.property_name;
                         // First try direct filename matching
                         for (const file of filenameList) {
-                            if (file
-                                .toLowerCase()
-                                .includes(component_name.toLowerCase()) &&
+                            if (file.toLowerCase().includes(component_name.toLowerCase()) &&
                                 (file.endsWith(".json") || file.endsWith(".schema"))) {
                                 const content = contentList[filenameList.indexOf(file)];
                                 const parsedContent = JSON.parse(content);
@@ -972,9 +968,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         const component_name = validatedArgs.component_name;
                         // First try direct filename matching
                         for (const file of filenameList) {
-                            if (file
-                                .toLowerCase()
-                                .includes(component_name.toLowerCase()) &&
+                            if (file.toLowerCase().includes(component_name.toLowerCase()) &&
                                 file.endsWith(".example.md")) {
                                 return {
                                     content: [
