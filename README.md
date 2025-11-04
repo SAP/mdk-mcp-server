@@ -60,7 +60,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
-    - In the JSON settings file, add a configuration block for MDK MCP server within a `mcpServers` section and save the file.
+    - In the JSON settings file, add a configuration block for MDK MCP server within a `mcpServers` section and save the file, the supported schema versions include 25.9, 25.6, 24.11 and 24.7, 25.9 is default version.
 
     ```
     {
@@ -68,7 +68,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": []
+          "args": ["--schema-version", "25.9"]
         }
       }
     }
@@ -87,7 +87,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcp": {
         "mdk-mcp": {
           "type": "local",
-          "command": ["mdk-mcp"],
+          "command": ["mdk-mcp", "--schema-version", "25.9"],
           "enabled": true
         }
       }
@@ -105,7 +105,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcpServers": {
         "mdk-mcp": {
           "command": "mdk-mcp",
-          "args": []
+          "args": ["--schema-version", "25.9"]
         }
       }
     }
