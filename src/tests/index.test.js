@@ -701,7 +701,7 @@ describe("index.ts - MCP Server", () => {
       
       if (!fs.existsSync(versionEmbeddingPath)) {
         console.log("Initializing embeddings for testing...");
-        retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+        await retrieveAndStore(schemaPath, serverConfig.schemaVersion);
       }
       
       const searchResults = await search("ObjectHeader", 3, serverConfig.schemaVersion);
@@ -730,7 +730,7 @@ describe("index.ts - MCP Server", () => {
       
       if (!fs.existsSync(versionEmbeddingPath)) {
         console.log("Initializing name embeddings for testing...");
-        retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+        await retrieveAndStore(schemaPath, serverConfig.schemaVersion);
       }
       
       const nameResults = await searchNames("ObjectHeader", 1, serverConfig.schemaVersion);

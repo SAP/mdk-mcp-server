@@ -89,18 +89,21 @@ function splitDocuments(docs: Document[]): Chunk[] {
  *   4. Store the chunks and their embeddings in the vector database.
  * This is the main function to be called to populate the vector database with MDK schema data.
  */
-export function retrieveAndStore(folderPath: string, version: string): void {
+export async function retrieveAndStore(
+  folderPath: string,
+  version: string
+): Promise<void> {
   const docs = loadDocumentsFromFolder(path.join(folderPath, version));
   const chunks = splitDocuments(docs);
 
   const texts = chunks.map(chunk => chunk.source + "\n" + chunk.content);
-  createEmbeddings(`schema-chunks-${version}`, texts);
+  await createEmbeddings(`schema-chunks-${version}`, texts);
 
   const names = docs.map(doc => {
     const filename = path.basename(doc.source);
     return filename ? filename.split(".")[0] : "";
   });
-  createEmbeddings(`name-chunks-${version}`, names);
+  await createEmbeddings(`name-chunks-${version}`, names);
 }
 
 /**
