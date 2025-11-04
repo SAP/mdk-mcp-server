@@ -13,7 +13,7 @@ The SAP Mobile Development Kit (MDK) is a powerful framework that enables develo
 Some of SAP’s larger and complex mobile apps are built using MDK. An example is [SAP Service and Asset Manager](https://www.sap.com/sea/products/scm/asset-manager.html).
 
 > [!NOTE]
-> This MCP server is an early release version of the MDK. It can run on both Mac and Windows. You may encounter bugs or unfinished features. We'd love your feedback to make it better! Please report issues or share suggestions via [GitHub issues](https://github.com/sap/mdk-mcp-server/issues).
+> This MCP server is an early release version of the MDK. You may encounter bugs or unfinished features. We'd love your feedback to make it better! Please report issues or share suggestions via [GitHub issues](https://github.com/sap/mdk-mcp-server/issues).
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
-    - In the JSON settings file, add a configuration block for MDK MCP server within a `mcpServers` section and save the file, the supported schema versions include 25.9, 25.6, 24.11 and 24.7, 25.9 is default version.
+    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 25.9, 25.6, 24.11, and 24.7. 25.9 is the default version.
 
     ```
     {
