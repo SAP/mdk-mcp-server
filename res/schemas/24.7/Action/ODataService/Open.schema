@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.Open",
+  "title": "ODataService Open",
+  "description": "This action is used to open connection to an **online** OData service instance. You must performed ODataService.Create action on the same service before executing this action.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.\n\nThis action is deprecated. Please use [Action.Type.ODataService.Initialize](./Initialize.schema.md).",
+  "properties": {
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.Open"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

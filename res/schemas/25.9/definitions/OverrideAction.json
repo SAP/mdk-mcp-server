@@ -1,0 +1,20 @@
+{
+  "$id": "definitions/OverrideAction",
+  "title": "Override Action",
+  "description": "The following describes the metadata properties to override control and action's properties that accept actions e.g. `OnLoaded`, `OnResume`, `OnPress`, `OnSuccess`, `OnFailure` ,'OnPulledDown' and etc. Multi-level overriding is also supported.",
+  "properties": {
+    "Name": {
+      "type": "string",
+      "description": "Action that will be overridden."
+    },
+    "Properties": {
+      "type": "object",
+      "description": "Properties and their values that will be overridden. All properties and events can be overridden except `_Type`."
+    }
+  },
+  "required": [
+    "Name",
+    "Properties"
+  ],
+  "type": "object"
+}

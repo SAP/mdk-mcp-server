@@ -1,0 +1,82 @@
+{
+  "$id": "Page/FioriToolbarItem/Button",
+  "title": "Button",
+  "description": "A button communicates the action that it is going to initiate. Users can click a button to begin a process or workflow, or to trigger an action.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be executed when the button is pressed. The ClientAPI object to be received in rule function is [SectionProxy](../../../apidoc/classes/sectionproxy.md)."
+    },
+    "Title": {
+      "type": "string",
+      "description": "Set title for button."
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        { "const": "Primary", "description": "Emphasize the most important actions." },
+        { "const": "Secondary", "description": "Less emphasis, but still require user's attention." },
+        { "const": "Text", "description": "Less important actions users can take." }
+      ],
+      "default": "Text",
+      "description": "Important types of the button."
+    },
+    "Semantic": {
+      "type": "string",
+      "enum": [
+        { "const": "Normal", "description": "Use it for neutral actions, e.g. Back / Cancel." },
+        { "const": "Tint", "description": "Use it for positive actions, e.g. Update / Add / Approve." },
+        { "const": "Negative", "description": "Use it for negative actions, e.g. Delete / Reset / Reject." }
+      ],
+      "default": "Tint",
+      "description": "Use the semantic buttons for positive and negative actions."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The image to be displayed with the title."
+    },
+    "ImagePosition": {
+      "type": "string",
+      "enum": [ "Leading", "Trailing" ],
+      "default": "Leading",
+      "description": "Position of the image to be displayed along with the title"
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for button.",
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Image`."
+        },
+        "Button": {
+          "type": "string",
+          "$ref": "Styles/ButtonNewClass",
+          "description": "The string value is a style class name of `Button`."
+        }
+      }
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Sets the button as enabled or disabled.",
+      "default": true
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FioriToolbarItem.Type.Button"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

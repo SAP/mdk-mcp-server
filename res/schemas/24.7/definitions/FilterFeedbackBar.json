@@ -1,0 +1,44 @@
+{
+    "$id": "definitions/FilterFeedbackBar",
+    "title": "FilterFeedbackBar",
+    "description": "A horizontal bar displayed below `ActionBar` / `SearchBar` that includes filter feedback items. It uses area interactive chips to communicate which filters have been applied to the list, and allows users to quickly apply frequently-used filters. Users can scroll the bar horizontally to see any additional items that may be off-screen. Please note that `AllowEmptySelection` and `AllowMultipleSelection` are not supported yet on `FilterFeedbackBar`, so currently all fast filter items will always allow empty selection and multiple selections. Please avoid to use `AllowEmptySelection` and `AllowMultipleSelection` on form cell controls in standard filters if you intend to use `FilterFeedbackBar` as well.\nSpecifically for iOS, `FilterFeedbackBar` cannot be displayed if `FilterFeedbackBar` is defined on `SectionedTable` with 'ObjectHeader` as first section.",
+    "properties": {
+        "ShowAllFilters": {
+            "type": "boolean",
+            "description": "Show all selected filters from standard filters / filter page even when there is no matching item defined on the FastFilters array. Default value `true` is only applicable if `FilterFeedbackBar` is defined.",
+            "default": true
+        },
+        "FastFilters": {
+            "type": "array",
+            "items": {
+                "$ref": "Page/SectionedTable/FastFilterItem"
+            },
+            "description": "Fast filter items."
+        },
+        "Styles": {
+            "type": "object",
+            "description": "Not supported on Android.",
+            "properties": {
+                "Bar": {
+                    "$ref": "Styles/FilterFeedbackBarClass",
+                    "description": "The style to be applied for `FilterFeedbackBar`."
+                },
+                "Active": {
+                    "$ref": "Styles/FilterFeedbackItemClass",
+                    "description": "The style to be applied when the filter item is in active state."
+                },
+                "InActive": {
+                    "$ref": "Styles/FilterFeedbackItemClass",
+                    "description": "The style to be applied when the filter item is in inactive state."
+                }
+            }
+        },
+        "_Name": {
+            "type": "string"
+        },
+        "_Type": {
+            "const": "Control.Type.FilterFeedbackBar"
+        }
+    },
+    "type": "object"
+}

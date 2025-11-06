@@ -1,0 +1,70 @@
+{
+  "$id": "Page/NavigationDrawer/SideDrawerItem",
+  "title": "SideDrawerItem",
+  "description": "This is an object representing a navigation item in side drawer",
+  "properties": {
+    "_Name": {
+      "type": "string"
+    },
+    "Title": {
+      "description": "A caption label for the item",
+      "type": "string"
+    },
+    "Image": {
+      "description": "Image to be displayed for the item. Image will display together with Title if specified.",
+      "$ref": "definitions/Image"
+    },
+    "OnPress": {
+      "description": "Action/Rule to be triggered when the item is pressed.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "PageToOpen": {
+      "description": "Page to be rendered, references a .page file.",
+      "$ref": "definitions/Page"
+    },
+    "ResetIfPressedWhenActive": {
+      "description": "Flag to determine whether we need to navigate back to the initial page (PageToOpen) when the selected side drawer item is pressed again",
+      "type": "boolean",
+      "default": false
+    },
+    "Visible": {
+      "description": "A flag to determine if the item is visible",
+      "type": "boolean",
+      "default": true
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Left",
+      "description": "Choose one of the options based on how you want the text alignment on your side drawer item to appear."
+    },
+    "Styles": {
+      "description": "Override styles for the item.",
+      "properties": {
+        "SectionItemActive": {
+          "type": "string",
+          "description": "Use this to style menu item which is currently selected."
+        },
+        "SectionItemOnPress": {
+          "type": "string",
+          "description": "Use this to style menu item when it is touched upon."
+        },
+        "SectionItemInactive": {
+          "type": "string",
+          "description": "Use this to style all the menu items that are not selected."
+        },
+        "SectionItemImage": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for image in menu item."
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "_Name",
+    "Title"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/GridLayout",
+  "title": "GridLayout",
+  "description": "The layout of columns in a Grid Table row.",
+  "type": "object",
+  "properties": {
+    "ColumnWidth": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Array of fixed width of a column that you can specify."
+    },
+    "ColumnWidthPercentage": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Array of column width percentages in fractions of 1. A width percentage of -1 denotes auto-width, that is, it takes up all the remaining space. There can only be one -1 width item per section."
+    },
+    "Spacing": {
+      "type": "number",
+      "description": "The spacing between columns. For Android devices, this property is ignored."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    }
+  }
+}

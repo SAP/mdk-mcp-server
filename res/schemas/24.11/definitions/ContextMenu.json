@@ -1,0 +1,41 @@
+{
+  "$id": "definitions/ContextMenu",
+  "title": "ContextMenu",
+  "type": "object",
+  "description": "Define the contextmenu for the Cell. On the iOS platform, the context menu will display only when turning off all sections' selection if the metadata contains the context menu and multiple selections at the same time.",
+  "properties": {
+    "PerformFirstActionWithFullSwipe": {
+      "type": "boolean",
+      "default": true,
+      "description": "A Boolean value indicating whether a full swipe automatically performs the first action. It's only for the iOS platform."
+    },
+    "LeadingItems": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of unique name from contextmenu for displaying swipe action at the leading position. MDK only display the 1st action on the Android platform."
+    },
+    "TrailingItems": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of unique name from contextmenu for displaying swipe action at the trailing position. MDK only display the 1st action on the Android platform."
+    },
+    "Items": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions/MenuItem"
+      },
+      "description": "Define all the swipe actions."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "ObjectCell.Type.ContextMenu",
+      "description": "Type is currently supported only for ObjectCell."
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "CIM",
+  "title": "CIM (Component Integration Metadata)",
+  "description": "A CIM file can be used to enable developers to integrate their own component apps into the existing MDK app, or to customize the MDK app with their own branding information.",
+  "properties": {
+    "ApplicationName": {
+      "type": "string"
+    },
+    "ComponentVersion": {
+      "pattern": "^(\\d+\\.)?(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)$",
+      "type": "string",
+      "description": "Examples: \"1\", \"1.0\", \"1.0.0\", \"2.3.4\""
+    },
+    "ProjectName": {
+      "type": "string"
+    },
+    "IntegrationPoints": {
+      "items": {
+        "$ref": "definitions/IntegrationPoint"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "ApplicationName",
+    "ProjectName",
+    "IntegrationPoints"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,50 @@
+{
+  "$id": "Page/SectionedTable/Control/ObjectHeaderChart",
+  "title": "ObjectHeaderChart",
+  "properties": {
+    "Title": {
+      "description": "Title for the Chart.",
+      "type": "string"
+    },
+    "Subtitle": {
+      "description": "SubTitle for the Chart.",
+      "type": "string"
+    },
+    "TrendTitle": {
+      "description": "Denotes the trend of the Chart.",
+      "type": "string"
+    },
+    "TrendColor": {
+      "description": "Support iOS only. Color for `TrendTitle`. Will be overridden if Styles applied. Use HexCode for the color.",
+      "type": "string"
+    },
+    "TrendImage": {
+      "description": "Support iOS only. The trend image of the Chart.",
+      "$ref": "definitions/Image"
+    },
+    "KPI": {
+      "type": "object",
+      "description": "Support iOS only. A small KPI as a part of the Chart. Does not support CaptionLabel and ProgressView.",
+      "properties": {
+        "MetricItems": {
+          "description": "The KPI values and units.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/MetricItem"
+          },
+          "type": "array"
+        },
+        "Icon": {
+          "description": "This can be an image from a local resource or an image from web (HTTPS only).",
+          "$ref": "definitions/Image"
+        }
+      }
+    },
+    "ChartView": {
+      "$ref": "definitions/ChartView"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

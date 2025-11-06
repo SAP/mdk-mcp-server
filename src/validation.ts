@@ -11,8 +11,8 @@ const MAX_STRING_LENGTH = 10000;
 const MAX_PATH_LENGTH = 1000;
 const MAX_ENTITY_SETS = 50;
 
-// Allowed characters for different input types
-const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\s]+$/;
+// Allowed characters for different input types - support Windows paths with drive letters and backslashes
+const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\\s:()]+$/;
 const SAFE_PROMPT_REGEX = /^[\w\s.-_,;:!?()[\]{}"'=+/<>@#$%&*`~\n\r\t]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
@@ -41,7 +41,7 @@ export const ValidationSchemas = {
     .default(false),
 
   templateType: z.enum(["crud", "list detail", "base"], {
-    errorMap: () => ({ message: "Invalid template type" }),
+    message: "Invalid template type",
   }),
 
   operation: z.enum(
@@ -54,7 +54,7 @@ export const ValidationSchemas = {
       "open-mobile-app-editor",
     ],
     {
-      errorMap: () => ({ message: "Invalid operation type" }),
+      message: "Invalid operation type",
     }
   ),
 
@@ -76,7 +76,7 @@ export const ValidationSchemas = {
       "Calendar",
     ],
     {
-      errorMap: () => ({ message: "Invalid control type" }),
+      message: "Invalid control type",
     }
   ),
 
@@ -90,7 +90,7 @@ export const ValidationSchemas = {
       "Extension",
     ],
     {
-      errorMap: () => ({ message: "Invalid layout type" }),
+      message: "Invalid layout type",
     }
   ),
 
@@ -138,7 +138,14 @@ export const ValidationSchemas = {
       "Filter",
     ],
     {
-      errorMap: () => ({ message: "Invalid action type" }),
+      message: "Invalid action type",
+    }
+  ),
+
+  documentationOperation: z.enum(
+    ["search", "component", "property", "example"],
+    {
+      message: "Invalid documentation operation type",
     }
   ),
 
@@ -224,17 +231,17 @@ export function validateSecurePath(inputPath: string): string {
   // Additional security checks
   const resolvedPath = path.resolve(inputPath);
 
-  // Check for suspicious patterns
+  // Check for suspicious patterns (handle both Windows and Unix paths)
   const suspiciousPatterns = [
     /\.\./, // Directory traversal
-    /\/proc\//, // Linux proc filesystem
-    /\/sys\//, // Linux sys filesystem
-    /\/dev\//, // Device files
-    /\/etc\//, // System configuration
-    /C:\\Windows/i, // Windows system directory
-    /C:\\System32/i, // Windows system32
-    /\/Library\//, // macOS system library
-    /\/System\//, // macOS system directory
+    /[/\\]proc[/\\]/, // Linux proc filesystem
+    /[/\\]sys[/\\]/, // Linux sys filesystem
+    /[/\\]dev[/\\]/, // Device files
+    /[/\\]etc[/\\]/, // System configuration
+    /C:[/\\]Windows/i, // Windows system directory
+    /C:[/\\]System32/i, // Windows system32
+    /[/\\]Library[/\\]/, // macOS system library
+    /[/\\]System[/\\]/, // macOS system directory
   ];
 
   for (const pattern of suspiciousPatterns) {
@@ -297,10 +304,6 @@ export function validateToolArguments(
       break;
 
     case "mdk-gen-i18n":
-    case "mdk-build":
-    case "mdk-deploy":
-    case "mdk-validate":
-    case "mdk-migrate":
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );
@@ -333,13 +336,7 @@ export function validateToolArguments(
       );
       break;
 
-    case "mdk-show-qrcode":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      break;
-
-    case "mdk-project-operation":
+    case "mdk-manage":
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );
@@ -348,26 +345,53 @@ export function validateToolArguments(
       );
       break;
 
-    case "mdk-search-documentation":
-      validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
-      validatedArgs.N = ValidationSchemas.resultCount.parse(args.N || 5);
-      break;
+    case "mdk-docs": {
+      validatedArgs.folderRootPath = validateSecurePath(
+        String(args.folderRootPath)
+      );
+      validatedArgs.operation = ValidationSchemas.documentationOperation.parse(
+        args.operation
+      );
 
-    case "mdk-get-component-documentation":
-    case "mdk-get-example":
-      validatedArgs.component_name = ValidationSchemas.componentName.parse(
-        args.component_name
-      );
+      // Validate operation-specific parameters
+      const operation = validatedArgs.operation as string;
+      if (operation === "search") {
+        if (!args.query) {
+          throw new ValidationError("query", args.query, [
+            "Query is required for search operation",
+          ]);
+        }
+        validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
+        validatedArgs.N = ValidationSchemas.resultCount.parse(args.N || 5);
+      } else if (operation === "component" || operation === "example") {
+        if (!args.component_name) {
+          throw new ValidationError("component_name", args.component_name, [
+            "Component name is required for this operation",
+          ]);
+        }
+        validatedArgs.component_name = ValidationSchemas.componentName.parse(
+          args.component_name
+        );
+      } else if (operation === "property") {
+        if (!args.component_name) {
+          throw new ValidationError("component_name", args.component_name, [
+            "Component name is required for property operation",
+          ]);
+        }
+        if (!args.property_name) {
+          throw new ValidationError("property_name", args.property_name, [
+            "Property name is required for property operation",
+          ]);
+        }
+        validatedArgs.component_name = ValidationSchemas.componentName.parse(
+          args.component_name
+        );
+        validatedArgs.property_name = ValidationSchemas.propertyName.parse(
+          args.property_name
+        );
+      }
       break;
-
-    case "mdk-get-property-documentation":
-      validatedArgs.component_name = ValidationSchemas.componentName.parse(
-        args.component_name
-      );
-      validatedArgs.property_name = ValidationSchemas.propertyName.parse(
-        args.property_name
-      );
-      break;
+    }
 
     default:
       throw new ValidationError("toolName", toolName, ["Unknown tool name"]);

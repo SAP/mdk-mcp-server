@@ -1,0 +1,22 @@
+{
+  "$id": "Page/Common/FixedObjectCellCollection",
+  "title": "FixedObjectCellCollection",
+  "description": "This document describes the metadata properties available when mapping a fixed objectcell collection to a formcell list-picker control. Typically the controls that make use of this definition display some sort of list to the user.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+        "ObjectCell": {
+            "$ref": "Page/SectionedTable/Control/ObjectCell"
+        },
+        "ReturnValue": {
+            "description": "The value to return on selection.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "ObjectCell",
+        "ReturnValue"
+    ]
+  }
+}

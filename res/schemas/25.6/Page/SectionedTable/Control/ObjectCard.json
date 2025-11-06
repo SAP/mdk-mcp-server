@@ -1,0 +1,99 @@
+{
+  "$id": "Page/SectionedTable/Control/ObjectCard",
+  "title": "ObjectCard",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only valid for static section, will be ignored in dynamic sections and List pickers."
+    },
+    "Title": {
+      "type": "string",
+      "description": "Title text to be displayed on the cell"
+    },
+    "Subhead": {
+      "description": "A sub-header label in the main view.",
+      "type": "string"
+    },
+    "Footnote": {
+      "description": "Text of footnote, which is initially hidden. Setting a non-empty string would no longer hide the label. This is supported only for iOS & Android.",
+      "type": "string"
+    },
+    "DetailImage": {
+      "description": "Image to be displayed in the cell.",
+      "$ref": "definitions/Image"
+    },
+    "DetailImageIsCircular": {
+      "type": "boolean",
+      "default": false,
+      "description": "If the value is true, the image is displayed in a circular shape."
+    },
+    "StatusText": {
+      "description": "A status label displayed in the status view. It’s expected to either set `StatusText` or `StatusImage` to display either one as the same position. When both are set, `StatusImage` would be displayed in priority. Would not be displayed if control is rendered within FlexibleColumnLayout (except for last column), use `StatusImage` instead.",
+      "type": "string"
+    },
+    "Description": {
+      "description": "Will not be displayed if control is rendered within FlexibleColumnLayout (except for last column).",
+      "type": "string"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the object cell is pressed."
+    },
+    "OverflowButtons": {
+      "$ref": "Page/SectionedTable/Control/OverflowButton",
+      "description": "Defines the ActionItems for the Object Card. On Mobile Platforms (iOS & Android), this is fully supported. On the web platform, only the first visible instance of the ActionItems would appear."
+    },
+    "PrimaryAction": {
+      "$ref": "Page/SectionedTable/Control/ActionItem",
+      "description": "Defines the primary action button for the Object Card."
+    },
+    "SecondaryAction": {
+      "$ref": "Page/SectionedTable/Control/ActionItem",
+      "description": "Defines the secondary action button for the Object Card."
+    },
+    "Styles": {
+      "description": "Style to be applied on the object card. Note that font size & bold style & font background color are not supported for Android. Only red, green and default color are supported for Android `StatusText` style. CSS Shadow Parts are required for the `BackgroundColor`, `Title`, `SubHead` & `StatusText` styles of Web Client.",
+      "properties": {
+        "Description": {
+          "type": "string",
+          "$ref": "Styles/TextPaintObjectCardClass",
+          "description": "The string value is a style class name of `Description`."
+        },
+        "Footnote": {
+          "type": "string",
+          "$ref": "Styles/TextPaintObjectCardClass",
+          "description": "The string value is a style class name of `Footnote`."
+        },
+        "StatusText": {
+          "type": "string",
+          "$ref": "Styles/TextPaintObjectCardClass",
+          "description": "The string value is a style class name of `StatusText`."
+        },
+        "Subhead": {
+          "type": "string",
+          "$ref": "Styles/TextPaintObjectCardClass",
+          "description": "The string value is a style class name of `Subhead`."
+        },
+        "Title": {
+          "type": "string",
+          "$ref": "Styles/TextPaintObjectCardClass",
+          "description": "The string value is a style class name of `Title`."
+        },
+        "BackgroundColor": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `BackgroundColor`. "
+        }
+      },
+      "type": "object"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "ObjectCardCollection.Type.Card"
+    }
+  },
+  "type": "object"
+}

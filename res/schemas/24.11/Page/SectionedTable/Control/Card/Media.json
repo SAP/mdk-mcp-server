@@ -1,0 +1,38 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Media",
+  "title": "CardMedia",
+  "description": "An optional decorative element that allows you to include an image that matches the card context.",
+  "properties": {
+    "Image": {
+      "description": "Image to be displayed above card header in the card.",
+      "$ref": "definitions/Image"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "Styles": {
+      "description": "Style to be applied on the card media.",
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `Image`."
+        },
+        "Media": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Media`."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "Card.Type.Media"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

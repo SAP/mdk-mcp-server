@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.Clear",
+  "title": "OfflineOData Clear",
+  "description": "OfflineOData Clear action is used to close and delete the offline store from the file system.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Force": {
+      "type": "boolean",
+      "description": "By default this action will abort if there are pending uploads or the request queue (local offline changes) is not empty. Set force to true to ignore the state of the store and attempt to clear"
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service to be cleared"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.Clear"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

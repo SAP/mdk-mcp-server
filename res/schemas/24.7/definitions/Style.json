@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/Style",
+  "title": "Style",
+  "pattern": "(^\/.+\/Styles\/).*(.+\\.css)$|(^Styles\/).*(.+\\.css)$|(^\/.+\/Styles\/).*(.+\\.less)$|(^Styles\/).*(.+\\.less)$",
+  "description": "Reference to a style LESS file in the `Styles` folder e.g. /MyApp/Styles/MyStyleSheet.less",
+  "type": "string"
+}

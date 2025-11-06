@@ -1,0 +1,94 @@
+{
+  "$id": "Page/SectionedTable/Container/ObjectTable",
+  "title": "ObjectTable",
+  "description": "This is a table style UI component for displaying information about an object, If they are the only section on a SectionedTable and do not have a `MaxItemCount` set.",
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.ObjectTable"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "If MaxItemCount is not specified, then all records are displayed in the section."
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "HighlightSelectedItem": {
+      "type": "boolean",
+      "default": false,
+      "description": "Apply highlight on selected item. The highlight is automatically applied if there is only one section in the page, and the page is displayed within FlexibleColumnLayout column (except for last column). The automatic highlight can be disabled by explicitly setting the flag to false."
+    },
+    "ObjectCell": {
+      "$ref": "Page/SectionedTable/Control/ObjectCell"
+    },
+    "ObjectCells": {
+      "items": {
+        "properties": {
+          "ObjectCell": {
+            "$ref": "Page/SectionedTable/Control/ObjectCell"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array",
+      "description": "Use for static Object Tables. MaxItemCount and Target are ignored."
+    },
+    "Grouping": {
+      "$ref": "definitions/Grouping",
+      "description": "Grouping of the list items."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the ObjectTable. If more than one searchable section is provided in the SectionedTable, then the search definition from the first searchable section is used in defining the search bar behavior in the SectionedTable. If there is a `Search` object defined with `Enabled` set to true, search will be enabled. In iOS, when an ObjectTable is used alongside a header control (KPIHeader/ProfileHeader/ObjectHeader), search bar is not enabled."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "Selection": {
+      "$ref": "definitions/Selection",
+      "description": "Definition of the section that can enable or disabled multiple selection."
+    },
+    "OnSelectionChanged": {
+      "description": "The event handler that will be triggered when the user select or deselect the item on the list.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnSelectionModeChanged": {
+      "description": "The event handler that will be triggered when the user toggle on or off the selection mode for the list.",
+      "$ref": "definitions/ActionOrRule"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

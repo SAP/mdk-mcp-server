@@ -1,0 +1,62 @@
+{
+  "$id": "Action.Type.PopoverMenu",
+  "title": "PopoverMenu",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "You can create a customized popover menu containing a list of items and corresponding events.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Message": {
+      "description": "Text that appears on the popover menu.",
+      "type": "string"
+    },
+    "PopoverItems": {
+      "items": {
+        "properties": {
+          "Icon": {
+            "$ref": "definitions/Image",
+            "description": "Text or icon that appears on the popover menu"
+          },
+          "Title": {
+            "description": "Title of the popover menu",
+            "type": "string"
+          },
+          "Enabled": {
+            "type": "boolean",
+            "description": "If false, item is disabled.",
+            "default": true
+          },
+          "Visible": {
+            "type": "boolean",
+            "description": "If false, item is hidden.",
+            "default": true
+          },
+          "OnPress": {
+            "$ref": "definitions/ActionOrRule",
+            "description": "Action that is triggered when item is selected"
+          },
+          "Style": {
+            "type": "string",
+            "description": "The string value is a [style class](../Styles/ImageClass.style.md) name of `Icon`."
+          }
+        },
+        "required": [
+          "Title"
+        ],
+        "type": "object"
+      },
+      "description": "Array of items that appears on the popover menu",
+      "type": "array"
+    },
+    "Title": {
+      "description": "Title of the popover menu.",
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Action.Type.PopoverMenu"
+    }
+  },
+  "required": [
+    "PopoverItems",
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "$id": "definitions/ObjectCardCollectionLayout",
+  "title": "ObjectCardCollectionLayout",
+    "type": "object",
+    "description": "Layout properties for a collection view used in ObjectCardCollection section.",
+    "properties": {
+      "LayoutType": {
+        "type": "string",
+        "enum": [
+          "HorizontalScroll",
+          "Vertical"
+        ],
+        "default": "Vertical"
+      }
+    }
+  }

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.UploadStore",
+  "title": "OfflineOData Store Upload",
+  "description": "OfflineOData Store Upload is used for uploading the local udb files. It is only available on Windows for now.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "EncryptionKey": {
+      "type": "string",
+      "description": "The temporary encryption key used during the upload process"
+    },
+    "Note": {
+      "type": "string",
+      "description": "Optional note attached to the uploaded database file"
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service to be uploaded"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.UploadStore"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

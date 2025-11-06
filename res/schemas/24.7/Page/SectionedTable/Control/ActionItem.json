@@ -1,0 +1,34 @@
+{
+  "$id": "Page/SectionedTable/Control/ActionItem",
+  "title": "ActionItem",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of the button."
+    },
+    "OnPress": {
+      "anyOf": [
+        {
+          "$ref": "definitions/ActionOrRule"
+        },
+        {
+          "$ref": "Page/Common/OnPressObject"
+        }
+      ],
+      "description": "Action or rule to be performed when the event is triggered."  
+    },
+    "Title": {
+      "type": "string",
+      "description": "Label to be displayed on the button. For Android, the text is always in upper case and cannot be styled to contain lower case letters."
+    },
+    "Style": {
+      "type": "string",
+      "description": "It supports font-color, normal background-color and highlighted background-color for the button."
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/FormCellSectionLayout",
+  "title": "FormCell Section Layout",
+  "type": "object",
+  "description": "Layout properties used in the formcell section, the layout type is vertical only.",
+  "properties": {
+    "NumberOfColumns": {
+      "type": "integer",
+      "description": "The number of columns to be displayed.\n\n* In iOS, this setting is only valid in regular mode (iPad or large iPhone Landscape). In compact mode it will always be set to 1 column. \n* In Android, this setting is only valid when current screen width is larger than 600dp. When the current screen width (e.g. in phone portrait mode) is less than 600dp, it will always be set to 1 column.",
+      "default": 1
+    },
+    "MinimumInteritemSpacing": {
+      "type": "integer",
+      "description": "The minimum horizontal space between two items. If not provided, the SDK default will be used."
+    }
+  }
+}

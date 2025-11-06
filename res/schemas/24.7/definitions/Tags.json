@@ -1,0 +1,24 @@
+{
+  "$id": "definitions/Tags",
+  "title": "Tags",
+  "anyOf": [
+    {
+      "type": "array",
+      "items": {
+        "$ref": "Page/SectionedTable/Control/TagItem"
+      },
+      "description": "A list of tag labels to be shown below the `Subhead`."
+    },
+    {
+      "type": "string",
+      "description": "Single tag label to be shown below the `Subhead`."
+    },
+    {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "A list of tag labels to be shown below the `Subhead`. Able to display up to maximum of 3 tags."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$id": "definitions/DataTableLayout",
+  "title": "DataTableLayout",
+  "description": "The layout of columns in a Data Table row.",
+  "type": "object",
+  "properties": {
+    "ColumnWidth": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Array of fixed width of a column that you can specify.\n\nThere can only be one dynamic column for each Data Table that fills up the remaining width of the page.\n\nThe first negative value in the array will be taken as the dynamic column, subsequent negative values will default to 100 on Android and wrap text on iOS. If no negative values are specified in the array, first column is the dynamic column by default.\n\n"
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    }
+  }
+}

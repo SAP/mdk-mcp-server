@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/LoadingIndicator",
+  "title": "LoadingIndicator",
+  "description": "Configure the loading indicator shown at the initial page loading.",
+  "type": "object",
+  "properties": {
+    "Enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show or hide loading indicator when shown at the initial page loading."
+    },
+    "Text": {
+      "type": "string",
+      "default": "",
+      "description": "Text to show under the loading indicator. Only applicable when `Enabled` is set to true."
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/RatingItem",
+  "title": "RatingItem",
+  "type": "object",
+  "properties": {
+    "Score": {
+      "type": "number",
+      "description": "A numeric score to be displayed as stars rating. Supports value from 1-5. Half points are not supported."
+    },
+    "Label": {
+      "type": "string",
+      "description": "A label to provide additional information to the rating score, e.g. total votes received for the rating score."
+    },
+    "IconOn": {
+      "description": "Supported in iOS only. Custom icon to replace default filled star icon.",
+      "$ref": "definitions/Image"
+    },
+    "IconOff": {
+      "description": "Supported in iOS only. Custom icon to replace default empty star icon.",
+      "$ref": "definitions/Image"
+    },
+    "Styles": {
+      "description": "Supported in iOS only. Style to be applied on the `RatingItem`.",
+      "properties": {
+        "Label": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name for `Label`."
+        },
+        "IconOn": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `IconOn`."
+        },
+        "IconOff": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `IconOff`."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "CardHeaderExtendedHeader.Type.Rating"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

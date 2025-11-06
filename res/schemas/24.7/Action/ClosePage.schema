@@ -1,0 +1,38 @@
+{
+  "$id": "Action.Type.ClosePage",
+  "title": "ClosePage",
+  "description": "While closing the pages, you can either choose to terminate all the ongoing events or wait until they are executed successfully.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action. Not supported in TabPages",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "DismissModal": {
+      "enum": [
+        {
+          "const": "Action.Type.ClosePage.Completed",
+          "description": "Closes the page after all the pending actions are executed."
+        },
+        {
+          "const": "Action.Type.ClosePage.Canceled",
+          "description": "Ends the ongoing action execution and all the pending actions in the queue and closes the page."
+        }
+      ], 
+      "description": "Indicates how the page must be closed.", 
+      "type": "string"
+    },
+    "CancelPendingActions": {
+      "type": "boolean",
+      "description": "Indicates whether the pending actions in the queue must be cancelled or not.",
+      "default": false
+    },
+    "NavigateBackToPage": {
+      "type": "string",
+      "description": "This property allows you to navigate back to a specific page in the navigation history stack. It accepts the _Name property of the page you want to navigate back to.\nIf the specified page is not found in the navigation history stack then this action will fail, and the current page will not be closed.\nIf the specified page is found in the navigation history stack then the current page will be closed, and you will be navigated to the specified page. The pages between the current page and the specified page in the navigation history stack will be disposed and their `OnReturning` event will not be triggered.\n\nNotes: This property will be ignored if `DismissModal` or `CancelPendingActions` properties are defined.\nYou can only navigate back to a page within the same frame. For example, if you are closing a page inside a modal frame, then you can only specify a page name that's within the same modal's navigation history stack. You can't specify a page that is in the main navigation history stack behind the modal."
+    },
+    "_Type": {
+      "const": "Action.Type.ClosePage"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

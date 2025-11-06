@@ -1,0 +1,41 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/ActionButton",
+  "title": "CardActionButton",
+  "description": "Supports one specific action and/or multiple actions that directly impact the card. Specifically for Android, the `OnPress` and `OverflowItems` cannot co-exist, when both properties are defined, the `OverflowItems` would take precedence.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "Image": {
+      "description": "Image to be replace default overflow image in the card header. Change to another image relevant to the action if card only requires one specific action instead of multiple actions.",
+      "$ref": "definitions/Image"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the action button is pressed. When both `OnPress` and `OverflowItems` are defined, it is recommended for the `OnPress` to not trigger UI related actions e.g. `Message` action, `ToastMessage` action, etc, as it could cause render issue for the `OverflowItems` popup.\nThe ClientAPI object to be received in rule function is [CardHeaderActionButtonProxy](../../../../../apidoc/classes/cardheaderactionbuttonproxy.md)."
+    },
+    "OverflowItems": {
+      "$ref": "Page/SectionedTable/Control/Card/OverflowItem",
+      "description": "Defines the ActionItems for the Card."
+    },
+    "Styles": {
+      "description": "Style to be applied on the `ActionButton`.",
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `Image`. Style would be applied to default overflow image if `Image` is not defined. Customisation of `Image`'s size is not supported on the default overflow image."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "CardHeader.Type.ActionButton"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

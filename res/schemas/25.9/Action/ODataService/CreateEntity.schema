@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.CreateEntity",
+  "title": "ODataService CreateEntity",
+  "description": "CreateEntity action is used to create a new entity against the specified OData service. You can also create links to its navigation properties.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "CreateLinks": {
+      "items": {
+        "$ref": "definitions/LinkItem"
+      },
+      "type": "array",
+      "description": "An array of navigation properties to be linked."
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "Properties": {
+      "type": "object",
+      "description": "A list of the target entity's property names and values in key/value pairs format. Complex and Binary property types are supported. Developers should filter files by file extensions and limit by size when reading a binary file before passing the binary data."
+    },
+    "Target": {
+      "$ref": "definitions/Target"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.CreateEntity"
+    }
+  },
+  "required": [
+    "Properties",
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

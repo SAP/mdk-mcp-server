@@ -1,0 +1,121 @@
+{
+  "$id": "Page/FormCell/InlineSignatureCapture",
+  "title": "InlineSignatureCapture",
+  "description": "Inline Signature Capture control allows app to capture user's signature. The captured signature is kept in png format binary and must be persisted by the apps to their back end system.\n\nInline Signature Capture does not allow loading or modifying a previously captured signature. Users must always sign a new signature to replace existing one. App should use Image Collection for displaying an existing signature image.",
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The caption label of this control."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "default": true,
+      "description": "The control will be displayed on the page by default. It will be hidden if set to false."
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Value": {
+      "type": "object",
+      "description": "This is a read-only property that contains the captured signature value. It contains undefined if no signature is captured; otherwise it contains a JavaScript Object.",
+      "properties": {
+        "contentType": {
+          "type": "string",
+          "description": "Content type of the captured signature image, its value is always `image/png`."
+        },
+        "content": {
+          "type": "string",
+          "contentEncoding": "binary",
+          "description": "Binary data of the captured signature image."
+        }
+      },
+      "required": [
+        "contentType",
+        "content"
+      ]
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "ShowTimestampInImage": {
+      "type": "boolean",
+      "default": false,
+      "description": "The datetime will be displayed in the captured image."
+    },
+    "ShowXMark": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the X Mark on the Signature Pad."
+    },
+    "ShowUnderline": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the underline in the Signature Pad."
+    },
+    "WatermarkText": {
+      "type": "string",
+      "description": "The watermark text will be displayed in the captured image."
+    },
+    "WatermarkTextMaxLines": {
+      "type": "integer",
+      "default": 5,
+      "description": "The maximum lines of watermark text will be displayed in the captured image."
+    },
+    "TimestampFormatter": {
+      "type": "string",
+      "description": "Set DateTime format pattern string for the timestamp on the captured image, it takes effect only when `ShowTimestampInImage` is set to true. Example: `yyyy-MM-dd`. It must follow the date and time formatter pattern. For the iOS platform, please refer to the [Date_Format_Patterns](http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns); for the Android platform, please refer to the [Date Time Pattern](https://developer.android.com/reference/java/text/SimpleDateFormat#date-and-time-patterns)."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption` and `SignatureCapture` and `SignatureCaptureUnderline`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`. (Android Only)"
+        },
+        "SignatureCapture": {
+          "type": "string",
+          "$ref": "Styles/SignatureCaptureClass",
+          "description": "The style class name defined in a less file for configuring signature pad's properties."
+        },
+        "SignatureCaptureUnderline": {
+          "type": "string",
+          "$ref": "Styles/SignatureCaptureUnderlineClass",
+          "description": "The stye class name defined in a less file for configuring the underline of signature pad."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.InlineSignatureCapture"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

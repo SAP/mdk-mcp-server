@@ -1,0 +1,66 @@
+{
+  "$id": "Page/NavigationDrawer/SideDrawerSection",
+  "title": "SideDrawerSection",
+  "description": "This is an aggegation of navigation pages in side drawer.",
+  "properties": {
+    "_Name": {
+      "type": "string"
+    },
+    "Caption": {
+      "description": "A caption label for the section",
+      "type": "string"
+    },
+    "Visible": {
+      "description": "A flag to determine if the section is visible",
+      "type": "boolean",
+      "default": true
+    },
+    "PreserveImageSpacing": {
+      "description": "A flag to determine if the space for image in the items will be preserved when there is no image.",
+      "type": "boolean",
+      "default": true
+    },
+    "SeparatorEnabled": {
+      "description": "A flag to determine if the separator at the end of the section will be displayed.",
+      "type": "boolean",
+      "default": true
+    },
+    "Items": {
+      "type": "array",
+      "description": "List of navigation items in the section. The list can be defined directly as an array or from a rule which returns the array.",
+      "items": {
+        "$ref": "Page/NavigationDrawer/SideDrawerItem"
+      }
+    },
+    "Styles": {
+      "description": "Override the styles for the section.",
+      "properties": {
+        "SectionCaption": {
+          "type": "string",
+          "description": "Use this to style the text view of section caption."
+        },
+        "SectionSeparator": {
+          "type": "string",
+          "description": "Use this to style the separators dividing sections. Can also remove by setting border-bottom-width to 0."
+        }, 
+        "SectionItemActive": {
+          "type": "string",
+          "description": "Use this to style menu item which is currently selected.\n\nThis style can be overridden at item level."
+        },
+        "SectionItemOnPress": {
+          "type": "string",
+          "description": "Use this to style menu item when it is touched upon.\n\nThis style can be overridden at item level."
+        },
+        "SectionItemInactive": {
+          "type": "string",
+          "description": "Use this to style all the menu items that are not selected.\n\nThis style can be overridden at item level."
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "Items"
+  ],
+  "type": "object"
+}

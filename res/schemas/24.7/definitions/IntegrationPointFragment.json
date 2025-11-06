@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointFragment",
+  "title": "IntegrationPointFragment",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Fragment"
+    },
+    "Target": {
+      "$ref": "definitions/Fragment"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

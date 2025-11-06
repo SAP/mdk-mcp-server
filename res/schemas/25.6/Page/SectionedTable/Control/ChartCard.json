@@ -1,0 +1,155 @@
+{
+    "$id": "Page/SectionedTable/Control/ChartCard",
+    "title": "ChartCard",
+    "properties": {
+        "_Type": {
+            "const": "Card.Type.Chart"
+        },
+        "_Name": {
+            "type": "string"
+        },
+        "ChartType": {
+            "description":"Chart type of the chart card.\n\nIn Android, scrolling is not supported for bar type and only two data series can be displayed. In iOS, scrolling is supported for bar type.",
+            "enum": [
+                "Line",
+                "Column",
+                "Bar",
+                "Donut"
+            ],
+            "default": "Line",
+            "type": "string"
+        },
+        "Title": {
+            "type": "string"
+        },
+        "TrendImage": {
+            "description": "iOS only. Use `IsTrendUpward` for Android.",
+            "$ref": "definitions/Image"
+        },
+        "IsTrendUpward": {
+            "description": "Android only. Use `TrendImage` for iOS. Set `IsTrendUpward` to `true` for positive trend and is styled with color Green. Set `IsTrendUpward` to `false` for negative trend and is styled with color Red.",
+            "type": "boolean"
+        },
+        "TrendTitle": {
+            "description": "In iOS, if `Subtitle` is also set, then `TrendTitle` will be ignored.",
+            "type": "string"
+        }, 
+        "Subtitle": {
+            "description": "iOS only. If `Subtitle` is set, then `TrendTitle` will be ignored.",
+            "type": "string"
+        },
+        "StatusText": {
+            "type": "string"   
+        },
+        "LeadingUnit": {
+            "type": "string"
+        },
+        "Metric": {
+            "type": "string"
+        },
+        "TrailingUnit": {
+            "type": "string"
+        },
+        "NoDataText": {
+            "description": "Placeholder text when chart data is not available. If this is absent, no text will be displayed when chart data is empty.",
+            "type": "string"
+        },
+        "SeriesTitle": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "SeriesColor": {
+            "description": "Can be a hex string, e.g. #fcba03 or color string. e.g. blue. iOS only, it is not configurable in Android.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "DataSeries": {
+            "properties": {
+                "Data": {
+                    "description": "Array of arrays containing specific data elements",
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "description": "Data elements",
+                            "type": "number"
+                        }
+                    }
+                },
+                "CategoryTitles": {
+                    "description": "`CategoryTitles` is compulsory, no fallback maintained; Android only renders even numbered array elements when specified; In iOS, `CategoryTitles` only displays first and last elements of the array; Number of values in `Data` and `CategoryTitles` must be the same for the last value of `CategoryTitles` to be displayed.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "CategoryLabelVisible": {
+                    "description": "iOS only. Whether to show the category label.",
+                    "type": "boolean"
+                },
+                "NumericLabelVisible": {
+                    "description": "iOS only. Whether to show the numerical label.",
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "DataSubscriptions": {
+            "description": "Array of data change events to subscribe to.",
+            "$ref": "definitions/DataSubscriptions"
+        },
+        "Target": {
+            "$ref": "definitions/LinkQueryFunctionTarget",
+            "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+        },
+        "Styles": {
+            "type": "object",
+            "properties": {
+                "Title": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `Title`."
+                },
+                "Subtitle": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `Subtitle`. iOS only."
+                },
+                "StatusText": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `StatusText`."
+                },
+                "SeriesTitle": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `SeriesTitle`. Can only be styled in iOS."
+                },
+                "TrendTitle": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `TrendTitle`."
+                },
+                "TrendImage": {
+                    "type": "string",
+                    "$ref": "Styles/ImageClass",
+                    "description": "The string value is a style class name of `TrendImage`. iOS only."
+                },
+                "NoDataText": {
+                    "type": "string",
+                    "$ref": "Styles/TextClass",
+                    "description": "The string value is a style class name of `NoDataText`. Android only. `font-typeface` attribute not supported."
+                }
+            }
+        }
+    },
+    "type": "object",
+    "required": [
+        "_Type"
+    ]
+}
+

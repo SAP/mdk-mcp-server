@@ -1,0 +1,110 @@
+{
+  "$id": "Page/FormCell/Filter",
+  "title": "Filter",
+  "description": "This control renders a Filter FormCell to be used in a filter-options page.",
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "description": "Disables or enables the selection of empty value set.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well.",
+      "default": true
+    },
+    "AllowMultipleSelection": {
+      "type": "boolean",
+      "description": "Disables or enables the selection of multiple entries.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well.",
+      "default": true
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "Label": {
+      "type": "string",
+      "description": "Displays label when being displayed as selected item on filter feedback bar."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disables or enables interaction.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "FilterProperty": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Property name for filtering. MDK will try to get its distinct values from the filtered EntitySet.\n\nCaution: Using `FilterProperty` may lead to longer response time or memory shortage when the EntitySet rows are too large. It is advised to use Option 2 or 3 instead. In Option 2, use static values or a Rule, which returns the object of type `FilterProperty` to retrieve from a (small) dictionary EntitySet."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The property name for filtering."
+            },
+            "caption": {
+              "type": "string",
+              "description": "The display name of the property for filtering."
+            },
+            "values": {
+              "$ref": "definitions/FixedCollectionSpecifier"
+            }
+          },
+          "required": ["name"]
+        },
+        {
+          "$ref": "definitions/QuerySpecifier"
+        } 
+      ],
+      "description": "Property of the entities used to filter the EntitySet.\n\nIf the resolved value of this property is a string, it will be interpreted as the property name for filtering and the distinct values are retrieved from the EntitySet.\n\nIf the resolved value of this property is an object, it means a fixed subset of possible values. It has a `values` property of FixedCollectionSpecifier type. See below for the expected structure.\n\nIn a Filter Page, every Filter or ListPicker must have a **unique** `FilterProperty`."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view. Specifically for Android, the helper text can only be displayed if `AllowMultipleSelection` is true."
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed after value is changed."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background` and `Caption`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string",
+      "description": "The `_Name` value will also function as `CustomQueryGroup` to match with `FastFilters` in `FilterFeedbackBar`."
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Filter"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "FilterProperty"
+  ]
+}

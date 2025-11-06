@@ -1,0 +1,43 @@
+{
+  "$id": "Page/FioriToolbarItem/Icon",
+  "title": "Icon",
+  "description": "An icon which can communicate the action that it is going to initiate. Users can click on the icon to begin a process or workflow, or to trigger an action.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be executed when the icon is clicked. The ClientAPI object to be received in rule function is [SectionProxy](../../../apidoc/classes/sectionproxy.md)."
+    },
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "Icon to be displayed in the section header."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for icon.",
+      "properties": {
+        "Icon": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Icon`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FioriToolbarItem.Type.Icon"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Icon"
+  ]
+}

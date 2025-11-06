@@ -1,0 +1,40 @@
+{
+  "$id": "Action.Type.Message",
+  "title": "Message",
+  "description": "A basic message prompt with a button that allows the user to acknowledge and dismiss the message. In Mobile Development Kit, you can create such messages and define their behavior.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Message": {
+      "description": "Text in the prompt that conveys the message.",
+      "type": "string"
+    },
+    "OKCaption": {
+      "description": "Text on the OK button to be displayed.",
+      "type": "string"
+    },
+    "Title": {
+      "description": "Title of the message prompt.",
+      "type": "string"
+    },
+    "OnOK": {
+      "description": "Event handler to be triggered when OK button is pressed.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "CancelCaption": {
+      "description": "Text on the Cancel button to be displayed.",
+      "type": "string"
+    },
+    "OnCancel": {
+      "description": "Event handler to be triggered when Cancel button is pressed.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "_Type": {
+      "const": "Action.Type.Message"
+    }
+  },
+  "required": [
+    "Message",
+    "_Type"
+  ],
+  "type": "object"
+}

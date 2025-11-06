@@ -11,6 +11,8 @@ import {
   generateTemplateBasedMetadata,
   getServiceDataWithFallback,
   getMobileServiceAppNameWithFallback,
+  getSchemaVersion,
+  getServerConfig,
 } from "./utils.js";
 import { validateToolArguments } from "./validation.js";
 import path from "path";
@@ -250,7 +252,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "mdk-project-operation",
+        name: "mdk-manage",
         description:
           "Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.",
         inputSchema: {
@@ -284,71 +286,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "mdk-search-documentation",
+        name: "mdk-docs",
         description:
-          "Returns the top N results from MDK documentation by semantic search, sorted by relevance.",
+          "Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.",
         inputSchema: {
           type: "object",
           properties: {
+            operation: {
+              type: "string",
+              enum: ["search", "component", "property", "example"],
+              description:
+                "The type of documentation operation to perform:\n" +
+                "• search: Returns the top N results from MDK documentation by semantic search, sorted by relevance\n" +
+                "• component: Returns the schema of an MDK component based on the name of the component\n" +
+                "• property: Returns the documentation of a specific property of an MDK component\n" +
+                "• example: Returns an example usage of an MDK component",
+            },
+            folderRootPath: {
+              type: "string",
+              description:
+                "The path of the current project root folder. Used to determine the appropriate MDK schema version.",
+            },
             query: {
               type: "string",
-              description: "Search query string.",
+              description:
+                "Search query string (required for 'search' operation).",
             },
-            N: {
-              type: "number",
-              description: "Number of results to return.",
-              default: 5,
-            },
-          },
-          required: ["query"],
-        },
-      },
-      {
-        name: "mdk-get-component-documentation",
-        description:
-          "Returns the schema of an MDK component based on the name of the component.",
-        inputSchema: {
-          type: "object",
-          properties: {
             component_name: {
               type: "string",
-              description: "Name of the component.",
-            },
-          },
-          required: ["component_name"],
-        },
-      },
-      {
-        name: "mdk-get-property-documentation",
-        description:
-          "Returns the documentation of a specific property of an MDK component.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            component_name: {
-              type: "string",
-              description: "Name of the component.",
+              description:
+                "Name of the component (required for 'component', 'property', and 'example' operations).",
             },
             property_name: {
               type: "string",
-              description: "Name of the property.",
+              description:
+                "Name of the property (required for 'property' operation).",
+            },
+            N: {
+              type: "number",
+              description: "Number of results to return for search operation.",
+              default: 5,
             },
           },
-          required: ["component_name", "property_name"],
-        },
-      },
-      {
-        name: "mdk-get-example",
-        description: "Returns an example usage of an MDK component.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            component_name: {
-              type: "string",
-              description: "Name of the component.",
-            },
-          },
-          required: ["component_name"],
+          required: ["operation", "folderRootPath"],
         },
       },
     ],
@@ -771,11 +751,11 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-project-operation": {
+    case "mdk-manage": {
       try {
         // Validate all arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-project-operation",
+          "mdk-manage",
           request.params.arguments || {}
         );
 
@@ -791,7 +771,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               const target = "zip";
               buildScript = `${mdkBinary} build --target ${target} --project "${projectPath}"`;
@@ -837,7 +817,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               deploymentScript = [
                 `${mdkBinary} deploy`,
@@ -868,7 +848,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               validationScript = `${mdkBinary} validate --project "${projectPath}"`;
             }
@@ -891,7 +871,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
-                process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+                process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
               migrationScript = `${mdkBinary} migrate --project "${projectPath}"`;
             }
@@ -909,7 +889,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "show-qrcode": {
-            const qrCodePath = `${projectPath}/.build/qrcode.png`;
+            const qrCodePath = path.join(projectPath, ".build", "qrcode.png");
 
             // Check if QR code exists
             if (!fs.existsSync(qrCodePath)) {
@@ -923,14 +903,24 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               };
             }
 
-            const openCommand = `open ${qrCodePath}`;
-            runCommand(openCommand);
+            // Use platform-specific command to open the QR code image
+            let openCommand: string;
+            if (process.platform === "win32") {
+              // Windows: use 'start' command
+              openCommand = `start "${qrCodePath}"`;
+            } else if (process.platform === "darwin") {
+              // macOS: use 'open' commanSd
+              openCommand = `open "${qrCodePath}"`;
+            } else {
+              // Linux/Unix: use 'xdg-open' command
+              openCommand = `xdg-open "${qrCodePath}"`;
+            }
 
             return {
               content: [
                 {
                   type: "text",
-                  text: `QR code displayed successfully from ${qrCodePath}`,
+                  text: `${openCommand}`,
                 },
               ],
             };
@@ -975,184 +965,292 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-search-documentation": {
+    case "mdk-docs": {
       try {
         // Validate arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-search-documentation",
+          "mdk-docs",
           request.params.arguments || {}
         );
 
-        const query = validatedArgs.query as string;
-        const N = validatedArgs.N as number;
-        const results = await search(query, N);
+        const operation = validatedArgs.operation as string;
+        const folderPath = validatedArgs.folderRootPath as string;
 
-        const resultText = printResults(results);
-        return {
-          content: [
-            {
-              type: "text",
-              text: resultText,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error(`MDK documentation search failed:`, error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
+        // Get server configuration
+        const serverConfig = getServerConfig();
 
-    case "mdk-get-component-documentation": {
-      try {
-        // Validate arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-get-component-documentation",
-          request.params.arguments || {}
-        );
-
-        const component_name = validatedArgs.component_name as string;
-        const _results = await searchNames(component_name, 1);
-        for (const file of filenameList) {
-          if (
-            file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
-            (file.endsWith(".json") || file.endsWith(".schema"))
-          ) {
-            const content = contentList[filenameList.indexOf(file)];
+        // Validate the required folderRootPath and check schema version
+        try {
+          // Additional validation: Check if path exists and is accessible
+          if (!fs.existsSync(folderPath)) {
             return {
               content: [
                 {
                   type: "text",
-                  text: content,
+                  text: `Error: The specified project path does not exist: ${folderPath}`,
                 },
               ],
             };
           }
+
+          if (!fs.lstatSync(folderPath).isDirectory()) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Error: The specified path is not a directory: ${folderPath}`,
+                },
+              ],
+            };
+          }
+
+          const schemaVersion = getSchemaVersion(folderPath);
+
+          // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
+          if (schemaVersion !== serverConfig.schemaVersion) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Schema version mismatch: Project schema version (${schemaVersion}) does not match server schema version (${serverConfig.schemaVersion}). Please ensure version compatibility.`,
+                },
+              ],
+            };
+          }
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error validating project path: ${
+                  error instanceof Error ? error.message : String(error)
+                }`,
+              },
+            ],
+          };
         }
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Component ${component_name} not found.`,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error(`MDK component documentation retrieval failed:`, error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
 
-    case "mdk-get-property-documentation": {
-      try {
-        // Validate arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-get-property-documentation",
-          request.params.arguments || {}
-        );
+        // Handle different operations
+        switch (operation) {
+          case "search": {
+            const query = validatedArgs.query as string;
+            const N = validatedArgs.N as number;
 
-        const component_name = validatedArgs.component_name as string;
-        const property_name = validatedArgs.property_name as string;
-        const searchResults = await searchNames(component_name, 1);
-        for (const file of filenameList) {
-          if (
-            file
-              .toLowerCase()
-              .includes(searchResults[0].content.toLowerCase()) &&
-            (file.endsWith(".json") || file.endsWith(".schema"))
-          ) {
-            const content = contentList[filenameList.indexOf(file)];
-            const parsedContent = JSON.parse(content);
-            if (
-              "properties" in parsedContent &&
-              property_name in parsedContent.properties
-            ) {
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text: JSON.stringify(
-                      parsedContent.properties[property_name],
-                      null,
-                      2
-                    ),
-                  },
-                ],
-              };
-            } else {
-              break;
+            const results = await search(query, N, serverConfig.schemaVersion);
+            const resultText = printResults(results);
+
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: resultText,
+                },
+              ],
+            };
+          }
+
+          case "component": {
+            const component_name = validatedArgs.component_name as string;
+
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: content,
+                    },
+                  ],
+                };
+              }
             }
-          }
-        }
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No property called ${property_name} found in ${component_name}.`,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error(`MDK property documentation retrieval failed:`, error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
 
-    case "mdk-get-example": {
-      try {
-        // Validate arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-get-example",
-          request.params.arguments || {}
-        );
+            // If direct matching fails, try search-based matching
+            const _results = await searchNames(
+              component_name,
+              1,
+              serverConfig.schemaVersion
+            );
 
-        const component_name = validatedArgs.component_name as string;
-        const _results = await searchNames(component_name, 1);
-        for (const file of filenameList) {
-          if (
-            file.toLowerCase().includes(_results[0].content.toLowerCase()) &&
-            file.endsWith(".example.md")
-          ) {
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(_results[0].content.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: content,
+                    },
+                  ],
+                };
+              }
+            }
             return {
               content: [
                 {
                   type: "text",
-                  text: contentList[filenameList.indexOf(file)],
+                  text: `Component ${component_name} not found.`,
+                },
+              ],
+            };
+          }
+
+          case "property": {
+            const component_name = validatedArgs.component_name as string;
+            const property_name = validatedArgs.property_name as string;
+
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                const parsedContent = JSON.parse(content);
+                if (
+                  "properties" in parsedContent &&
+                  property_name in parsedContent.properties
+                ) {
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: JSON.stringify(
+                          parsedContent.properties[property_name],
+                          null,
+                          2
+                        ),
+                      },
+                    ],
+                  };
+                }
+              }
+            }
+
+            // If direct matching fails, try search-based matching
+            const searchResults = await searchNames(
+              component_name,
+              1,
+              serverConfig.schemaVersion
+            );
+
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(searchResults[0].content.toLowerCase()) &&
+                (file.endsWith(".json") || file.endsWith(".schema"))
+              ) {
+                const content = contentList[filenameList.indexOf(file)];
+                const parsedContent = JSON.parse(content);
+                if (
+                  "properties" in parsedContent &&
+                  property_name in parsedContent.properties
+                ) {
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: JSON.stringify(
+                          parsedContent.properties[property_name],
+                          null,
+                          2
+                        ),
+                      },
+                    ],
+                  };
+                } else {
+                  break;
+                }
+              }
+            }
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `No property called ${property_name} found in ${component_name}.`,
+                },
+              ],
+            };
+          }
+
+          case "example": {
+            const component_name = validatedArgs.component_name as string;
+
+            // First try direct filename matching
+            for (const file of filenameList) {
+              if (
+                file.toLowerCase().includes(component_name.toLowerCase()) &&
+                file.endsWith(".example.md")
+              ) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: contentList[filenameList.indexOf(file)],
+                    },
+                  ],
+                };
+              }
+            }
+
+            // If direct matching fails, try search-based matching
+            const _results = await searchNames(
+              component_name,
+              1,
+              serverConfig.schemaVersion
+            );
+
+            for (const file of filenameList) {
+              if (
+                file
+                  .toLowerCase()
+                  .includes(_results[0].content.toLowerCase()) &&
+                file.endsWith(".example.md")
+              ) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: contentList[filenameList.indexOf(file)],
+                    },
+                  ],
+                };
+              }
+            }
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "No examples found for this component.",
+                },
+              ],
+            };
+          }
+
+          default: {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Unknown documentation operation: ${operation}`,
                 },
               ],
             };
           }
         }
-        return {
-          content: [
-            {
-              type: "text",
-              text: "No examples found for this component.",
-            },
-          ],
-        };
       } catch (error) {
-        console.error(`MDK example retrieval failed:`, error);
+        console.error(`MDK documentation operation failed:`, error);
         return {
           content: [
             {
@@ -1184,10 +1282,21 @@ export default async function run(_options = {}) {
   await server.connect(transport);
   console.error("MDK MCP server running...");
 
-  if (
-    !fs.existsSync(path.join(projectRoot, "build/embeddings/schema-chunks.bin"))
-  ) {
-    retrieveAndStore(path.join(projectRoot, "res/schemas"));
+  // Get server configuration
+  const serverConfig = getServerConfig();
+  const schemaPath = path.join(projectRoot, "res/schemas");
+
+  // Check if embeddings exist for the version, if not initialize the configured version
+  const versionEmbeddingPath = path.join(
+    projectRoot,
+    `build/embeddings/schema-chunks-${serverConfig.schemaVersion}.bin`
+  );
+
+  if (!fs.existsSync(versionEmbeddingPath)) {
+    console.error(
+      "Initializing schema embeddings for the configured version..."
+    );
+    retrieveAndStore(schemaPath, serverConfig.schemaVersion);
   }
-  [filenameList, contentList] = getDocuments();
+  [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
 }

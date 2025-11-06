@@ -1,0 +1,101 @@
+{
+  "$id": "Page/FormCell/Segmented",
+  "title": "Segmented",
+  "description": "A segmented control is a horizontal bar divided into two or more mutually-exclusive buttons. This control provides users easy access to specific categories of content.",
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "CaptionPosition": {
+      "type": "string",
+      "description": "Position of the caption to be displayed along with the items in segments. Only iOS supports this property.",
+      "enum": [
+        "Adaptive",
+        "Top"
+      ],
+      "default": "Adaptive"
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "description": "Indicates whether the user can change the selection or not.",
+      "default": true,
+      "type": "boolean"
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over the `ControlSeparator` in section, only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "ApportionsSegmentWidthsByContent": {
+      "description": "Indicates whether the control attempts to adjust segment widths based on their content widths. This property will only take effect when the caption and the segments fits in single row. Only iOS and Web support this property.",
+      "default": false,
+      "type": "boolean"
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed after value is changed."
+    },
+    "Segments": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "definitions/FixedCollection"
+        }
+      ],
+      "description": "An array of string, each representing a segment in the Segmented FormCell.\n\nThe maximum number of segments is 5 for iOS."
+    },
+    "Value": {
+      "type": "string",
+      "description": "The value of the cell. When not specified or not found in the Segments no selection is made on iOS, Android and on Web the first segment is selected."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background` and `Caption`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.SegmentedControl"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

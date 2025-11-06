@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.CancelUpload",
+  "title": "OfflineOData CancelUpload",
+  "description": "OfflineOData CancelUpload action is used to cancel the upload of data to the backend.\n\nenableRepeatableRequests should not be set to false in store parameter as this is required to prevent duplication of requests in the backend when upload is called again\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.CancelUpload"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

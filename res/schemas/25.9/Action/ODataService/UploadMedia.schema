@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.UploadMedia",
+  "title": "ODataService UploadMedia",
+  "description": "Upload Media action is used to upload one or multiple OData Media Entities. [Action](../../Action.schema.md) are also applicable to this action.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format."
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests."
+    },
+    "Media": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "The actual value of the media. Should be in this format {\"content\":binary, \"contentType\":string}."
+      },
+      "description": "If the array contains multiple items, multiple Media Entities will be created."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail."
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.UploadMedia"
+    }
+  },
+  "required": [
+    "Media",
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

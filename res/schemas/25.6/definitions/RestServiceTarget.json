@@ -1,0 +1,28 @@
+{
+  "$id": "definitions/RestServiceTarget",
+  "title": "RestServiceTarget",
+  "properties": {
+    "Path": {
+      "type": "string",
+      "description": "The endpoints such as \"/users\" or \"/reports/summary\"."
+    },
+    "RequestProperties": {
+      "$ref": "definitions/RequestProperties",
+      "description": "The required properties to send a request to REST service."
+    },
+    "OutputPath": {
+      "type": "string",
+      "description": "The path of the response JSON object such as \"/d/results\"."
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target REST Service."
+    }
+  },
+  "required": [
+    "Path",
+    "RequestProperties",
+    "Service"
+  ],
+  "type": "object"
+}

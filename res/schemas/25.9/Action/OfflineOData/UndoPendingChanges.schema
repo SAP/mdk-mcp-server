@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.UndoPendingChanges",
+  "title": "OfflineOData UndoPendingChanges",
+  "description": "While you can make changes to existing entities and new entities locally, you can also undo the pending changes without uploading them by calling the UndoPendingChanges Action for an entity object . An existing entity will be restored to the original status as if no any changes had been made. A new entity will be removed as if the entity had never been created, and a deleted entity will be restored to the offline store.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.UndoPendingChanges"
+    }
+  },
+  "required": [
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

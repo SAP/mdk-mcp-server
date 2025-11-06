@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/Action",
+  "title": "Action",
+  "pattern": "(^\/.+\/Actions\/).*(.+\\.action)$|(^Actions\/).*(.+\\.action)$",
+  "description": "Reference to an action in metadata `Actions` folder.",
+  "type": "string"
+}

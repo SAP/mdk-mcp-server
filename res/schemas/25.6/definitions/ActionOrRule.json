@@ -1,0 +1,15 @@
+{
+  "$id": "definitions/ActionOrRule",
+  "title": "ActionOrRule",
+  "anyOf": [
+    {
+      "$ref": "definitions/Rule"
+    },
+    {
+      "$ref": "definitions/Action"
+    },
+    {
+      "$ref": "definitions/OverrideAction"
+    }
+  ]
+}

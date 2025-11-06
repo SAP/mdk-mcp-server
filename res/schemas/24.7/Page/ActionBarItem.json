@@ -1,0 +1,54 @@
+{
+  "$id": "Page/ActionBarItem",
+  "title": "ActionBarItem",
+  "description": "ActionBarItem is a control item that can be added to the action bar.",
+  "properties": {
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "Icon provided must have the correct size. Expected iOS sizes can be found [here](https://developer.apple.com/ios/human-interface-guidelines/graphics/custom-icons/). The size of an action bar icon on Android is fixed at 24dp (both width and height)."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the item is pressed."
+    },
+    "Position": {
+      "enum": [
+        "Left",
+        "Right"
+      ],
+      "type": "string",
+      "description": "Position of the item in the ActionBar. For Android, this is ignored and all items will be placed on the right position except in modal page which allow one item to be on the left. For the left ActionBar item on modal page, only system item and icon / image are supported."
+    },
+    "SystemItem": {
+      "$ref": "definitions/SystemItem",
+      "description": "SystemItem are built-in icons/text that represent common tasks and types of content in a variety of use cases. If present, overwrites `Caption` and `Icon`."
+    },
+    "Caption": {
+      "type": "string",
+      "description": "This attribute acts as the placeholder text when `Icon` image fails to render due to some reason (missing/failed). In Android, the `Caption` is required even if the `SystemItem` or `Icon` is defined, because in overflow menu, only `Caption` will be displayed."
+    },
+    "IsIconCircular": {
+      "type": "boolean",
+      "default": false,
+      "description": "This determines if the `Icon` image and/or text-image of `IconText` should be circular in shape."
+    },
+    "IconText": {
+      "type": "string",
+      "description": "If `Icon` is absent or fails to download and if `Caption` is missing, `IconText` is used to render a text-based Avatar image."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is a style class name of `Icon` and `IconText`. The style is applicable to SAP icon / font icon types (supported CSS properties are font-size and color) and text for the `IconText` (supported CSS properties are font-size, color and background-color)."
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": ["Position"]
+}

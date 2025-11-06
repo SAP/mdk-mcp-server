@@ -1,0 +1,273 @@
+{
+  "$id": "Page/SectionedTable/Container/ObjectHeader",
+  "title": "ObjectHeader",
+  "description": "This is a container to display information about the header of an object. You can include an Object header extension cell item to display a custom extension in the Object Header container. You can add only one Object header as the first section in a table.",
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.ObjectHeader"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "ObjectHeader": {
+      "type": "object",
+      "required": [
+        "HeadlineText"
+      ],
+      "properties": {
+        "BodyText": {
+          "description": "A body label in the additional info view.",
+          "type": "string"
+        },
+        "Description": {
+          "description": "A description label displayed in the description view.",
+          "type": "string"
+        },
+        "DetailContentContainer": {
+          "$ref": "definitions/DetailContentContainer",
+          "description": "Can only contain one extension. Can't co-exist with `AnalyticView` or `KPIView`."
+        },
+        "DetailImage": {
+          "description": "An image with size of 45px x 45px in compact mode or 70px x 70px in regular mode for detail image view",
+          "$ref": "definitions/Image"
+        },
+        "DetailImageIsCircular": {
+          "type": "boolean",
+          "default": false,
+          "description": "If the value is True, the image is displayed in a circular shape."
+        },
+        "Footnote": {
+          "description": "A footnote label in the additional info view.",
+          "type": "string"
+        },
+        "HeadlineText": {
+          "description": "A headline label in the object name and title view.",
+          "type": "string"
+        },
+        "StatusPosition": {
+          "type": "string",
+          "enum": [
+            "Stacked",
+            "Crosswise",
+            "Inline"
+          ],
+          "default": "Stacked",
+          "description": "Indicate the position of status and substatus with three layout options: stacked vertically (at the top corner of the screen), inline (below the tags), and cross-wise layout where status is at the top corner of the screen and substatus is inline below the tags. if `KPIView` is defined, the `StatusPosition` would be disregarded, and the position will always stay as inline below tags."
+        },
+        "StatusImage": {
+          "description": "A status image displayed in the status view. It’s expected to either set `StatusText` or `StatusImage` to display either one as the same position. When both are set, `StatusImage` would be displayed in priority.",
+          "$ref": "definitions/Image"
+        },
+        "StatusImagePosition": {
+          "type": "string",
+          "enum": [
+            "Leading",
+            "Trailing"
+          ],
+          "default": "Leading",
+          "description": "Indicate the image position for status should be before the text or after."
+        },
+        "StatusText": {
+          "description": "A status label displayed in the status view. It’s expected to either set `StatusText` or `StatusImage` to display either one as the same position. When both are set, `StatusImage` would be displayed in priority.",
+          "type": "string"
+        },
+        "Subhead": {
+          "description": "A sub-headline label in the object name and title view.",
+          "type": "string"
+        },
+        "SubstatusImage": {
+          "description": "A substatus image displayed below status view. It’s expected to either set `SubStatusText` or `SubStatusImage` to display either one as the same position. When both are set, `SubStatusImage` would be displayed in priority.",
+          "$ref": "definitions/Image"
+        },
+        "SubstatusImagePosition": {
+          "type": "string",
+          "enum": [
+            "Leading",
+            "Trailing"
+          ],
+          "default": "Leading",
+          "description": "Indicate the image position for substatus should be before the text or after."
+        },
+        "SubstatusText": {
+          "description": "A substatus label displayed below status view. It’s expected to either set `SubStatusText` or `SubStatusImage` to display either one as the same position. When both are set, `SubStatusImage` would be displayed in priority.",
+          "type": "string"
+        },
+        "Tags": { 
+          "$ref": "definitions/Tags"
+        },
+        "Labels": {
+          "type": "array",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/LabelItem"
+          },
+          "description": "A list of tag labels to be shown below the `Tags`. If the `Labels` has been defined, the `BodyText` and `Footnote` will be hidden."
+        },
+        "KPIView": {
+          "$ref": "Page/SectionedTable/Control/KPIView"
+        },
+        "AnalyticView": {
+          "type": "object",
+          "description": "An analytic content view containing either a `Chart` or a `KPI`. Can't co-exist with `DetailContentContainer`.",
+          "properties": {
+            "_Type": {
+              "enum": [
+                "Chart",
+                "KPI"
+              ],
+              "type": "string"
+            },
+            "Chart": {
+              "description": "Use only when `_Type` is `Chart`.",
+              "$ref": "Page/SectionedTable/Control/ObjectHeaderChart"
+            },
+            "KPI": {
+              "description": "Use only when `_Type` is `KPI`.",
+              "$ref": "Page/SectionedTable/Control/ObjectHeaderKPI"
+            },
+            "Target": {
+              "$ref": "definitions/Target",
+              "description": "Only the first record of any entity set returned by the target will be used."
+            },
+            "OnPress": {
+              "$ref": "definitions/ActionOrRule",
+              "description": "Required to navigate to a full screen chart when the Analytic View is pressed."
+            }
+          }
+        },
+        "Target": {
+          "$ref": "definitions/Target",
+          "description": "Only the first record of any entity set returned by the target will be used."
+        },
+        "Styles": {
+          "description": "An object of style class names to be applied on the object header properties.",
+          "properties": {
+            "ObjectHeader": {
+              "type": "string",
+              "$ref": "Styles/BackgroundClass",
+              "description": "The string value is a style class name of `ObjectHeader`. iOS and Android only."
+            },
+            "BodyText": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `BodyText`."
+            },
+            "Description": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `Description`."
+            },
+            "Footnote": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `Footnote`."
+            },
+            "HeadlineText": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `HeadlineText`."
+            },
+            "StatusText": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `StatusText`."
+            },
+            "Subhead": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `Subhead`."
+            },
+            "SubstatusText": {
+              "type": "string",
+              "$ref": "Styles/ObjectHeaderTextClass",
+              "description": "The string value is a style class name of `SubstatusText`."
+            },
+            "DetailImage": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name of `DetailImage`."
+            },
+            "StatusImage": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name of `StatusImage`."
+            },
+            "SubstatusImage": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name of `SubstatusImage`."
+            },
+            "KPITintColor": {
+              "type": "string",
+              "$ref": "Styles/TintColorClass",
+              "description": "The string value is a style class name for configuring the tint color of the KPI in Object Header."
+            },
+            "KPICaption": {
+              "type": "string",
+              "$ref": "Styles/TextPaintClass",
+              "description": "The string value is a style class name for configuring the font-size, color and font-style of the KPI Caption Label."
+            },
+            "KPIIcon": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name for KPI icon of the KPI in Object Header."
+            },
+            "ChartTitle": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name for Chart Title. This is supported only for iOS, not for Android."
+            },
+            "ChartSubTitle": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name for Chart SubTitle. This is supported only for iOS, not for Android."
+            },
+            "ChartTrendTitle": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name for Chart Trend Title. This is supported only for iOS, not for Android."
+            },
+            "ChartTrendImage": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name for Chart Trend Image. This is supported only for iOS, not for Android."
+            },
+            "ChartKPIUnit": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name for KPI Unit items inside Chart. This is supported only for iOS, not for Android."
+            },
+            "ChartKPIValue": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name for KPI Value items inside Chart. This is supported only for iOS, not for Android."
+            },
+            "ChartKPIIcon": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name for KPI icon inside Chart. This is supported only for iOS, not for Android."
+            },
+            "NoDataText": {
+              "type": "string",
+              "$ref": "Styles/TextClass",
+              "description": "The string value is a style class name of `NoDataText` inside Chart. Android only. `font-typeface` attribute not supported."
+            }
+          },
+          "type": "object"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

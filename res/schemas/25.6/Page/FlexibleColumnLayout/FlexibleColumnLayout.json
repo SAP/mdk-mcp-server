@@ -1,0 +1,24 @@
+{
+  "$id": "Page/FlexibleColumnLayout/FlexibleColumnLayout",
+  "title": "FlexibleColumnLayout",
+  "properties": {
+    "StartColumn": {
+      "$ref": "Page/FlexibleColumnLayout/FlexibleColumn"
+    },
+    "EndColumn": {
+      "$ref": "Page/FlexibleColumnLayout/FlexibleColumn"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FlexibleColumnLayout"
+    }
+  },
+  "required": [
+    "_Type",
+    "StartColumn"
+  ],
+  "type": "object",
+  "description": "This control renders a flexible column layout with 2 columns in a page.\n\nEach column's content is rendered as a page.\n\nWhen the left most column is rendered with a section list, the right column next to it is used to render the detail of a selected item from list."
+}

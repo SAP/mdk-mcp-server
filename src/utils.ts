@@ -36,7 +36,7 @@ const ALLOWED_COMMANDS = {
     ],
   },
   mdk: {
-    executable: "mdk.cmd",
+    executable: "mdkcli.cmd",
     allowedArgs: [
       "build",
       "deploy",
@@ -50,6 +50,14 @@ const ALLOWED_COMMANDS = {
   },
   open: {
     executable: "open",
+    allowedArgs: [], // Will be validated separately for file paths
+  },
+  start: {
+    executable: "start",
+    allowedArgs: [], // Will be validated separately for file paths
+  },
+  "xdg-open": {
+    executable: "xdg-open",
     allowedArgs: [], // Will be validated separately for file paths
   },
 };
@@ -136,10 +144,17 @@ export function runCommand(
   options: { cwd?: string; timeout?: number } = {}
 ): string {
   try {
-    // Parse command and arguments
-    const parts = command.trim().split(/\s+/);
-    const baseCommand = parts[0];
-    const args = parts.slice(1);
+    // Parse command and arguments, handling quoted arguments properly
+    const parts = command.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+    if (parts.length === 0) {
+      throw new Error("Invalid command: Command cannot be empty");
+    }
+
+    const baseCommand = parts[0]?.replace(/"/g, "") || ""; // Remove quotes from command
+    if (!baseCommand) {
+      throw new Error("Invalid command: Command cannot be empty");
+    }
+    const args = parts.slice(1).map(arg => arg.replace(/"/g, "")); // Remove quotes from args
 
     // Security: Validate the command and arguments
     validateCommandArgs(baseCommand, args);
@@ -158,14 +173,24 @@ export function runCommand(
       commandTimeout = options.timeout || 120000; // 2 minutes for deploy/build commands
     }
 
-    const output = execSync(command, {
+    // For Windows, handle shell selection properly
+    const execOptions: Record<string, unknown> = {
       cwd: safeCwd,
       env: process.env,
       stdio: "pipe",
       encoding: "utf-8",
       timeout: commandTimeout,
-    });
-    return output;
+    };
+
+    // On Windows, ensure we use the correct shell for .cmd files
+    if (process.platform === "win32") {
+      if (baseCommand.endsWith(".cmd") || baseCommand === "yo") {
+        execOptions.shell = true;
+      }
+    }
+
+    const output = execSync(command, execOptions);
+    return output.toString();
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     throw new Error(`Command failed: ${command}\n${errorMessage}`);
@@ -197,13 +222,24 @@ export async function getModulePath(modueName: string): Promise<string> {
       const binPath = path.join(localModulePath, "lib");
       const binPathCmd = path.join(localModulePath, "bin");
 
-      if (fs.existsSync(binPath)) {
-        return binPath;
-      } else if (fs.existsSync(binPathCmd)) {
-        return binPathCmd;
+      // Return binPath for Unix systems, binPathCmd for Windows
+      if (process.platform === "win32") {
+        // Windows: prefer bin directory, fallback to lib
+        if (fs.existsSync(binPathCmd)) {
+          return binPathCmd;
+        } else if (fs.existsSync(binPath)) {
+          return binPath;
+        }
+      } else {
+        // Unix systems: prefer lib directory, fallback to bin
+        if (fs.existsSync(binPath)) {
+          return binPath;
+        } else if (fs.existsSync(binPathCmd)) {
+          return binPathCmd;
+        }
       }
 
-      // If no bin directory, return the package root
+      // If no bin/lib directory, return the package root
       return localModulePath;
     }
 
@@ -331,9 +367,9 @@ export async function generateTemplateBasedMetadata(
   } = { services: [] };
 
   // Extract project name from path
-  const paths = projectPath.split("/");
+  const paths = projectPath.split(path.sep);
   oConfig.projectName = paths.pop();
-  oConfig.target = paths.join("/");
+  oConfig.target = paths.join(path.sep);
   oConfig.type = "headless";
   oConfig.newEntity = entity;
 
@@ -407,7 +443,7 @@ export async function generateTemplateBasedMetadata(
   if (mdkToolsPath) {
     const mdkBinary = path.join(
       mdkToolsPath,
-      process.platform === "win32" ? "mdk.cmd" : "mdkcli.js"
+      process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
     );
     script += ` --tool ${mdkBinary}`;
   }
@@ -421,15 +457,22 @@ async function getEntitySetsFromODataString(data: string): Promise<string[]> {
         reject(error);
       }
 
-      const parsedResult = result as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-      if (parsedResult["edmx:Edmx"]["edmx:DataServices"]) {
-        const entitySets =
-          parsedResult["edmx:Edmx"]["edmx:DataServices"][0].Schema[0]
-            .EntityContainer[0].EntitySet;
-        const simSets = entitySets.map((_set: { $: { Name: string } }) => {
-          return _set.$.Name;
-        });
-        resolve(simSets);
+      const parsedResult = result as Record<string, unknown>;
+      if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
+        const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
+        if (
+          Array.isArray(dataServices) &&
+          dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet
+        ) {
+          const entitySets =
+            dataServices[0].Schema[0].EntityContainer[0].EntitySet;
+          const simSets = entitySets.map((_set: { $: { Name: string } }) => {
+            return _set.$.Name;
+          });
+          resolve(simSets);
+        } else {
+          reject("OData not supported yet");
+        }
       } else {
         reject("OData not supported yet");
       }
@@ -551,5 +594,97 @@ export function getServiceDataWithFallback(
   } catch (error) {
     console.error("Error in getServiceDataWithFallback:", error);
     return null;
+  }
+}
+
+/**
+ * Get server configuration from package.json with command line argument override
+ * @returns MDK server configuration object with defaults
+ */
+export function getServerConfig(): {
+  schemaVersion: string;
+} {
+  try {
+    // Check for schema version in command line arguments first
+    const args = process.argv.slice(2);
+    let schemaVersionFromArgs: string | null = null;
+
+    // Look for --schema-version argument
+    const schemaVersionIndex = args.findIndex(
+      arg => arg === "--schema-version"
+    );
+    if (schemaVersionIndex !== -1 && schemaVersionIndex + 1 < args.length) {
+      schemaVersionFromArgs = args[schemaVersionIndex + 1];
+    }
+
+    // Also check for --schema-version=value format
+    const schemaVersionArg = args.find(arg =>
+      arg.startsWith("--schema-version=")
+    );
+    if (schemaVersionArg) {
+      schemaVersionFromArgs = schemaVersionArg.split("=")[1];
+    }
+
+    // Validate schema version if provided via command line
+    if (schemaVersionFromArgs) {
+      const availableVersions = ["24.7", "24.11", "25.6", "25.9"];
+      if (!availableVersions.includes(schemaVersionFromArgs)) {
+        console.warn(
+          `Warning: Invalid schema version '${schemaVersionFromArgs}' provided via command line. ` +
+            `Available versions: ${availableVersions.join(
+              ", "
+            )}. Using default from package.json.`
+        );
+        schemaVersionFromArgs = null;
+      }
+    }
+
+    // Read configuration from package.json
+    const packageJsonPath = path.join(projectRoot, "package.json");
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+
+    // Use command line argument if valid, otherwise use package.json config
+    const schemaVersion =
+      schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "25.9";
+
+    return {
+      schemaVersion,
+    };
+  } catch (error) {
+    console.error(
+      "Error reading server configuration from package.json:",
+      error
+    );
+    // Return default configuration on error
+    return {
+      schemaVersion: "25.9",
+    };
+  }
+}
+
+/**
+ * Get schema version from _SchemaVersion property in Application.app file
+ * @param projectPath - The path of the project root folder
+ * @returns Schema version as string, uses server default if not found
+ */
+export function getSchemaVersion(projectPath: string): string {
+  try {
+    const applicationAppPath = path.join(projectPath, "Application.app");
+
+    if (fs.existsSync(applicationAppPath)) {
+      const applicationContent = fs.readFileSync(applicationAppPath, "utf-8");
+      const applicationConfig = JSON.parse(applicationContent);
+
+      // Check if _SchemaVersion property exists
+      if (applicationConfig._SchemaVersion) {
+        return applicationConfig._SchemaVersion as string;
+      }
+    }
+
+    return "25.9";
+  } catch (error) {
+    console.error("Error reading schema version from Application.app:", error);
+    // Return server default value on error
+    return "25.9";
   }
 }

@@ -1,0 +1,133 @@
+{
+  "$id": "definitions/DataTableColumn",
+  "title": "DataTableColumn",
+  "properties": {
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "This property is deprecated. Please use the property `Value` instead."
+    },
+    "NumberOfLines": {
+      "type": "integer",
+      "description": "On Android platform, if the property value is set to one or two, 1st and 2nd line of the content will be displayed respectively. But if the property value is more than 2, only the first two lines will be displayed irrespective of value assigned to the property and content length. In the instances where the property value is missing, only the first line of the content gets displayed. This property is not supported for header and only first line of the content gets displayed. \n\nHowever, iOS platform restricts and displays the content based on the property value mentioned. If the value is set to 6, only 6 lines of content will be displayed, irrespective of the actual content length. In the instances where the property value is missing, the entire content gets displayed."
+    },
+    "Style": {
+      "description": "This property is deprecated. Please use the property `Styles` instead. The string value is a [style class](../Styles/TextClass.style.md) name of `Text` or [style class](../Styles/ImageClass.style.md) name of `Image`. For `Image`, the style is applicable only to SAP icon or font icon types (supported CSS properties are font-size, color, and background-color).\nAndroid doesn't support styling."
+    },
+    "Text": {
+      "type": "string",
+      "description": "This property is deprecated. Please use the property `Value` instead."
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [
+        "Left",
+        "Right",
+        "Center"
+      ],
+      "default": "Left",
+      "description": "For Android, only left and right are supported."
+    },
+    "DisplayType": {
+      "type": "string",
+      "enum": [
+        "Text",
+        "Image"
+      ],
+      "default": "Text",
+      "description": "Specify the style to display the value."
+    },
+    "EditType": {
+      "type": "integer",
+      "enum": [
+        {
+          "const": "Text",
+          "description": "The style to edit the value is Text type."
+        },
+        {
+          "const": "Date",
+          "description": "The style to edit the value is Date type."
+        },
+        {
+          "const": "Time",
+          "description": "The style to edit the value is Time type."
+        },
+        {
+          "const": "Duration",
+          "description": "The style to edit the value is Duration type."
+        },
+        {
+          "const": "List",
+          "description": "The style to edit the value is List type."
+        },
+        {
+          "const": "None",
+          "description": "The value is not editable."
+        }
+      ],
+      "default": "Text",
+      "description": "Specify the style to edit the value. This value is ignored if the display style is image."
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date, hh:mm:ss format for time & PT[hh]H[mm]M format for duration."
+        },
+        {
+          "$ref": "definitions/Image"
+        }
+      ]
+    },
+    "ListPicker": {
+      "type": "object",
+      "$ref": "definitions/DataTableListPicker"
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be executed after the value is changed. In iOS, this event is triggered when the user clicks on another item."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `DataTableColumnItem`. The style value is defined in the styling LESS file and this LESS file is defined in Styles property in Application.app in client metadata.",
+      "properties": {
+        "Text": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name. This style is applied to all columns (except `Image` type) when the DataTable is not in edit mode. It is also applied when column's `EditType` is \"Text\" or \"None\"."
+        },
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name. The CSS property `background-color` is supported for all image types while `font-size` and `color` are additionally supported for SAP icon and font icon types."
+        },
+        "Date": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name. This style is applied for column's `EditType` of \"Date\" in edit mode."
+        },
+        "Time": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name. This style is applied for column's `EditType` is \"Time\" in edit mode."
+        },
+        "Duration": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name. This style is applied for column's `EditType` is \"Duration\" in edit mode."
+        },
+        "List": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name. This style is applied for column's `EditType` is \"List\" in edit mode."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "DataTableRow.Type.Cell"
+    }
+  },
+  "type": "object"
+}

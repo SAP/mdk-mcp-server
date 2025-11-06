@@ -1,0 +1,8 @@
+{
+  "$id": "definitions/Image",
+  "title": "Image",
+  "description": "Image can be one of the following:\n\n* Metadata Image - A reference to an image in metadata `Images` folder that has a `.png`, `.jpeg` or `.pdf` extension.\n\n* Resource Image - A reference to an image resource built-in to the client application `res://some-image`.\n\n * HTTPS Image - An HTTPS URL pointing to an image. HTTP is not supported\n\n * SAP Icon - A reference to SAP font icon using sap-icon:// namespace e.g. `sap-icon://add`. This namespace is specific for SAP Icons, version OpenUI5 1.129.0.\n\n* Font Icon - A unicode based font icon e.g. font://&#{unicode} namespace e.g. `font://&#xe05b`. By default MDK only supports SAP Icons. To use 3rd party font icon, add the font file (*.ttf) to fonts folder inside mdkproject and apply style class to the image with font-family property pointing to the 3rd party font.",
+  "pattern": "(^\/.+\/Images\/).*(.+\\..+)$|(^Images\/).*(.+\\..+)$|^res://.+$|^sap-icon://.+$|^font://.+$|^$",
+  "type": "string"
+}
+

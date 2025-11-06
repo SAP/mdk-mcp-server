@@ -1,0 +1,14 @@
+{
+  "$id": "Global/NumberGlobal",
+  "title": "NumberGlobal",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Value": {
+      "type": "number"
+    },
+    "_Type": {
+      "const": "Number"
+    }
+  },
+  "type": "object"
+}

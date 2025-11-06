@@ -1,0 +1,106 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Header",
+  "title": "CardHeader",
+  "description": "The card header is the uppermost part of the card that provides important information about the card and its related content on the detail page.",
+  "properties": {
+    "Title": {
+      "type": "string",
+      "description": "Title text to be displayed on the card header."
+    },
+    "TitleOnMedia": {
+      "type": "boolean",
+      "default": false,
+      "description": "If the value is true, the title is displayed on card media instead of card header."
+    },
+    "Subtitle": {
+      "description": "Subtitle text to be displayed on the card header.",
+      "type": "string"
+    },
+    "DetailImage": {
+      "description": "Image to be displayed in the card. `DetailImage` is displayed over `Icons` if both are defined.",
+      "$ref": "definitions/Image"
+    },
+    "DetailImageIsCircular": {
+      "type": "boolean",
+      "default": false,
+      "description": "If the value is true, the `DetailImage` is displayed in a circular shape."
+    },
+    "Icons": {
+      "description": "Array of images to be rendered in Icons Stack. Each icon/image size is set to be 16px by 16px. Count of visible images is limited to the count of active labels in the main stack.",
+      "items": {
+          "$ref": "definitions/Image"
+      },
+      "type": "array"
+    },
+    "CounterText": {
+      "description": "To show the count of displayed items in upcoming card body segment.",
+      "type": "string"
+    },
+    "ActionButton": {
+      "$ref": "Page/SectionedTable/Control/Card/ActionButton",
+      "description": "Supports one specific action and/or multiple actions that directly impact the card."
+    },
+    "ExtendedHeaders": {
+      "description": "Contains additional elements that provide more information. These elements can be labels, status, rating controls, tags, text.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of extended header.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/Card/ExtendedHeader"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `ExtendedHeader` in array format."
+        }
+      ]
+    },
+    "KPIView": {
+      "$ref": "Page/SectionedTable/Control/Card/KPIView"
+    },
+    "Styles": {
+      "description": "Style to be applied on the card.",
+      "properties": {
+        "Title": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name for `Title`."
+        },
+        "Subtitle": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name for `Subtitle`."
+        },
+        "DetailImage": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `DetailImage`."
+        },
+        "Icons": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Icons`."
+        },
+        "CounterText": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name for `CounterText`."
+        },
+        "Header": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Header`. It will apply background color to both `Header` and `ExtendedHeaders`."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "Card.Type.Header"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

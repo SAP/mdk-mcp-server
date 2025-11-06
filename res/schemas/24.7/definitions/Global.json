@@ -1,0 +1,10 @@
+{
+  "$id": "definitions/Global",
+  "title": "Global",
+  "pattern": "(^\/.+\/Globals\/).*(.+\\.global)$|(^Globals\/).*(.+\\.global)$",
+  "type": "string",
+  "description": "A file underneath the project root's `Globals` folder that has a _.global_ extension.",
+  "examples": [
+    "/MyApp/Globals/MyApplicationVersion.global"
+  ]
+}

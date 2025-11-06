@@ -1,0 +1,140 @@
+{
+  "$id": "Page/FormCell/SimpleProperty",
+  "title": "SimpleProperty",
+  "description": "The Simple Property control is a simple label that users can use to convey any information.",
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The key name of the property."
+    },
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "description": "If specified, the given rule executes when a control is initialized or when a value changes.",
+      "default": ""
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Sets the editability of the control. The text field will have a gray background if this property is false. Only applicable if the `Enabled` property is true, otherwise this property will be treated as false regardless of the value set.",
+      "default": true
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "Disables or enables interaction. The control will have a reduced opacity if this property is false.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "KeyboardType": {
+      "enum": [
+        {
+          "const": "DateTime",
+          "description": "A keyboard type used to request an IME that is capable of inputting dates and times."
+        },
+        {
+          "const": "Default",
+          "description": "The system default keybord."
+        },
+        {
+          "const": "Email",
+          "description": "A keyboard type used to request an IME that is capable of inputting email addresses."
+        },
+        {
+          "const": "Number",
+          "description": "A keyboard type used to request an IME that is capable of inputting digits. For iOS, it comes with a toolbar with a Done button to dismiss the keyboard, and a negative sign button to insert a negative sign character."
+        },
+        {
+          "const": "Phone",
+          "description": "A keyboard type used to request an IME that is capable of inputting phone numbers. For iOS, it comes with a toolbar with a Done button to dismiss the keyboard."
+        },
+        {
+          "const": "Url",
+          "description": "A keyboard type used to request an IME that is capable of inputting URIs."
+        },
+        {
+          "const": "Password",
+          "description": "A keyboard type used to request an IME that is capable of inputting password."
+        },
+        {
+          "const": "NumberPassword",
+          "description": "A keyboard type used to request an IME that is capable of inputting number password. For iOS, it comes with a toolbar with a Done button to dismiss the keyboard."
+        }
+      ],
+      "type": "string",
+      "description": "Show the appropriate keyboard type. To streamline data entry, the keyboard displayed when editing a SimplePropertyFormCell should be appropriate for the type of content in the field. If your app asks for an email address, for example, it should display the email address keyboard.\n\nBecause Number keyboard type in Samsung Android device cannot enter comma character, but comma is used as decimal seperator in some region (Italian / German,...), so the full keyboard will be used in this scenario."
+    },
+    "AlternateInput": {
+      "enum": [
+        {
+          "const": "None",
+          "description": "No secondary action."
+        },
+        {
+          "const": "Barcode",
+          "description": "To allow the use of camera to scan barcode and QR Code."
+        }
+      ],
+      "type": "string",
+      "description": "Show the alternate input besides keyboard typing.\n\nFor Android, the accepted values are `None` and `Barcode`. For iOS, this control is displayed as a generic action button.\n\n[These](../../Action/OpenBarcodeScanner.schema.md#barcode-formats) are the list of barcode formats have been tested correctly in MDK on both iOS and Android. There may be additional formats supported beyond this list."
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after value changed."
+    },
+    "PlaceHolder": {
+      "type": "string",
+      "description": "Placeholder text to display if `Value` is empty."
+    },
+    "Value": {
+      "type": "string",
+      "description": "Text to display."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption` and `Value`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueInputClass",
+          "description": "The string value is a style class name of `Value`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.SimpleProperty"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

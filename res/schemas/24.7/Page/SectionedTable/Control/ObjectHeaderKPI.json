@@ -1,0 +1,33 @@
+{
+  "$id": "Page/SectionedTable/Control/ObjectHeaderKPI",
+  "title": "ObjectHeaderKPI",
+  "type": "object",
+  "properties": {
+    "CaptionLabel": {
+      "type": "string",
+      "description": "This is an optional label, displayed beneath the KPI components."
+    },
+    "MetricItems": {
+      "items": {
+        "$ref": "Page/SectionedTable/Control/MetricItem",
+        "description": "Each item consists of a leading unit, a metric value and a trailing unit."
+      },
+      "type": "array"
+    },
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "This can be an image from a local resource or an image from web (HTTPS only)."
+    },
+    "ShowProgress": {
+      "description": "This determines if the KPI Progress View should be enabled. \n\n For Android, KPI Progress View will appear only if, there is a single `MetricItem` in `MetricItems` array and this `MetricItem` has `Value` that contains '/' or `TrailingUnit` that is equal to '%'.",
+      "type": "boolean"
+    },
+    "Progress": {
+      "description": "This is used only when `ShowProgress` is enabled. This is used only for iOS, not for Android.",
+      "type": "number"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

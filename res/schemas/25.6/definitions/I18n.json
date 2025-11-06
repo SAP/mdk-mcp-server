@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/I18n",
+  "title": "I18n",
+  "pattern": "(^\/.+\/i18n\/).*(.+\\.properties)$|(^i18n\/).*(.+\\.properties)$",
+  "description": "A file underneath the project root's `i18n` folder that has a _.properties_ extension",
+  "type": "string"
+}

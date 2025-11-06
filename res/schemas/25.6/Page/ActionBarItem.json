@@ -1,0 +1,62 @@
+{
+  "$id": "Page/ActionBarItem",
+  "title": "ActionBarItem",
+  "description": "`ActionBarItem` is a control item that can be added to the action bar. Please note that `Caption` is required if the item is being displayed as popover menu. When `ActionBarItem` is displayed as popover menu, the text displayed is based on the value availability in the order of following properties: `Caption`, `SystemItem`, and `IconText`. If all properties are not defined, an error text would be shown.",
+  "properties": {
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "Icon provided must have the correct size. Expected iOS sizes can be found [here](https://developer.apple.com/ios/human-interface-guidelines/graphics/custom-icons/). The size of an action bar icon on Android is fixed at 24dp (both width and height)."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the item is pressed."
+    },
+    "Position": {
+      "enum": [
+        "Left",
+        "Right"
+      ],
+      "type": "string",
+      "description": "Position of the item in the ActionBar. For iOS & Android, this is ignored and all items will be placed on the right position except in modal page without back navigation which allows one item to be on the left side.\n\nOn iOS modal page without back navigation, if both `ActionBar.Logo` and left positioned item are defined, the logo can be displayed together with 1 left positioned item.\n\nWhile on Android modal page without back navigation, if both `ActionBar.Logo` and left positioned item are defined, since Android can only support the display of 1 icon on the left side (text is not supported), only the logo would be displayed, while the left item would be displayed on the right side."
+    },
+    "SystemItem": {
+      "$ref": "definitions/SystemItem",
+      "description": "SystemItem are built-in icons/text that represent common tasks and types of content in a variety of use cases. If present, overwrites `Caption` and `Icon`."
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Use `Caption` to display a text button on `ActionBar`. `Caption` also serves as fallback in case the `SystemItem` / `Icon` / `IconText` defined fails to render."
+    },
+    "IsIconCircular": {
+      "type": "boolean",
+      "default": false,
+      "description": "This determines if the `Icon` image and/or text-image of `IconText` should be circular in shape."
+    },
+    "IconText": {
+      "type": "string",
+      "description": "If `Icon` is absent or fails to download and if `Caption` is missing, `IconText` is used to render a text-based Avatar image."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the enabled of this control."
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is a style class name of one of the following properties: `Caption`, `Icon`, and `IconText`.\nFor `Caption` display, the supported styles are listed here: [TextClass](../Styles/TextClass.style.md).\nFor `Icon` display, the style is only applicable to SAP icon / font icon types with following reference [ImageClass](../Styles/ImageClass.style.md).\nFor `IconText` the supported CSS properties are font-size, color and background-color."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.ActionBarItem"
+    }
+  },
+  "type": "object",
+  "required": ["Position"]
+}

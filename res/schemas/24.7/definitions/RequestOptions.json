@@ -1,0 +1,44 @@
+{
+  "$id": "definitions/RequestOptions",
+  "title": "RequestOptions",
+  "properties": {
+    "UpdateMode": {
+      "description": "If updates use merge (HTTP PATCH) or replace (HTTP PUT) semantics. The string values can be 'Merge' or Replace'",
+      "type": "string",
+      "default": "Merge"
+    },
+    "PreferNoContent": {
+      "description": "If create/update requests receive no content in the response",
+      "type": "boolean",
+      "default": false
+    },
+    "SendEmptyUpdate": {
+      "description": "If no-change update requests are sent to the server",
+      "type": "boolean",
+      "default": false
+    },
+    "RemoveCreatedEntityAfterUpload": {
+      "description": "Only apply to offline application. If removing the created entity or media resource locally from the offline store after successfully uploaded",
+      "type": "boolean",
+      "default": false
+    },
+    "UnmodifiableRequest": {
+      "description": "Only apply to offline application. if the request is a unmodifiable request. Certain requests may need to be sent as is. For example, imagine an entity which needs to move from one explicit state to another such as NEW, IN PROCESS, SOLUTION PROVIDED, CONFIRMED. For such requests, set 'unmodifiableRequest' to 'true'. Such requests will be left as is (not combined with other requests) by either request queue optimization or when automatically combining requests to fix errors",
+      "type": "boolean",
+      "default": false
+    },
+    "CustomHeaderFormatTemplate": {
+      "description": "Only apply to offline application. Defines a custom header format template for a request",
+      "type": "string"
+    },
+    "TransactionID": {
+      "description": "Only apply to offline application. Defines the transaction ID of the request when transaction builder is enabled. If the string value set to 'UseGeneratedID', a generated  entity ID will be used as the transaction ID for the request",
+      "type": "string"
+    },
+    "UploadCategory": {
+      "description": "Only apply to offline application. Defines the upload category of the request. If the string value set to 'UseGeneratedID', a generated  entity ID will be used as an upload category for the request",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,74 @@
+{
+  "$id": "Page/SectionedTable/Container/ContactTable",
+  "title": "ContactTable",
+  "description": "Contact Table is a table view container that manages and displays Contact Cells. It is used to give quick information of a contact and access to the various methods of communicating with a contact.",
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "If `MaxItemCount` is not specified, then all records are displayed in the section."
+    },
+    "DataPaging": {
+      "$ref": "definitions/DataPaging",
+      "description": "Configure the loading indicator shown at the end of the list, when loading next page of data."
+    },
+    "ContactCell": {
+      "$ref": "Page/SectionedTable/Control/ContactCellItem",
+      "description": "A cell showing a contact info as well as various methods. Can't co-exist with `ContactCells`."
+    },
+    "ContactCells": {
+      "items": {
+        "properties": {
+          "ContactCell": {
+            "$ref": "Page/SectionedTable/Control/ContactCellItem"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array",
+      "description": "Static ContactCell collection. `MaxItemCount` and `Target` are ignored.\n\nCan't co-exist with `ContactCell`."
+    },
+    "Search": {
+      "$ref": "definitions/Search",
+      "description": "Defines if search is to be enabled in the ContactTable. If more than one searchable section is provided in the SectionedTable, then the search definition from the first searchable section is used in defining the search bar behavior in the SectionedTable. If there is a `Search` object defined with `Enabled` set to true, search will be enabled. In iOS, when a ContactTable is used alongside a header control (KPIHeader/ProfileHeader/ObjectHeader), search bar is not enabled."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Service Target definition for binding with `ContactCell`."
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Type": {
+      "const": "Section.Type.ContactCell"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

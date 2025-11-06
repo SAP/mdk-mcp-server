@@ -1,0 +1,30 @@
+{
+  "$id": "Page/SectionedTable/Control/TagItem",
+  "title": "TagItem",
+  "type": "object",
+  "properties": {
+    "Text": {
+      "type": "string",
+      "description": "Label text for tag"
+    },
+    "Color": {
+      "enum": [
+        "Red",
+        "Blue",
+        "Green",
+        "Pink",
+        "Indigo",
+        "Mango",
+        "Teal",
+        "Grey"
+      ],
+      "type": "string",
+      "default": "Grey",
+      "description": "Color for the tag. Can be one of the predefined colors or a hexadecimal color code. If it is a color code, then it must be in the format of either #RRGGBB or #RRGGBBAA."
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is a [style class](../../../Styles/TagItemClass.style.md) name for the tag label. `Style` has priority over `Color` if both are defined."
+    }
+  }
+}

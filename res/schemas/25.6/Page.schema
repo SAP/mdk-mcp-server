@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Page",
+  "title": "Page",
+  "description": "Pages contain the control definitions that make up each app page.",
+  "properties": {
+    "ActionBar": {
+      "description": "The navigation bar that is typically at the top of the page.",
+      "$ref": "Page/ActionBar"
+    },
+    "Caption": {
+      "description": "[Deprecated. Use `ActionBar.Caption` instead.] Title caption of the page.",
+      "type": "string"
+    },
+    "PrefersLargeCaption": {
+      "description": "[Deprecated. Use `ActionBar.PrefersLargeCaption` instead.] Page control now supports `PrefersLargeCaption` property that’s only available in iOS.\n\nCurrently, only Section Pages support this property. Other types of Pages such as BottomNavigation, Tabs, SideDrawer, FormCellContainer and FlexibleColumn don’t support this property yet.\n\nPlease note that if a Section or FormCell page is used within one of the unsupported page types, the `PrefersLargeCaption` property is ignored.",
+      "type": "boolean",
+      "default": false
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "OnLoaded": {
+      "description": "The event handler that will be triggered when the page is loaded for the first time. It will not be triggered on returning from another page. It will only be triggered again if the page is closed and reopened. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnReturning": {
+      "description": "The event handler that will be triggered when the app return to the page from another page through backward navigation or closing of modal page. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule"
+    },  
+    "OnUnloaded": {
+      "description": "The event handler that will be triggered when the page is unloaded i.e. when user navigate back or close the modal page. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnResume": {
+      "description": "The event handler that will be triggered when the app is resuming from background and the page is the current active page. PLT formatter is supported.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnActivityBackPressed": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is triggered when a user presses the system Back button. To cancel the default back navigation, call the [`context.getAppEventData()`](../apidoc/classes/clientapi.html#getappeventdata) Client API and set the `cancel` property of the returned JS object to `true` in your event handler.\n\nThis is applicable to Android platforms only. PLT formatter is not supported."
+    },
+    "OnBackButtonPressed": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "[Deprecated. Use `ActionBar.OnBackButtonPressed` instead.]This event is triggered when a user presses the back button in the action bar. This event will not be triggered when ClosePage action is triggered or System Back button (Android) is pressed. If a false is returned from the handler then the back navigation is cancelled, if true or void or undefined or null is returned then the back navigation continued."
+    },
+    "OnCustomEventDataReceived": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "This event is not triggered automatically. It is triggered by calling the [`executeCustomEvent`](../apidoc/classes/pageproxy.html#executecustomevent) PageProxy API from extensions, rules and etc. In your event handler, calling the [`context.getAppEventData()`](../apidoc/classes/clientapi.html#getappeventdata) returns a JS object containing the `EventType` and `EventData` properties."
+    },
+    "PullDown": {
+      "description": "The event that will be executed when the page pull down operation is performed, i.e. when user swipes down on the page.",
+      "$ref": "definitions/PullDown"
+    },
+    "Result": {
+      "items": {
+        "$ref": "definitions/TargetPath"
+      },
+      "type": "array"
+    },
+    "ToolBar": {
+      "$ref": "Page/ToolBar"
+    },
+    "FioriToolbar": {
+      "$ref": "Page/FioriToolbar"
+    },
+    "Controls": {
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "Page/SectionedTable/SectionedTable"
+          },
+          {
+            "$ref": "Page/FormCell/Container"
+          },
+          {
+            "$ref": "Page/TabControl/Tabs/Tabs"
+          },
+          {
+            "$ref": "Page/TabControl/BottomNavigation/BottomNavigation"
+          },
+          {
+            "$ref": "Page/NavigationDrawer/SideDrawer"
+          },
+          {
+            "$ref": "Page/FlexibleColumnLayout/FlexibleColumnLayout"
+          },
+          {
+            "$ref": "Page/Common/Extension"
+          }
+        ]
+      },
+      "type": "array",
+      "description": "List of controls appearing in page content. Typically, it only supports a maximum of 1 control. It supports 2 controls only when the first control is a SectionedTable that contains ObjectHeader, ProfileHeader, KPIHeader, or other controls and extensions, and the second control is a Tab control."
+    },
+    "_Type": {
+      "const": "Page"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}
