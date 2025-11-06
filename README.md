@@ -50,6 +50,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       git clone https://github.com/SAP/mdk-mcp-server.git 
       cd mdk-mcp-server 
       npm i --include=optional 
+      npm run build
       npm i -g @sap/mdk-mcp-server@. 
       ```
 
@@ -144,9 +145,9 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       2.	Install the [Cloud Foundry CLI](https://help.sap.com/docs/btp/sap-business-technology-platform/download-and-install-cloud-foundry-command-line-interface).
       3.	Log in to your SAP BTP Cloud Foundry environment. For more details you can refer to [this help documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/log-on-to-cloud-foundry-environment-using-cloud-foundry-command-line-interface).
 
-          ```bash
-          cf login <your target endpoint> --sso
-          ```
+      ```bash
+      cf login <your target endpoint> --sso
+      ```
 
       4. Create an empty folder on your machine and open it in VS Code.
       5. Open the Command Palette in VS Code and select **MDK: Open Mobile App Editor**.
