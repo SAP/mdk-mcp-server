@@ -37,7 +37,7 @@ let contentList: string[] = [];
 const server = new Server(
   {
     name: "mdk-mcp",
-    version: "0.1.0",
+    version: "0.2.1",
   },
   {
     capabilities: {
