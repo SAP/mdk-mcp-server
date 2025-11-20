@@ -13,7 +13,7 @@ const MAX_ENTITY_SETS = 50;
 
 // Allowed characters for different input types - support Windows paths with drive letters and backslashes
 const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\\s:()]+$/;
-const SAFE_PROMPT_REGEX = /^[\w\s.-_,;:!?()[\]{}"'=+/<>@#$%&*`~\n\r\t]+$/;
+const SAFE_PROMPT_REGEX = /^[\w\s.,;:!?()[\]{}"'=+/@#$%&*`~\n\r\t_-]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
@@ -392,6 +392,10 @@ export function validateToolArguments(
       }
       break;
     }
+
+    case "mdk-gen-rule":
+      validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
+      break;
 
     default:
       throw new ValidationError("toolName", toolName, ["Unknown tool name"]);

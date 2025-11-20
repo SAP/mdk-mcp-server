@@ -106,6 +106,89 @@ describe('Input Validation Tests', () => {
       validateToolArguments("unknown-tool", args);
     }, ValidationError);
   });
+
+  test('should validate mdk-gen-rule arguments', () => {
+    // Valid mdk-gen-rule arguments
+    const validQueryArgs = {
+      query: "get app name"
+    };
+
+    assert.doesNotThrow(() => {
+      validateToolArguments("mdk-gen-rule", validQueryArgs);
+    });
+
+    // Test with different valid user queries
+    const validQueries = [
+      "navigate to page",
+      "handle form validation", 
+      "send HTTP request",
+      "get current user",
+      "format date"
+    ];
+
+    validQueries.forEach(query => {
+      assert.doesNotThrow(() => {
+        validateToolArguments("mdk-gen-rule", { query });
+      }, `Should accept valid user query: ${query}`);
+    });
+
+    // Invalid user query - empty string
+    assert.throws(() => {
+      validateToolArguments("mdk-gen-rule", { query: "" });
+    }, ZodError);
+
+    // Invalid user query - contains invalid characters
+    assert.throws(() => {
+      validateToolArguments("mdk-gen-rule", { query: "Invalid<script>" });
+    }, ZodError);
+
+    // Invalid user query - too long
+    assert.throws(() => {
+      validateToolArguments("mdk-gen-rule", { query: "a".repeat(1001) });
+    }, ZodError);
+
+    // Missing required argument
+    assert.throws(() => {
+      validateToolArguments("mdk-gen-rule", {});
+    }, ZodError);
+  });
+
+  test('should validate user prompt schema directly', () => {
+    // Valid queries
+    const validQueries = [
+      "get app name",
+      "navigate to page", 
+      "handle form validation",
+      "send HTTP request",
+      "get current user info",
+      "format date and time",
+      "validate input fields",
+      "show loading banner",
+      "handle navigation events",
+      "process API response"
+    ];
+
+    validQueries.forEach(query => {
+      assert.doesNotThrow(() => {
+        validateInput(ValidationSchemas.searchQuery, query, "query");
+      }, `Should validate query: ${query}`);
+    });
+
+    // Invalid queries
+    const invalidQueries = [
+      "",              // Empty string
+      null,            // Null value
+      undefined,       // Undefined value
+      123,             // Number instead of string
+      "a".repeat(1001) // Too long
+    ];
+
+    invalidQueries.forEach(query => {
+      assert.throws(() => {
+        validateInput(ValidationSchemas.searchQuery, query, "query");
+      }, ValidationError, `Should reject invalid query: ${query}`);
+    });
+  });
 });
 
 // Test that validation module is properly initialized

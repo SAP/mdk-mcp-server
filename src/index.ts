@@ -18,9 +18,16 @@ import { validateToolArguments } from "./validation.js";
 import path from "path";
 import fs from "fs";
 import {
+  TelemetryHelper,
+  unknownTool,
+  type TelemetryData,
+} from "./telemetry/index.js";
+import {
   retrieveAndStore,
+  retrieveAndStoreRule,
   search,
   searchNames,
+  searchRuleNames,
   getDocuments,
   printResults,
 } from "./vector.js";
@@ -331,6 +338,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
+      {
+        name: "mdk-gen-rule",
+        description:
+          "Searches for and returns the content of relevant JavaScript rule files based on an user prompt. Uses semantic search to find the most appropriate rule files.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description:
+                "A description of what kind of rule you're looking for. Examples: 'get app name', 'handle form validation', 'navigate to page', 'send HTTP request', etc.",
+            },
+          },
+          required: ["query"],
+        },
+      },
     ],
   };
 });
@@ -339,6 +362,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
  * Handler for the tools.
  */
 server.setRequestHandler(CallToolRequestSchema, async request => {
+  TelemetryHelper.markToolStartTime();
+
+  // List of valid tool names
+  const validTools = [
+    "mdk-gen-project",
+    "mdk-gen-entity",
+    "mdk-gen-i18n",
+    "mdk-gen-databinding-page",
+    "mdk-gen-layout-page",
+    "mdk-gen-action",
+    "mdk-manage",
+    "mdk-docs",
+    "mdk-gen-rule",
+  ];
+
+  const isValidTool = validTools.includes(request.params.name);
+
+  // Type guard for request arguments
+  const requestArgs = (request.params.arguments || {}) as Record<
+    string,
+    unknown
+  >;
+  const projectPath = requestArgs.folderRootPath as string | undefined;
+
+  const telemetryProperties: TelemetryData = {
+    tool: request.params.name,
+  };
+
+  await TelemetryHelper.sendTelemetry(
+    isValidTool ? request.params.name : unknownTool,
+    telemetryProperties,
+    projectPath
+  );
+
   switch (request.params.name) {
     case "mdk-gen-project": {
       try {
@@ -1262,6 +1319,86 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
+    case "mdk-gen-rule": {
+      try {
+        // Validate arguments using comprehensive validation
+        const validatedArgs = validateToolArguments(
+          "mdk-gen-rule",
+          request.params.arguments || {}
+        );
+
+        const query = validatedArgs.query as string;
+
+        // Use semantic search to find the most relevant rule file (topN=1)
+        const searchResults = await searchRuleNames(query, 1);
+
+        if (searchResults.length === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `No relevant rule files found for prompt: "${query}". Try using different keywords or more specific descriptions.`,
+              },
+            ],
+          };
+        }
+
+        // Get the most relevant result
+        const result = searchResults[0];
+        const filePath = result.content;
+        const similarity = result.similarity;
+
+        // Extract filename from path
+        const fileName = path.basename(filePath);
+        const relativePath = path.relative(projectRoot, filePath);
+
+        // Build the result content
+        let resultContent = `# Most Relevant Rule File for: "${query}"\n\n`;
+        resultContent += `**File:** ${fileName}\n`;
+        resultContent += `**Path:** \`${relativePath}\`\n`;
+        resultContent += `**Relevance Score:** ${(similarity * 100).toFixed(
+          1
+        )}%\n\n`;
+
+        try {
+          // Check if file exists and read its content
+          if (fs.existsSync(filePath)) {
+            const fileContent = fs.readFileSync(filePath, "utf-8");
+            resultContent += `\`\`\`javascript\n${fileContent}\n\`\`\`\n\n`;
+          } else {
+            resultContent += `*Error: File not found at ${filePath}*\n\n`;
+          }
+        } catch (fileReadError) {
+          resultContent += `*Error reading file: ${
+            fileReadError instanceof Error
+              ? fileReadError.message
+              : String(fileReadError)
+          }*\n\n`;
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: resultContent,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error(`MDK rule search failed:`, error);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Rule search failed: ${
+                error instanceof Error ? error.message : String(error)
+              }. Please try a different search prompt or check if the rule embeddings are properly initialized.`,
+            },
+          ],
+        };
+      }
+    }
+
     default:
       throw new Error("Unknown tool");
   }
@@ -1272,6 +1409,13 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
     prompts: [],
   };
 });
+
+/**
+ * Sets up telemetry.
+ */
+async function setupTelemetry(): Promise<void> {
+  await TelemetryHelper.initTelemetrySettings();
+}
 
 /**
  * Start the server using stdio transport.
@@ -1298,5 +1442,16 @@ export default async function run(_options = {}) {
     );
     retrieveAndStore(schemaPath, serverConfig.schemaVersion);
   }
+
+  const rulembeddingPath = path.join(
+    projectRoot,
+    `build/embeddings/rule-chunks.bin`
+  );
+  if (!fs.existsSync(rulembeddingPath)) {
+    retrieveAndStoreRule(path.join(projectRoot, "res/templates/Rule"));
+  }
+
   [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+
+  await setupTelemetry();
 }

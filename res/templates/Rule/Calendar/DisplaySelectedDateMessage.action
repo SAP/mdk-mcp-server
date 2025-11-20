@@ -1,0 +1,6 @@
+{
+    "_Type" : "Action.Type.Message",
+    "Message" : "{#}",
+    "Title" : "Title",
+    "OKCaption" : "OK"
+}

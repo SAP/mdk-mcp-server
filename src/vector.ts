@@ -33,7 +33,7 @@ interface Chunk {
  */
 function loadDocumentsFromFolder(
   folderPath: string,
-  allowedExts: Set<string> = new Set([".json", ".schema"])
+  allowedExts: Set<string> = new Set([".json", ".schema", ".js"])
 ): Document[] {
   const docs: Document[] = [];
 
@@ -106,6 +106,15 @@ export async function retrieveAndStore(
   await createEmbeddings(`name-chunks-${version}`, names);
 }
 
+export function retrieveAndStoreRule(folderPath: string): void {
+  const docs = loadDocumentsFromFolder(folderPath);
+
+  const names = docs.map(doc => {
+    return doc.source;
+  });
+  createEmbeddings("rule-chunks", names);
+}
+
 /**
  * Search the vector database for the most similar documents to the query.
  * It embeds the query using the SentenceTransformer model, then queries the vector database for the top_n most similar documents.
@@ -139,6 +148,18 @@ export async function searchNames(
   version: string
 ): Promise<SearchResult[]> {
   const chunks = await loadChunks(`name-chunks-${version}`);
+  const embeddingResults: SearchResult[] = (
+    await searchEmbeddings(query, chunks)
+  ).slice(0, topN);
+
+  return embeddingResults;
+}
+
+export async function searchRuleNames(
+  query: string,
+  topN: number = 1
+): Promise<SearchResult[]> {
+  const chunks = await loadChunks("rule-chunks");
   const embeddingResults: SearchResult[] = (
     await searchEmbeddings(query, chunks)
   ).slice(0, topN);
