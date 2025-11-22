@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
-import run from "./index.js";
+console.log = console.error;
+console.warn = console.error;
+console.info = console.error;
+const { default: run } = await import("./index.js");
 
 const args = process.argv.slice(2);
 const options = {};
