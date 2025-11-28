@@ -15,7 +15,7 @@ import { createRequire } from "module";
 import { config } from "dotenv";
 
 // Load environment variables from .env file
-config();
+config({ quiet: true });
 
 const require = createRequire(import.meta.url);
 const packageJson = require("../../package.json");
