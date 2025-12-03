@@ -834,23 +834,37 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "validate": {
-            // Construct validation command using mdkToolsPath
-            let validationScript: string = "";
+            // For large projects, validation can take a long time and may exceed MCP timeout limits
+            // Provide instructions to run validation directly in terminal
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
                 process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
-              validationScript = `${mdkBinary} validate --project "${projectPath}"`;
+              
+              const validationCommand = `${mdkBinary} validate --project "${projectPath}"`;
+              
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `# MDK Project Validation\n\n` +
+                          `For large projects, validation may take several minutes and can exceed the MCP timeout limit.\n\n` +
+                          `**Please run the following command directly in your terminal:**\n\n` +
+                          `\`\`\`bash\n${validationCommand}\n\`\`\`\n\n` +
+                          `**Or navigate to your project and run:**\n\n` +
+                          `\`\`\`bash\ncd "${projectPath}"\n${mdkBinary} validate --project .\n\`\`\`\n\n` +
+                          `This will validate your MDK project and display any errors or warnings.`,
+                  },
+                ],
+              };
             }
-
-            // Execute validation
-            const validateResult = runCommand(validationScript);
+            
             return {
               content: [
                 {
                   type: "text",
-                  text: `MDK Validation completed successfully.\n\n${validateResult}`,
+                  text: `Error: MDK tools not found. Please ensure @sap/mdk-tools is installed.`,
                 },
               ],
             };

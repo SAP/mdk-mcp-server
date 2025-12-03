@@ -166,11 +166,17 @@ export function runCommand(
     }
 
     // Determine timeout based on command type
-    let commandTimeout = options.timeout || 60000; // Default 60 seconds (increased from 30)
+    let commandTimeout = options.timeout || 60000; // Default 60 seconds
 
     // Increase timeout for deployment and build commands that may take longer
     if (command.includes("deploy") || command.includes("build")) {
-      commandTimeout = options.timeout || 300000; // 5 minutes for deploy/build commands (increased from 2)
+      commandTimeout = options.timeout || 300000; // 5 minutes for deploy/build commands
+    }
+
+    // Increase timeout for validation commands which can take a while for large projects
+    // Set to 15 minutes for very large projects with thousands of files
+    if (command.includes("validate")) {
+      commandTimeout = options.timeout || 900000; // 15 minutes for validation commands
     }
 
     // Increase timeout for yo (yeoman) commands which can take a while
@@ -185,6 +191,7 @@ export function runCommand(
       stdio: "pipe",
       encoding: "utf-8",
       timeout: commandTimeout,
+      maxBuffer: 50 * 1024 * 1024, // 50MB buffer for large output (validation can produce lots of output)
     };
 
     // On Windows, ensure we use the correct shell for .cmd files
