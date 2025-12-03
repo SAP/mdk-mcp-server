@@ -166,11 +166,16 @@ export function runCommand(
     }
 
     // Determine timeout based on command type
-    let commandTimeout = options.timeout || 30000; // Default 30 seconds
+    let commandTimeout = options.timeout || 60000; // Default 60 seconds (increased from 30)
 
     // Increase timeout for deployment and build commands that may take longer
     if (command.includes("deploy") || command.includes("build")) {
-      commandTimeout = options.timeout || 120000; // 2 minutes for deploy/build commands
+      commandTimeout = options.timeout || 300000; // 5 minutes for deploy/build commands (increased from 2)
+    }
+
+    // Increase timeout for yo (yeoman) commands which can take a while
+    if (command.includes("yo ") || baseCommand === "yo") {
+      commandTimeout = options.timeout || 300000; // 5 minutes for yeoman generation
     }
 
     // For Windows, handle shell selection properly

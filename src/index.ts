@@ -61,64 +61,74 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "mdk-gen-project",
-        description: "Generates a new MDK project in the current directory.",
+        name: "mdk-create",
+        description:
+          "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects.",
         inputSchema: {
           type: "object",
           properties: {
             folderRootPath: {
               type: "string",
               description: "The path of the current project root folder.",
+            },
+            scope: {
+              type: "string",
+              enum: ["project", "entity"],
+              description:
+                "The scope of creation:\n" +
+                "• project: Initialize a new MDK project with full structure\n" +
+                "• entity: Add entity metadata to an existing project",
             },
             templateType: {
               type: "string",
               enum: ["crud", "list detail", "base"],
-              description: "The type of the template to be used.",
+              description:
+                "The type of template to use. Note: 'base' template is only valid for project scope.",
             },
             oDataEntitySets: {
               type: "string",
               description:
-                "The OData entity sets are relevant to the user prompt, separated by commas.",
+                "The OData entity sets relevant to the user prompt, separated by commas.",
             },
             offline: {
               type: "boolean",
               description:
-                "Whether to generate the project in offline mode, set to false unless offline is explicitly specified.",
+                "Whether to generate the project in offline mode (only applicable for project scope). Set to false unless offline is explicitly specified.",
+              default: false,
             },
           },
-          required: [
-            "folderRootPath",
-            "templateType",
-            "oDataEntitySets",
-            "offline",
-          ],
+          required: ["folderRootPath", "scope", "templateType", "oDataEntitySets"],
         },
       },
       {
-        name: "mdk-gen-i18n",
+        name: "mdk-gen",
         description:
-          "Returns a prompt to be used for generating i18n files for the MDK application. You can describe texts, labels, messages.",
+          "Generates MDK artifacts including pages, actions, i18n files, and rule references. Returns prompts for LLM processing (pages, actions, i18n) or searches for rule examples.",
         inputSchema: {
           type: "object",
           properties: {
             folderRootPath: {
               type: "string",
-              description: "The path of the current project root folder.",
+              description:
+                "The path of the current project root folder (not required for rule artifact type).",
             },
-          },
-          required: ["folderRootPath"],
-        },
-      },
-      {
-        name: "mdk-gen-databinding-page",
-        description:
-          "Returns a prompt to be used for generating a databinding-enabled MDK page. Using the prompt, a .page file is created that describes the page layout, controls and data bindings.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            folderRootPath: {
+            artifactType: {
               type: "string",
-              description: "The path of the current project root folder.",
+              enum: ["page", "action", "i18n", "rule"],
+              description:
+                "The type of artifact to generate:\n" +
+                "• page: Generate MDK page files (.page) with databinding or layout\n" +
+                "• action: Generate MDK action files (.action)\n" +
+                "• i18n: Generate internationalization files (.properties)\n" +
+                "• rule: Search for and return relevant JavaScript rule examples",
+            },
+            pageType: {
+              type: "string",
+              enum: ["databinding", "layout"],
+              description:
+                "The type of page (required when artifactType is 'page'):\n" +
+                "• databinding: Data-driven pages with controls bound to OData\n" +
+                "• layout: Structure-focused pages with specific layouts",
             },
             controlType: {
               type: "string",
@@ -139,22 +149,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 "Calendar",
               ],
               description:
-                "The type of the control to be used in the MDK page.",
-            },
-          },
-          required: ["folderRootPath", "controlType"],
-        },
-      },
-      {
-        name: "mdk-gen-layout-page",
-        description:
-          "Generates a layout-based MDK page. You can describe the page layout, controls. It saves the response to `.page` file.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            folderRootPath: {
-              type: "string",
-              description: "The path of the current project root folder.",
+                "The control type for databinding pages (required when pageType is 'databinding').",
             },
             layoutType: {
               type: "string",
@@ -166,47 +161,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 "Tabs",
                 "Extension",
               ],
-              description: "The type of the layout to be used in the MDK page.",
-            },
-          },
-          required: ["folderRootPath", "layoutType"],
-        },
-      },
-      {
-        name: "mdk-gen-entity",
-        description:
-          "Generates CRUD or List Detail template metadata for a new entity set.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            folderRootPath: {
-              type: "string",
-              description: "The path of the current project root folder.",
-            },
-            templateType: {
-              type: "string",
-              enum: ["list detail", "crud"],
-              description: "The type of the entity template to be used.",
-            },
-            oDataEntitySets: {
-              type: "string",
               description:
-                "The OData entity sets are relevant to the user prompt, separated by commas.",
-            },
-          },
-          required: ["folderRootPath", "templateType", "oDataEntitySets"],
-        },
-      },
-      {
-        name: "mdk-gen-action",
-        description:
-          "Returns a prompt to be used for generating an MDK action. Using the prompt, an `.action` file will be created that describes the action type and data bindings.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            folderRootPath: {
-              type: "string",
-              description: "The path of the current project root folder.",
+                "The layout type for layout pages (required when pageType is 'layout').",
             },
             actionType: {
               type: "string",
@@ -252,10 +208,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 "Banner",
                 "Filter",
               ],
-              description: "The type of the action.",
+              description:
+                "The type of action (required when artifactType is 'action').",
+            },
+            query: {
+              type: "string",
+              description:
+                "Search query for rule reference (required when artifactType is 'rule'). Examples: 'get app name', 'handle form validation', 'navigate to page', etc.",
             },
           },
-          required: ["folderRootPath", "actionType"],
+          required: ["artifactType"],
         },
       },
       {
@@ -338,22 +300,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
-      {
-        name: "mdk-gen-rule",
-        description:
-          "Searches for and returns the content of relevant JavaScript rule files based on an user prompt. Uses semantic search to find the most appropriate rule files.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            query: {
-              type: "string",
-              description:
-                "A description of what kind of rule you're looking for. Examples: 'get app name', 'handle form validation', 'navigate to page', 'send HTTP request', etc.",
-            },
-          },
-          required: ["query"],
-        },
-      },
     ],
   };
 });
@@ -366,15 +312,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
 
   // List of valid tool names
   const validTools = [
-    "mdk-gen-project",
-    "mdk-gen-entity",
-    "mdk-gen-i18n",
-    "mdk-gen-databinding-page",
-    "mdk-gen-layout-page",
-    "mdk-gen-action",
+    "mdk-create",
+    "mdk-gen",
     "mdk-manage",
     "mdk-docs",
-    "mdk-gen-rule",
   ];
 
   const isValidTool = validTools.includes(request.params.name);
@@ -397,33 +338,53 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
   );
 
   switch (request.params.name) {
-    case "mdk-gen-project": {
+    case "mdk-create": {
       try {
         // Validate all arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-gen-project",
+          "mdk-create",
           request.params.arguments || {}
         );
 
         const projectPath = validatedArgs.folderRootPath as string;
+        const scope = validatedArgs.scope as string;
         const templateType = validatedArgs.templateType as string;
         const oDataEntitySetsString = validatedArgs.oDataEntitySets as string;
-        const offline = validatedArgs.offline as boolean;
+        const offline = (validatedArgs.offline as boolean) || false;
+
+        // Validate: 'base' template only for project scope
+        if (templateType === "base" && scope === "entity") {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Error: 'base' template is only valid for project scope, not entity scope.",
+              },
+            ],
+          };
+        }
+
+        const isEntity = scope === "entity";
+        const useOffline = scope === "project" ? offline : false;
 
         const script = await generateTemplateBasedMetadata(
           oDataEntitySetsString,
           templateType,
           projectPath,
-          offline,
-          false
+          useOffline,
+          isEntity
         );
 
         if (!script) {
+          const errorMsg = isEntity
+            ? `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`
+            : `Error: Unable to read service metadata from .service.metadata file in project root ${projectPath}. Please make sure the file exists and is a valid JSON file.`;
+          
           return {
             content: [
               {
                 type: "text",
-                text: `Error: Unable to read service metadata from .service.metadata file in project root ${projectPath}. Please make sure the file exists and is a valid JSON file.`,
+                text: errorMsg,
               },
             ],
           };
@@ -441,7 +402,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           ],
         };
       } catch (error) {
-        console.error(`MDK project generation failed:`, error);
+        console.error(`MDK create operation failed:`, error);
 
         return {
           content: [
@@ -454,82 +415,31 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-gen-entity": {
+    case "mdk-gen": {
       try {
         // Validate all arguments using comprehensive validation
         const validatedArgs = validateToolArguments(
-          "mdk-gen-entity",
+          "mdk-gen",
           request.params.arguments || {}
         );
 
-        const projectPath = validatedArgs.folderRootPath as string;
-        const templateType = validatedArgs.templateType as string;
-        const oDataEntitySetsString = validatedArgs.oDataEntitySets as string;
+        const artifactType = validatedArgs.artifactType as string;
 
-        const script = await generateTemplateBasedMetadata(
-          oDataEntitySetsString,
-          templateType,
-          projectPath,
-          false,
-          true
-        );
+        // Handle different artifact types
+        switch (artifactType) {
+          case "i18n": {
+            const projectPath = validatedArgs.folderRootPath as string;
+            const i18nFilePath = `${projectPath}/i18n/i18n.properties`;
 
-        if (!script) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`,
-              },
-            ],
-          };
-        }
+            try {
+              // Read existing i18n content
+              const existingContent = fs.readFileSync(i18nFilePath, "utf-8");
 
-        const resultText = runCommand(script);
-        fs.unlinkSync(`${projectPath}/headless.json`);
+              // Prepare enhanced user prompt
+              const enhancedUserPrompt = `In my project, the default i18n file is ${existingContent}`;
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: resultText,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error(`MDK entity generation failed:`, error);
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
-
-    case "mdk-gen-i18n": {
-      try {
-        // Validate all arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-gen-i18n",
-          request.params.arguments || {}
-        );
-
-        const projectPath = validatedArgs.folderRootPath as string;
-        const i18nFilePath = `${projectPath}/i18n/i18n.properties`;
-
-        try {
-          // Read existing i18n content
-          const existingContent = fs.readFileSync(i18nFilePath, "utf-8");
-
-          // Prepare enhanced user prompt
-          const enhancedUserPrompt = `In my project, the default i18n file is ${existingContent}`;
-
-          // System prompt with clear instructions
-          const systemPrompt = `
+              // System prompt with clear instructions
+              const systemPrompt = `
           Imagine you are a helpful assistant from SAP company who can generate i18n files and translate the values in i18n files to a special language.
           
           Restrictions:
@@ -556,61 +466,46 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           - Don't generate X/Y text type classification, Customer list on dashboard= in the i18n file
         `.trim();
 
-          const prompt = systemPrompt + enhancedUserPrompt;
-          return {
-            content: [
-              {
-                type: "text",
-                text: prompt,
-              },
-            ],
-          };
-        } catch (error) {
-          const errorMsg =
-            error instanceof Error ? error.message : String(error);
-          console.error(`Error generating i18n files: ${errorMsg}`);
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: ${errorMsg}`,
-              },
-            ],
-          };
-        }
-      } catch (error) {
-        console.error(`MDK i18n generation failed:`, error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
+              const prompt = systemPrompt + enhancedUserPrompt;
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: prompt,
+                  },
+                ],
+              };
+            } catch (error) {
+              const errorMsg =
+                error instanceof Error ? error.message : String(error);
+              console.error(`Error generating i18n files: ${errorMsg}`);
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Error: ${errorMsg}`,
+                  },
+                ],
+              };
+            }
+          }
 
-    case "mdk-gen-databinding-page": {
-      try {
-        // Validate all arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-gen-databinding-page",
-          request.params.arguments || {}
-        );
+          case "page": {
+            const projectPath = validatedArgs.folderRootPath as string;
+            const pageType = validatedArgs.pageType as string;
 
-        const projectPath = validatedArgs.folderRootPath as string;
-        const controlType = validatedArgs.controlType as string;
+            if (pageType === "databinding") {
+              const controlType = validatedArgs.controlType as string;
 
-        // Configuration constants
-        const CONFIG = {
-          PROJECT_PATH: projectPath,
-          MDK_APP: projectPath.split("/").pop(),
-        };
-        const oJson = { section: controlType };
+              // Configuration constants
+              const CONFIG = {
+                PROJECT_PATH: projectPath,
+                MDK_APP: projectPath.split("/").pop(),
+              };
+              const oJson = { section: controlType };
 
-        // Prepare prompts
-        const systemPrompt = `
+              // Prepare prompts
+              const systemPrompt = `
         Imagine you are a helpful assistant from SAP company who can generate a page file for Mobile Development Kit.
         
         Instruction:
@@ -624,132 +519,97 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         - Don't include .json in generated file name.
         `;
 
-        // Use getServiceDataWithFallback to get service data and path
-        const serviceResult = getServiceDataWithFallback(projectPath);
-        if (!serviceResult) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`,
-              },
-            ],
-          };
-        }
+              // Use getServiceDataWithFallback to get service data and path
+              const serviceResult = getServiceDataWithFallback(projectPath);
+              if (!serviceResult) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`,
+                    },
+                  ],
+                };
+              }
 
-        const SERVICE_DATA = serviceResult.serviceData;
-        const MDK_SERVICE = serviceResult.servicePath;
-        const MDK_EXAMPLE = fs.readFileSync(
-          path.join(
-            projectRoot,
-            "res/templates/Page/DataBinding",
-            oJson.section + ".md"
-          ),
-          "utf-8"
-        );
+              const SERVICE_DATA = serviceResult.serviceData;
+              const MDK_SERVICE = serviceResult.servicePath;
+              const MDK_EXAMPLE = fs.readFileSync(
+                path.join(
+                  projectRoot,
+                  "res/templates/Page/DataBinding",
+                  oJson.section + ".md"
+                ),
+                "utf-8"
+              );
 
-        const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
+              const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
           \`\`\`${SERVICE_DATA}\`\`\`
           the example is 
           \`\`\`${MDK_EXAMPLE}\`\`\``;
 
-        const prompt = systemPrompt + enhancedUserPrompt;
+              const prompt = systemPrompt + enhancedUserPrompt;
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: prompt,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error("MDK page generation failed:", error);
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: prompt,
+                  },
+                ],
+              };
+            } else if (pageType === "layout") {
+              const layoutType = validatedArgs.layoutType as string;
+              const oJson = { layout: layoutType };
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: `MDK page generation failed: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
-            },
-          ],
-        };
-      }
-    }
-
-    case "mdk-gen-layout-page": {
-      try {
-        // Validate all arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-gen-layout-page",
-          request.params.arguments || {}
-        );
-
-        const layoutType = validatedArgs.layoutType as string;
-        const oJson = { layout: layoutType };
-
-        // Prepare prompts
-        const systemPrompt = `
+              // Prepare prompts
+              const systemPrompt = `
         Imagine you are a helpful assistant from SAP company who can generate a page file for Mobile Development Kit.`;
 
-        const MDK_EXAMPLE = fs.readFileSync(
-          path.join(
-            projectRoot,
-            "res/templates/Page/Layout",
-            oJson.layout + ".md"
-          ),
-          "utf-8"
-        );
+              const MDK_EXAMPLE = fs.readFileSync(
+                path.join(
+                  projectRoot,
+                  "res/templates/Page/Layout",
+                  oJson.layout + ".md"
+                ),
+                "utf-8"
+              );
 
-        const prompt = systemPrompt + MDK_EXAMPLE;
+              const prompt = systemPrompt + MDK_EXAMPLE;
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: prompt,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error("MDK page generation failed:", error);
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: prompt,
+                  },
+                ],
+              };
+            } else {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Unknown page type: ${pageType}`,
+                  },
+                ],
+              };
+            }
+          }
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: `MDK page generation failed: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
-            },
-          ],
-        };
-      }
-    }
+          case "action": {
+            const projectPath = validatedArgs.folderRootPath as string;
+            const actionType = validatedArgs.actionType as string;
 
-    case "mdk-gen-action": {
-      try {
-        // Validate all arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-gen-action",
-          request.params.arguments || {}
-        );
+            // Configuration constants
+            const CONFIG = {
+              PROJECT_PATH: projectPath,
+              MDK_APP: projectPath.split("/").pop(),
+            };
+            const oJson = { action: actionType };
 
-        const projectPath = validatedArgs.folderRootPath as string;
-        const actionType = validatedArgs.actionType as string;
-
-        // Configuration constants
-        const CONFIG = {
-          PROJECT_PATH: projectPath,
-          MDK_APP: projectPath.split("/").pop(),
-          DEFAULT_PROMPT: "Generate a mdk page displaying list of products.",
-        };
-        const oJson = { action: actionType };
-
-        // Prepare prompts
-        const systemPrompt = `
+            // Prepare prompts
+            const systemPrompt = `
         Imagine you are a helpful assistant from SAP company who can generate an action file for Mobile Development Kit.
         
         Instruction:
@@ -757,51 +617,125 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         - Do not generate any comments in JSON file.
         `;
 
-        // Use getServiceDataWithFallback to get service data and path
-        const serviceResult = getServiceDataWithFallback(projectPath);
-        if (!serviceResult) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`,
-              },
-            ],
-          };
-        }
+            // Use getServiceDataWithFallback to get service data and path
+            const serviceResult = getServiceDataWithFallback(projectPath);
+            if (!serviceResult) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`,
+                  },
+                ],
+              };
+            }
 
-        const SERVICE_DATA = serviceResult.serviceData;
-        const MDK_SERVICE = serviceResult.servicePath;
-        const MDK_EXAMPLE = fs.readFileSync(
-          path.join(projectRoot, "res/templates/Action", oJson.action + ".md"),
-          "utf-8"
-        );
+            const SERVICE_DATA = serviceResult.serviceData;
+            const MDK_SERVICE = serviceResult.servicePath;
+            const MDK_EXAMPLE = fs.readFileSync(
+              path.join(
+                projectRoot,
+                "res/templates/Action",
+                oJson.action + ".md"
+              ),
+              "utf-8"
+            );
 
-        const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
+            const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
           \`\`\`${SERVICE_DATA}\`\`\`
           the example is 
           \`\`\`${MDK_EXAMPLE}\`\`\``;
 
-        const prompt = systemPrompt + enhancedUserPrompt;
+            const prompt = systemPrompt + enhancedUserPrompt;
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: prompt,
-            },
-          ],
-        };
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: prompt,
+                },
+              ],
+            };
+          }
+
+          case "rule": {
+            const query = validatedArgs.query as string;
+
+            // Use semantic search to find the most relevant rule file (topN=1)
+            const searchResults = await searchRuleNames(query, 1);
+
+            if (searchResults.length === 0) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `No relevant rule files found for prompt: "${query}". Try using different keywords or more specific descriptions.`,
+                  },
+                ],
+              };
+            }
+
+            // Get the most relevant result
+            const result = searchResults[0];
+            const filePath = result.content;
+            const similarity = result.similarity;
+
+            // Extract filename from path
+            const fileName = path.basename(filePath);
+            const relativePath = path.relative(projectRoot, filePath);
+
+            // Build the result content
+            let resultContent = `# Most Relevant Rule File for: "${query}"\n\n`;
+            resultContent += `**File:** ${fileName}\n`;
+            resultContent += `**Path:** \`${relativePath}\`\n`;
+            resultContent += `**Relevance Score:** ${(similarity * 100).toFixed(
+              1
+            )}%\n\n`;
+
+            try {
+              // Check if file exists and read its content
+              if (fs.existsSync(filePath)) {
+                const fileContent = fs.readFileSync(filePath, "utf-8");
+                resultContent += `\`\`\`javascript\n${fileContent}\n\`\`\`\n\n`;
+              } else {
+                resultContent += `*Error: File not found at ${filePath}*\n\n`;
+              }
+            } catch (fileReadError) {
+              resultContent += `*Error reading file: ${
+                fileReadError instanceof Error
+                  ? fileReadError.message
+                  : String(fileReadError)
+              }*\n\n`;
+            }
+
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: resultContent,
+                },
+              ],
+            };
+          }
+
+          default: {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Unknown artifact type: ${artifactType}`,
+                },
+              ],
+            };
+          }
+        }
       } catch (error) {
-        console.error("MDK action generation failed:", error);
-
+        console.error(`MDK artifact generation failed:`, error);
         return {
           content: [
             {
               type: "text",
-              text: `MDK action generation failed: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: error instanceof Error ? error.toString() : String(error),
             },
           ],
         };
@@ -1313,86 +1247,6 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             {
               type: "text",
               text: error instanceof Error ? error.toString() : String(error),
-            },
-          ],
-        };
-      }
-    }
-
-    case "mdk-gen-rule": {
-      try {
-        // Validate arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-gen-rule",
-          request.params.arguments || {}
-        );
-
-        const query = validatedArgs.query as string;
-
-        // Use semantic search to find the most relevant rule file (topN=1)
-        const searchResults = await searchRuleNames(query, 1);
-
-        if (searchResults.length === 0) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `No relevant rule files found for prompt: "${query}". Try using different keywords or more specific descriptions.`,
-              },
-            ],
-          };
-        }
-
-        // Get the most relevant result
-        const result = searchResults[0];
-        const filePath = result.content;
-        const similarity = result.similarity;
-
-        // Extract filename from path
-        const fileName = path.basename(filePath);
-        const relativePath = path.relative(projectRoot, filePath);
-
-        // Build the result content
-        let resultContent = `# Most Relevant Rule File for: "${query}"\n\n`;
-        resultContent += `**File:** ${fileName}\n`;
-        resultContent += `**Path:** \`${relativePath}\`\n`;
-        resultContent += `**Relevance Score:** ${(similarity * 100).toFixed(
-          1
-        )}%\n\n`;
-
-        try {
-          // Check if file exists and read its content
-          if (fs.existsSync(filePath)) {
-            const fileContent = fs.readFileSync(filePath, "utf-8");
-            resultContent += `\`\`\`javascript\n${fileContent}\n\`\`\`\n\n`;
-          } else {
-            resultContent += `*Error: File not found at ${filePath}*\n\n`;
-          }
-        } catch (fileReadError) {
-          resultContent += `*Error reading file: ${
-            fileReadError instanceof Error
-              ? fileReadError.message
-              : String(fileReadError)
-          }*\n\n`;
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: resultContent,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error(`MDK rule search failed:`, error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Rule search failed: ${
-                error instanceof Error ? error.message : String(error)
-              }. Please try a different search prompt or check if the rule embeddings are properly initialized.`,
             },
           ],
         };
