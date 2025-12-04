@@ -97,7 +97,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               default: false,
             },
           },
-          required: ["folderRootPath", "scope", "templateType", "oDataEntitySets"],
+          required: [
+            "folderRootPath",
+            "scope",
+            "templateType",
+            "oDataEntitySets",
+          ],
         },
       },
       {
@@ -311,12 +316,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
   TelemetryHelper.markToolStartTime();
 
   // List of valid tool names
-  const validTools = [
-    "mdk-create",
-    "mdk-gen",
-    "mdk-manage",
-    "mdk-docs",
-  ];
+  const validTools = ["mdk-create", "mdk-gen", "mdk-manage", "mdk-docs"];
 
   const isValidTool = validTools.includes(request.params.name);
 
@@ -379,7 +379,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           const errorMsg = isEntity
             ? `Error: Unable to read service metadata. Please make sure either .service.metadata file exists in project root ${projectPath}, or .project.json file exists and corresponding .XML file in Services folder.`
             : `Error: Unable to read service metadata from .service.metadata file in project root ${projectPath}. Please make sure the file exists and is a valid JSON file.`;
-          
+
           return {
             content: [
               {
@@ -841,25 +841,26 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 mdkToolsPath,
                 process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
-              
+
               const validationCommand = `${mdkBinary} validate --project "${projectPath}"`;
-              
+
               return {
                 content: [
                   {
                     type: "text",
-                    text: `# MDK Project Validation\n\n` +
-                          `For large projects, validation may take several minutes and can exceed the MCP timeout limit.\n\n` +
-                          `**Please run the following command directly in your terminal:**\n\n` +
-                          `\`\`\`bash\n${validationCommand}\n\`\`\`\n\n` +
-                          `**Or navigate to your project and run:**\n\n` +
-                          `\`\`\`bash\ncd "${projectPath}"\n${mdkBinary} validate --project .\n\`\`\`\n\n` +
-                          `This will validate your MDK project and display any errors or warnings.`,
+                    text:
+                      `# MDK Project Validation\n\n` +
+                      `For large projects, validation may take several minutes and can exceed the MCP timeout limit.\n\n` +
+                      `**Please run the following command directly in your terminal:**\n\n` +
+                      `\`\`\`bash\n${validationCommand}\n\`\`\`\n\n` +
+                      `**Or navigate to your project and run:**\n\n` +
+                      `\`\`\`bash\ncd "${projectPath}"\n${mdkBinary} validate --project .\n\`\`\`\n\n` +
+                      `This will validate your MDK project and display any errors or warnings.`,
                   },
                 ],
               };
             }
-            
+
             return {
               content: [
                 {

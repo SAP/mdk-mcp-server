@@ -282,13 +282,13 @@ export function validateToolArguments(
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );
-      
+
       // Validate scope
       const scopeSchema = z.enum(["project", "entity"], {
         message: "Invalid scope type",
       });
       validatedArgs.scope = scopeSchema.parse(args.scope);
-      
+
       validatedArgs.templateType = ValidationSchemas.templateType.parse(
         args.templateType
       );
@@ -305,29 +305,29 @@ export function validateToolArguments(
         message: "Invalid artifact type",
       });
       validatedArgs.artifactType = artifactTypeSchema.parse(args.artifactType);
-      
+
       const artifactType = validatedArgs.artifactType as string;
-      
+
       // Validate artifact-specific parameters
       if (artifactType === "page") {
         validatedArgs.folderRootPath = validateSecurePath(
           String(args.folderRootPath)
         );
-        
+
         // Validate page type
         const pageTypeSchema = z.enum(["databinding", "layout"], {
           message: "Invalid page type",
         });
-        
+
         if (!args.pageType) {
           throw new ValidationError("pageType", args.pageType, [
             "Page type is required for page artifact",
           ]);
         }
-        
+
         validatedArgs.pageType = pageTypeSchema.parse(args.pageType);
         const pageType = validatedArgs.pageType as string;
-        
+
         if (pageType === "databinding") {
           if (!args.controlType) {
             throw new ValidationError("controlType", args.controlType, [
@@ -351,13 +351,13 @@ export function validateToolArguments(
         validatedArgs.folderRootPath = validateSecurePath(
           String(args.folderRootPath)
         );
-        
+
         if (!args.actionType) {
           throw new ValidationError("actionType", args.actionType, [
             "Action type is required for action artifact",
           ]);
         }
-        
+
         validatedArgs.actionType = ValidationSchemas.actionType.parse(
           args.actionType
         );

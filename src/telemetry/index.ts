@@ -24,7 +24,9 @@ const version = packageJson.version;
 export const mcpServerName = "@sap/mdk-mcp-server";
 export const unknownTool = "unknown-tool";
 
-const resourceId = process.env.INSTRUMENTATION_KEY || "ApplicationInsightsInstrumentationKeyPLACEH0LDER";
+const resourceId =
+  process.env.INSTRUMENTATION_KEY ||
+  "ApplicationInsightsInstrumentationKeyPLACEH0LDER";
 
 export interface TelemetryData {
   [key: string]: string;
