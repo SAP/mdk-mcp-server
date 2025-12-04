@@ -13,6 +13,7 @@ import {
   getMobileServiceAppNameWithFallback,
   getSchemaVersion,
   getServerConfig,
+  safeJsonParse,
 } from "./utils.js";
 import { validateToolArguments } from "./validation.js";
 import path from "path";
@@ -520,7 +521,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         `;
 
               // Use getServiceDataWithFallback to get service data and path
-              const serviceResult = getServiceDataWithFallback(projectPath);
+              const serviceResult = await getServiceDataWithFallback(projectPath);
               if (!serviceResult) {
                 return {
                   content: [
@@ -618,7 +619,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         `;
 
             // Use getServiceDataWithFallback to get service data and path
-            const serviceResult = getServiceDataWithFallback(projectPath);
+            const serviceResult = await getServiceDataWithFallback(projectPath);
             if (!serviceResult) {
               return {
                 content: [
@@ -783,7 +784,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           case "deploy": {
             // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
             const mobileServiceAppName =
-              getMobileServiceAppNameWithFallback(projectPath);
+              await getMobileServiceAppNameWithFallback(projectPath);
             if (!mobileServiceAppName) {
               return {
                 content: [
@@ -1122,7 +1123,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 (file.endsWith(".json") || file.endsWith(".schema"))
               ) {
                 const content = contentList[filenameList.indexOf(file)];
-                const parsedContent = JSON.parse(content);
+                const parsedContent = (await safeJsonParse(content)) as Record<
+                  string,
+                  any // eslint-disable-line @typescript-eslint/no-explicit-any
+                >;
                 if (
                   "properties" in parsedContent &&
                   property_name in parsedContent.properties
@@ -1158,7 +1162,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 (file.endsWith(".json") || file.endsWith(".schema"))
               ) {
                 const content = contentList[filenameList.indexOf(file)];
-                const parsedContent = JSON.parse(content);
+                const parsedContent = (await safeJsonParse(content)) as Record<
+                  string,
+                  any // eslint-disable-line @typescript-eslint/no-explicit-any
+                >;
                 if (
                   "properties" in parsedContent &&
                   property_name in parsedContent.properties
@@ -1291,12 +1298,16 @@ async function setupTelemetry(): Promise<void> {
  * This allows the server to communicate via standard input/output streams.
  */
 export default async function run(_options = {}) {
+  console.error("[MDK MCP Server] Starting server initialization...");
+  
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("MDK MCP server running...");
+  console.error("[MDK MCP Server] Server connected and running");
 
   // Get server configuration
   const serverConfig = getServerConfig();
+  console.error(`[MDK MCP Server] Using schema version: ${serverConfig.schemaVersion}`);
+  
   const schemaPath = path.join(projectRoot, "res/schemas");
 
   // Check if embeddings exist for the version, if not initialize the configured version
@@ -1307,9 +1318,12 @@ export default async function run(_options = {}) {
 
   if (!fs.existsSync(versionEmbeddingPath)) {
     console.error(
-      "Initializing schema embeddings for the configured version..."
+      `[MDK MCP Server] Initializing schema embeddings for version ${serverConfig.schemaVersion}...`
     );
     retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+    console.error("[MDK MCP Server] Schema embeddings initialized successfully");
+  } else {
+    console.error("[MDK MCP Server] Using existing schema embeddings");
   }
 
   const rulembeddingPath = path.join(
@@ -1317,10 +1331,28 @@ export default async function run(_options = {}) {
     `build/embeddings/rule-chunks.bin`
   );
   if (!fs.existsSync(rulembeddingPath)) {
+    console.error("[MDK MCP Server] Initializing rule embeddings...");
     retrieveAndStoreRule(path.join(projectRoot, "res/templates/Rule"));
+    console.error("[MDK MCP Server] Rule embeddings initialized successfully");
+  } else {
+    console.error("[MDK MCP Server] Using existing rule embeddings");
   }
 
   [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
+  console.error(`[MDK MCP Server] Loaded ${filenameList.length} documentation files`);
 
   await setupTelemetry();
+  console.error("[MDK MCP Server] Telemetry initialized");
+  console.error("[MDK MCP Server] Server ready to accept requests");
+  
+  // Handle graceful shutdown
+  process.on('SIGINT', () => {
+    console.error("[MDK MCP Server] Received SIGINT, shutting down gracefully...");
+    process.exit(0);
+  });
+  
+  process.on('SIGTERM', () => {
+    console.error("[MDK MCP Server] Received SIGTERM, shutting down gracefully...");
+    process.exit(0);
+  });
 }

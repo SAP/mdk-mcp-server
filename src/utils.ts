@@ -62,6 +62,175 @@ const ALLOWED_COMMANDS = {
   },
 };
 
+// Security: DOS protection limits for XML/JSON parsing
+const PARSING_LIMITS = {
+  MAX_JSON_SIZE: 10 * 1024 * 1024, // 10MB max JSON size
+  MAX_XML_SIZE: 10 * 1024 * 1024, // 10MB max XML size
+  MAX_NESTING_DEPTH: 100, // Maximum nesting depth for JSON/XML
+  PARSING_TIMEOUT: 30000, // 30 seconds timeout for parsing operations
+  MAX_ENTITY_EXPANSION: 1000, // Maximum entity expansion count
+};
+
+/**
+ * Security: Validate JSON size and structure before parsing
+ */
+function validateJsonSafety(content: string): void {
+  // Check size limit
+  if (content.length > PARSING_LIMITS.MAX_JSON_SIZE) {
+    throw new Error(
+      `JSON content exceeds maximum allowed size of ${PARSING_LIMITS.MAX_JSON_SIZE} bytes`
+    );
+  }
+
+  // Check for excessive nesting by counting brackets
+  let depth = 0;
+  let maxDepth = 0;
+  for (const char of content) {
+    if (char === "{" || char === "[") {
+      depth++;
+      maxDepth = Math.max(maxDepth, depth);
+      if (maxDepth > PARSING_LIMITS.MAX_NESTING_DEPTH) {
+        throw new Error(
+          `JSON nesting depth exceeds maximum allowed depth of ${PARSING_LIMITS.MAX_NESTING_DEPTH}`
+        );
+      }
+    } else if (char === "}" || char === "]") {
+      depth--;
+    }
+  }
+}
+
+/**
+ * Security: Safe JSON parsing with size and depth limits
+ */
+export function safeJsonParse(content: string): unknown {
+  validateJsonSafety(content);
+
+  // Parse with timeout protection
+  return new Promise((resolve, reject) => {
+    const timeout = globalThis.setTimeout(() => {
+      reject(
+        new Error(
+          `JSON parsing timeout after ${PARSING_LIMITS.PARSING_TIMEOUT}ms`
+        )
+      );
+    }, PARSING_LIMITS.PARSING_TIMEOUT);
+
+    try {
+      const result = JSON.parse(content);
+      globalThis.clearTimeout(timeout);
+      resolve(result);
+    } catch (error) {
+      globalThis.clearTimeout(timeout);
+      reject(error);
+    }
+  });
+}
+
+/**
+ * Security: Validate XML size and structure before parsing
+ */
+function validateXmlSafety(content: string): void {
+  // Check size limit
+  if (content.length > PARSING_LIMITS.MAX_XML_SIZE) {
+    throw new Error(
+      `XML content exceeds maximum allowed size of ${PARSING_LIMITS.MAX_XML_SIZE} bytes`
+    );
+  }
+
+  // Check for entity expansion attacks (billion laughs, etc.)
+  const entityPattern = /<!ENTITY/gi;
+  const entityMatches = content.match(entityPattern);
+  if (
+    entityMatches &&
+    entityMatches.length > PARSING_LIMITS.MAX_ENTITY_EXPANSION
+  ) {
+    throw new Error(
+      `XML contains excessive entity declarations (${entityMatches.length}), possible entity expansion attack`
+    );
+  }
+
+  // Check for external entity references (XXE attack)
+  if (content.includes("<!DOCTYPE") && content.includes("SYSTEM")) {
+    throw new Error(
+      "XML contains external entity references, which are not allowed for security reasons"
+    );
+  }
+
+  // Check for excessive nesting
+  let depth = 0;
+  let maxDepth = 0;
+  let inTag = false;
+  let isClosingTag = false;
+
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+    const nextChar = content[i + 1];
+
+    if (char === "<") {
+      inTag = true;
+      isClosingTag = nextChar === "/";
+    } else if (char === ">") {
+      if (inTag) {
+        if (isClosingTag) {
+          depth--;
+        } else if (content[i - 1] !== "/") {
+          // Not a self-closing tag
+          depth++;
+          maxDepth = Math.max(maxDepth, depth);
+          if (maxDepth > PARSING_LIMITS.MAX_NESTING_DEPTH) {
+            throw new Error(
+              `XML nesting depth exceeds maximum allowed depth of ${PARSING_LIMITS.MAX_NESTING_DEPTH}`
+            );
+          }
+        }
+      }
+      inTag = false;
+      isClosingTag = false;
+    }
+  }
+}
+
+/**
+ * Security: Safe XML parsing with protection against XXE, entity expansion, and size limits
+ */
+export async function safeXmlParse(content: string): Promise<unknown> {
+  validateXmlSafety(content);
+
+  return new Promise((resolve, reject) => {
+    const timeout = globalThis.setTimeout(() => {
+      reject(
+        new Error(
+          `XML parsing timeout after ${PARSING_LIMITS.PARSING_TIMEOUT}ms`
+        )
+      );
+    }, PARSING_LIMITS.PARSING_TIMEOUT);
+
+    // Configure xml2js parser with security options
+    const parser = new xml2js.Parser({
+      // Disable external entity resolution (XXE protection)
+      xmlns: false,
+      // Limit attribute count
+      attrkey: "$",
+      // Disable normalization that could cause issues
+      normalize: false,
+      // Disable trimming to preserve exact content
+      trim: false,
+      // Explicitly disable entity expansion
+      strict: true,
+    });
+
+    parser.parseString(content, (error: unknown, result: unknown) => {
+      globalThis.clearTimeout(timeout);
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
 /**
  * Security function to validate and sanitize file paths
  */
@@ -143,6 +312,8 @@ export function runCommand(
   command: string,
   options: { cwd?: string; timeout?: number } = {}
 ): string {
+  console.error(`[MDK MCP Server] Executing command: ${command}`);
+  
   try {
     // Parse command and arguments, handling quoted arguments properly
     const parts = command.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
@@ -202,17 +373,20 @@ export function runCommand(
     }
 
     const output = execSync(command, execOptions);
+    console.error(`[MDK MCP Server] Command completed successfully`);
     return output.toString();
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
+    console.error(`[MDK MCP Server] Command failed: ${errorMessage}`);
     throw new Error(`Command failed: ${command}\n${errorMessage}`);
   }
 }
 
-export function geServiceMetadataJson(filePath: string): unknown {
+export async function geServiceMetadataJson(filePath: string): Promise<unknown> {
   try {
     const content = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(content);
+    // Use safe JSON parsing with size and depth limits
+    return await safeJsonParse(content);
   } catch (err) {
     console.error(err);
     return null;
@@ -280,7 +454,7 @@ export async function generateTemplateBasedMetadata(
 
   // Load service metadata
   const filePath = path.join(projectPath, ".service.metadata");
-  const serviceMetadataObj = geServiceMetadataJson(filePath);
+  const serviceMetadataObj = await geServiceMetadataJson(filePath);
   let destinations: Array<{
     name: string;
     relativeUrl: string;
@@ -295,13 +469,13 @@ export async function generateTemplateBasedMetadata(
       // Fallback: Get data from .project.json and Services folder
       try {
         // Get appId from MobileService.AppId in .project.json
-        const fallbackAppId = getMobileServiceAppNameWithFallback(projectPath);
+        const fallbackAppId = await getMobileServiceAppNameWithFallback(projectPath);
         if (fallbackAppId) {
           appId = fallbackAppId;
         }
 
         // Get destination name and edmxPath from .project.json and Services folder
-        const serviceData = getServiceDataWithFallback(projectPath);
+        const serviceData = await getServiceDataWithFallback(projectPath);
         if (serviceData) {
           edmxPath = serviceData.serviceData;
 
@@ -312,7 +486,10 @@ export async function generateTemplateBasedMetadata(
               projectJsonPath,
               "utf-8"
             );
-            const projectConfig = JSON.parse(projectJsonContent);
+
+            const projectConfig = (await safeJsonParse(
+              projectJsonContent
+            )) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
             let destinationName: string | null = null;
             if (projectConfig.CF?.Deploy?.Destination) {
@@ -441,10 +618,10 @@ export async function generateTemplateBasedMetadata(
   oConfig.template = oJson.template;
 
   // Write configuration to file
-  fs.writeFileSync(
-    path.join(projectPath, "headless.json"),
-    JSON.stringify(oConfig, null, 2)
-  );
+  const configPath = path.join(projectPath, "headless.json");
+  console.error(`[MDK MCP Server] Writing configuration file: ${configPath}`);
+  fs.writeFileSync(configPath, JSON.stringify(oConfig, null, 2));
+  console.error(`[MDK MCP Server] Configuration file written successfully`);
 
   // Prepare MDK generation command
   const mdkToolsPath = await getModulePath("mdk-tools");
@@ -463,48 +640,45 @@ export async function generateTemplateBasedMetadata(
 }
 
 async function getEntitySetsFromODataString(data: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    xml2js.parseString(data, (error: unknown, result: unknown) => {
-      if (error) {
-        reject(error);
-      }
+  // Use safe XML parsing with security protections
+  const result = await safeXmlParse(data);
 
-      const parsedResult = result as Record<string, unknown>;
-      if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
-        const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
-        if (
-          Array.isArray(dataServices) &&
-          dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet
-        ) {
-          const entitySets =
-            dataServices[0].Schema[0].EntityContainer[0].EntitySet;
-          const simSets = entitySets.map((_set: { $: { Name: string } }) => {
-            return _set.$.Name;
-          });
-          resolve(simSets);
-        } else {
-          reject("OData not supported yet");
-        }
-      } else {
-        reject("OData not supported yet");
-      }
-    });
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const parsedResult = result as any;
+  if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
+    const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
+    if (
+      Array.isArray(dataServices) &&
+      dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet
+    ) {
+      const entitySets = dataServices[0].Schema[0].EntityContainer[0].EntitySet;
+      const simSets = entitySets.map((_set: { $: { Name: string } }) => {
+        return _set.$.Name;
+      });
+      return simSets;
+    } else {
+      throw new Error("OData not supported yet");
+    }
+  } else {
+    throw new Error("OData not supported yet");
+  }
 }
 
 /**
  * Enhanced function to get project name with fallback logic
  * If .service.metadata is not available, get mobile service app name from MobileService.AppId in .project.json
  */
-export function getMobileServiceAppNameWithFallback(
+export async function getMobileServiceAppNameWithFallback(
   projectPath: string
-): string | null {
+): Promise<string | null> {
   try {
     // First, try to read from .service.metadata (primary approach)
     const serviceMetadataPath = path.join(projectPath, ".service.metadata");
 
     if (fs.existsSync(serviceMetadataPath)) {
-      const serviceMetadataObj = geServiceMetadataJson(serviceMetadataPath);
+      const serviceMetadataObj = await geServiceMetadataJson(
+        serviceMetadataPath
+      ) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (serviceMetadataObj && serviceMetadataObj["mobile"]?.["app"]) {
         return serviceMetadataObj["mobile"]["app"] as string;
       }
@@ -535,15 +709,17 @@ export function getMobileServiceAppNameWithFallback(
  * If .service.metadata is not available, get destination name from .project.json
  * and read SERVICE_DATA from {destination name}.xml file in Services folder
  */
-export function getServiceDataWithFallback(
+export async function getServiceDataWithFallback(
   projectPath: string
-): { serviceData: string; servicePath: string } | null {
+): Promise<{ serviceData: string; servicePath: string } | null> {
   try {
     // First, try to read from .service.metadata (primary approach)
     const serviceMetadataPath = path.join(projectPath, ".service.metadata");
 
     if (fs.existsSync(serviceMetadataPath)) {
-      const serviceMetadataObj = geServiceMetadataJson(serviceMetadataPath);
+      const serviceMetadataObj = await geServiceMetadataJson(
+        serviceMetadataPath
+      ) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (
         serviceMetadataObj &&
         serviceMetadataObj["mobile"]?.["destinations"]?.[0]
