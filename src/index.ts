@@ -521,7 +521,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         `;
 
               // Use getServiceDataWithFallback to get service data and path
-              const serviceResult = await getServiceDataWithFallback(projectPath);
+              const serviceResult = await getServiceDataWithFallback(
+                projectPath
+              );
               if (!serviceResult) {
                 return {
                   content: [
@@ -1299,15 +1301,17 @@ async function setupTelemetry(): Promise<void> {
  */
 export default async function run(_options = {}) {
   console.error("[MDK MCP Server] Starting server initialization...");
-  
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("[MDK MCP Server] Server connected and running");
 
   // Get server configuration
   const serverConfig = getServerConfig();
-  console.error(`[MDK MCP Server] Using schema version: ${serverConfig.schemaVersion}`);
-  
+  console.error(
+    `[MDK MCP Server] Using schema version: ${serverConfig.schemaVersion}`
+  );
+
   const schemaPath = path.join(projectRoot, "res/schemas");
 
   // Check if embeddings exist for the version, if not initialize the configured version
@@ -1321,7 +1325,9 @@ export default async function run(_options = {}) {
       `[MDK MCP Server] Initializing schema embeddings for version ${serverConfig.schemaVersion}...`
     );
     retrieveAndStore(schemaPath, serverConfig.schemaVersion);
-    console.error("[MDK MCP Server] Schema embeddings initialized successfully");
+    console.error(
+      "[MDK MCP Server] Schema embeddings initialized successfully"
+    );
   } else {
     console.error("[MDK MCP Server] Using existing schema embeddings");
   }
@@ -1339,20 +1345,26 @@ export default async function run(_options = {}) {
   }
 
   [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
-  console.error(`[MDK MCP Server] Loaded ${filenameList.length} documentation files`);
+  console.error(
+    `[MDK MCP Server] Loaded ${filenameList.length} documentation files`
+  );
 
   await setupTelemetry();
   console.error("[MDK MCP Server] Telemetry initialized");
   console.error("[MDK MCP Server] Server ready to accept requests");
-  
+
   // Handle graceful shutdown
-  process.on('SIGINT', () => {
-    console.error("[MDK MCP Server] Received SIGINT, shutting down gracefully...");
+  process.on("SIGINT", () => {
+    console.error(
+      "[MDK MCP Server] Received SIGINT, shutting down gracefully..."
+    );
     process.exit(0);
   });
-  
-  process.on('SIGTERM', () => {
-    console.error("[MDK MCP Server] Received SIGTERM, shutting down gracefully...");
+
+  process.on("SIGTERM", () => {
+    console.error(
+      "[MDK MCP Server] Received SIGTERM, shutting down gracefully..."
+    );
     process.exit(0);
   });
 }

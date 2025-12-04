@@ -313,7 +313,7 @@ export function runCommand(
   options: { cwd?: string; timeout?: number } = {}
 ): string {
   console.error(`[MDK MCP Server] Executing command: ${command}`);
-  
+
   try {
     // Parse command and arguments, handling quoted arguments properly
     const parts = command.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
@@ -382,7 +382,9 @@ export function runCommand(
   }
 }
 
-export async function geServiceMetadataJson(filePath: string): Promise<unknown> {
+export async function geServiceMetadataJson(
+  filePath: string
+): Promise<unknown> {
   try {
     const content = fs.readFileSync(filePath, "utf-8");
     // Use safe JSON parsing with size and depth limits
@@ -469,7 +471,9 @@ export async function generateTemplateBasedMetadata(
       // Fallback: Get data from .project.json and Services folder
       try {
         // Get appId from MobileService.AppId in .project.json
-        const fallbackAppId = await getMobileServiceAppNameWithFallback(projectPath);
+        const fallbackAppId = await getMobileServiceAppNameWithFallback(
+          projectPath
+        );
         if (fallbackAppId) {
           appId = fallbackAppId;
         }
@@ -676,9 +680,9 @@ export async function getMobileServiceAppNameWithFallback(
     const serviceMetadataPath = path.join(projectPath, ".service.metadata");
 
     if (fs.existsSync(serviceMetadataPath)) {
-      const serviceMetadataObj = await geServiceMetadataJson(
+      const serviceMetadataObj = (await geServiceMetadataJson(
         serviceMetadataPath
-      ) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      )) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (serviceMetadataObj && serviceMetadataObj["mobile"]?.["app"]) {
         return serviceMetadataObj["mobile"]["app"] as string;
       }
@@ -717,9 +721,9 @@ export async function getServiceDataWithFallback(
     const serviceMetadataPath = path.join(projectPath, ".service.metadata");
 
     if (fs.existsSync(serviceMetadataPath)) {
-      const serviceMetadataObj = await geServiceMetadataJson(
+      const serviceMetadataObj = (await geServiceMetadataJson(
         serviceMetadataPath
-      ) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      )) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (
         serviceMetadataObj &&
         serviceMetadataObj["mobile"]?.["destinations"]?.[0]
