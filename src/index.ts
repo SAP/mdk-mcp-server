@@ -157,6 +157,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description:
                 "The control type for databinding pages (required when pageType is 'databinding').",
             },
+            oDataEntitySets: {
+              type: "string",
+              description:
+                "Optional: The OData entity sets to use for page/action generation, separated by commas (required only when artifactType is 'action' or artifactType is 'page' and pageType is 'databinding').",
+            },
             layoutType: {
               type: "string",
               enum: [
@@ -220,7 +225,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             query: {
               type: "string",
               description:
-                "Search query for rule reference (required when artifactType is 'rule'). Examples: 'get app name', 'handle form validation', 'navigate to page', etc.",
+                "Search query for rule reference (required only when artifactType is 'rule'). Examples: 'get app name', 'handle form validation', 'navigate to page', etc.",
             },
           },
           required: ["artifactType"],
@@ -497,6 +502,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
 
             if (pageType === "databinding") {
               const controlType = validatedArgs.controlType as string;
+              const oDataEntitySets = validatedArgs.oDataEntitySets as
+                | string
+                | undefined;
 
               // Configuration constants
               const CONFIG = {
@@ -506,7 +514,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               const oJson = { section: controlType };
 
               // Prepare prompts
-              const systemPrompt = `
+              let systemPrompt = `
         Imagine you are a helpful assistant from SAP company who can generate a page file for Mobile Development Kit.
         
         Instruction:
@@ -520,9 +528,16 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         - Don't include .json in generated file name.
         `;
 
+              // Add entity set specific instructions if provided
+              if (oDataEntitySets) {
+                systemPrompt += `\n        - Focus on the following OData entity sets: ${oDataEntitySets}`;
+                systemPrompt += `\n        - Generate pages only for these specified entity sets.`;
+              }
+
               // Use getServiceDataWithFallback to get service data and path
               const serviceResult = await getServiceDataWithFallback(
-                projectPath
+                projectPath,
+                oDataEntitySets
               );
               if (!serviceResult) {
                 return {
@@ -546,10 +561,15 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 "utf-8"
               );
 
-              const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
+              let enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
           \`\`\`${SERVICE_DATA}\`\`\`
           the example is 
           \`\`\`${MDK_EXAMPLE}\`\`\``;
+
+              // Add entity set context if provided
+              if (oDataEntitySets) {
+                enhancedUserPrompt += `\n\nPlease generate pages specifically for these entity sets: ${oDataEntitySets}`;
+              }
 
               const prompt = systemPrompt + enhancedUserPrompt;
 
@@ -603,6 +623,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           case "action": {
             const projectPath = validatedArgs.folderRootPath as string;
             const actionType = validatedArgs.actionType as string;
+            const oDataEntitySets = validatedArgs.oDataEntitySets as
+              | string
+              | undefined;
 
             // Configuration constants
             const CONFIG = {
@@ -612,7 +635,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             const oJson = { action: actionType };
 
             // Prepare prompts
-            const systemPrompt = `
+            let systemPrompt = `
         Imagine you are a helpful assistant from SAP company who can generate an action file for Mobile Development Kit.
         
         Instruction:
@@ -620,8 +643,17 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         - Do not generate any comments in JSON file.
         `;
 
+            // Add entity set specific instructions if provided
+            if (oDataEntitySets) {
+              systemPrompt += `\n        - Focus on the following OData entity sets: ${oDataEntitySets}`;
+              systemPrompt += `\n        - Generate actions only for these specified entity sets.`;
+            }
+
             // Use getServiceDataWithFallback to get service data and path
-            const serviceResult = await getServiceDataWithFallback(projectPath);
+            const serviceResult = await getServiceDataWithFallback(
+              projectPath,
+              oDataEntitySets
+            );
             if (!serviceResult) {
               return {
                 content: [
@@ -644,10 +676,15 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               "utf-8"
             );
 
-            const enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
+            let enhancedUserPrompt = `In my project, the appName is ${CONFIG.MDK_APP}, the Service file path is ${MDK_SERVICE}, the Service data definition is 
           \`\`\`${SERVICE_DATA}\`\`\`
           the example is 
           \`\`\`${MDK_EXAMPLE}\`\`\``;
+
+            // Add entity set context if provided
+            if (oDataEntitySets) {
+              enhancedUserPrompt += `\n\nPlease generate actions specifically for these entity sets: ${oDataEntitySets}`;
+            }
 
             const prompt = systemPrompt + enhancedUserPrompt;
 

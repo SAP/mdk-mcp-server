@@ -337,6 +337,12 @@ export function validateToolArguments(
           validatedArgs.controlType = ValidationSchemas.controlType.parse(
             args.controlType
           );
+
+          // Optional: oDataEntitySets for databinding pages
+          if (args.oDataEntitySets) {
+            validatedArgs.oDataEntitySets =
+              ValidationSchemas.oDataEntitySets.parse(args.oDataEntitySets);
+          }
         } else if (pageType === "layout") {
           if (!args.layoutType) {
             throw new ValidationError("layoutType", args.layoutType, [
@@ -361,6 +367,12 @@ export function validateToolArguments(
         validatedArgs.actionType = ValidationSchemas.actionType.parse(
           args.actionType
         );
+
+        // Optional: oDataEntitySets for action artifact
+        if (args.oDataEntitySets) {
+          validatedArgs.oDataEntitySets =
+            ValidationSchemas.oDataEntitySets.parse(args.oDataEntitySets);
+        }
       } else if (artifactType === "i18n") {
         validatedArgs.folderRootPath = validateSecurePath(
           String(args.folderRootPath)

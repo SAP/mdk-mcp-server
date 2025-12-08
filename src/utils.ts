@@ -712,9 +712,12 @@ export async function getMobileServiceAppNameWithFallback(
  * Enhanced function to get service metadata with fallback logic
  * If .service.metadata is not available, get destination name from .project.json
  * and read SERVICE_DATA from {destination name}.xml file in Services folder
+ * @param projectPath - The path of the project root folder
+ * @param oDataEntitySets - Optional comma-separated list of entity sets to filter
  */
 export async function getServiceDataWithFallback(
-  projectPath: string
+  projectPath: string,
+  oDataEntitySets?: string
 ): Promise<{ serviceData: string; servicePath: string } | null> {
   try {
     // First, try to read from .service.metadata (primary approach)
@@ -729,7 +732,19 @@ export async function getServiceDataWithFallback(
         serviceMetadataObj["mobile"]?.["destinations"]?.[0]
       ) {
         const destination = serviceMetadataObj["mobile"]["destinations"][0];
-        const serviceData = destination.metadata.odataContent;
+        let serviceData = destination.metadata.odataContent;
+
+        // If oDataEntitySets is undefined, set serviceData to empty
+        if (oDataEntitySets === undefined) {
+          serviceData = "";
+        } else if (oDataEntitySets) {
+          // Filter service data if entity sets are specified
+          serviceData = await filterServiceDataByEntitySets(
+            serviceData,
+            oDataEntitySets
+          );
+        }
+
         const servicePath = path.join(
           projectPath,
           "Services",
@@ -771,7 +786,19 @@ export async function getServiceDataWithFallback(
         );
 
         if (fs.existsSync(xmlFilePath)) {
-          const serviceData = fs.readFileSync(xmlFilePath, "utf-8");
+          let serviceData = fs.readFileSync(xmlFilePath, "utf-8");
+
+          // If oDataEntitySets is undefined, set serviceData to empty
+          if (oDataEntitySets === undefined) {
+            serviceData = "";
+          } else if (oDataEntitySets) {
+            // Filter service data if entity sets are specified
+            serviceData = await filterServiceDataByEntitySets(
+              serviceData,
+              oDataEntitySets
+            );
+          }
+
           const servicePath = path.join(
             projectPath,
             "Services",
@@ -786,6 +813,92 @@ export async function getServiceDataWithFallback(
   } catch (error) {
     console.error("Error in getServiceDataWithFallback:", error);
     return null;
+  }
+}
+
+/**
+ * Filter OData service metadata XML to only include specified entity sets
+ * @param serviceData - The full OData service metadata XML
+ * @param oDataEntitySets - Comma-separated list of entity sets to include
+ * @returns Filtered service metadata XML
+ */
+async function filterServiceDataByEntitySets(
+  serviceData: string,
+  oDataEntitySets: string
+): Promise<string> {
+  try {
+    // Parse the entity sets list
+    const entitySetsToInclude = oDataEntitySets
+      .split(",")
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+
+    if (entitySetsToInclude.length === 0) {
+      return serviceData;
+    }
+
+    // Parse the XML
+    const result = await safeXmlParse(serviceData);
+    const parsedResult = result as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    // Navigate to EntityContainer
+    if (parsedResult["edmx:Edmx"]?.["edmx:DataServices"]) {
+      const dataServices = parsedResult["edmx:Edmx"]["edmx:DataServices"];
+      if (
+        Array.isArray(dataServices) &&
+        dataServices[0]?.Schema?.[0]?.EntityContainer?.[0]?.EntitySet
+      ) {
+        const entitySets =
+          dataServices[0].Schema[0].EntityContainer[0].EntitySet;
+
+        // Filter entity sets to only include specified ones
+        const filteredEntitySets = entitySets.filter(
+          (entitySet: { $: { Name: string } }) => {
+            return entitySetsToInclude.includes(entitySet.$.Name);
+          }
+        );
+
+        // Update the entity sets in the parsed structure
+        dataServices[0].Schema[0].EntityContainer[0].EntitySet =
+          filteredEntitySets;
+
+        // Also filter EntityTypes to only include those referenced by the filtered entity sets
+        const entityTypeNames = new Set(
+          filteredEntitySets.map((es: { $: { EntityType: string } }) => {
+            // EntityType is in format "Namespace.TypeName", we need just "TypeName"
+            const fullType = es.$.EntityType;
+            return fullType.includes(".")
+              ? fullType.split(".").pop()
+              : fullType;
+          })
+        );
+
+        // Filter EntityTypes
+        if (dataServices[0].Schema?.[0]?.EntityType) {
+          const entityTypes = dataServices[0].Schema[0].EntityType;
+          const filteredEntityTypes = entityTypes.filter(
+            (et: { $: { Name: string } }) => {
+              return entityTypeNames.has(et.$.Name);
+            }
+          );
+          dataServices[0].Schema[0].EntityType = filteredEntityTypes;
+        }
+
+        // Convert back to XML
+        const builder = new xml2js.Builder({
+          xmldec: { version: "1.0", encoding: "UTF-8" },
+          renderOpts: { pretty: true, indent: "  " },
+        });
+        return builder.buildObject(parsedResult);
+      }
+    }
+
+    // If we couldn't filter, return original
+    return serviceData;
+  } catch (error) {
+    console.error("Error filtering service data:", error);
+    // Return original data if filtering fails
+    return serviceData;
   }
 }
 
