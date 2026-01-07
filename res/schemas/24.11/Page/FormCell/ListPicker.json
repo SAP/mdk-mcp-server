@@ -89,7 +89,7 @@
       "description": "Text to display when nothing is selected."
     },
     "Search": {
-      "$ref": "definitions/ListPickerSearch"
+      "$ref": "definitions/Search"
     },
     "Value": {
       "anyOf": [

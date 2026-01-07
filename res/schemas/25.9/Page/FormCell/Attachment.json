@@ -44,11 +44,11 @@
     },
     "MaxAttachments" : {
       "type": "integer",
-      "description": "The maximum number of attachments you can upload for this particular attachment form cell. If this value is not specified or set to less than or equal to 0, there is no limit to the number of attachments that can be uploaded."
+      "description": "You can now configure **FormCell Attachment** control to restrict how many attachments a user can upload. Once the specified limit is reached, the control disables the **Add** button to prevent further uploads.\n\n- If the property is not configured—or is set to zero or a negative value—no limit is enforced by default.\n- **Platform behavior:**\n\n    - **iOS:** The limit is applied directly to the native file picker, which prevents additional file selection once the maximum is reached.\n   - **Android:** The native file picker does not restrict selection. Users may select more files than allowed, but only the first **N** attachments (where **N** is the configured limit) are retained after confirmation.\n\n<!--  -->"
     },
     "MaxFileSize" : {
       "type": "number",
-      "description": "The maximum file size (in megabytes) allowed for each attachment you can add to this attachment form cell. If not specified or set to less than or equal to 0, there is no limit."
+      "description": "The maximum file size (in megabytes) allowed for each attachment added to the FormCell Attachment control. If not specified, or set to a value less than or equal to 0, **no file size limit** is enforced."
     },
     "IsVisible": {
       "type": "boolean",
@@ -57,7 +57,7 @@
     },
     "IsEditable": {
       "type": "boolean",
-      "description": "iOS and Android only. Disables or enables modification of attachment list.",
+      "description": "MDK now supports restricting attachment management within a FormCell Attachment control. When disabled, the control automatically hides the **Add** button as well as the **Remove (or delete)** option for each attachment. This is applicable to iOS and Android only.",
       "default": true
     },
     "Separator": {
@@ -87,6 +87,10 @@
       "type": "array",
       "description": "List of file types which can be uploaded. Only applicable when `AttachmentActionType` is SelectFile.\n\nRefer to [Android file types](#android-platforms-file-types-list) and [iOS file types](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1) for details.\n\nIf the customized file types are not supported by Android or iOS, you can assign an empty array, i.e. [], to allow choosing all files.\n\nIn iOS, since odt, docx, xlsx and pptx are all actually contained in a zip file wrapper, they also conform to 'zip' format. So, when you specify 'zip' in the list, it also includes all other types that conform to 'zip' format."
     },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
     "validationProperties": {
       "$ref": "definitions/ValidationProperties",
       "description": "Deprecated. Please use `Validation` property. The validation view properties."
@@ -114,7 +118,7 @@
     "RequiredIndicator": {
       "$ref": "definitions/BooleanOrString",
       "default": false,
-      "description": "Sets required indicator. Either `Boolean` or a single character, E.g. `true` / `false` / `'!'`.\nThe default character is an asterisk `*`.\nThis feature currently only support a single character to be defined in Android, so iOS will also mirror this behaviour and only allow a single character. Any string set will default to the asterisk `*`."
+      "description": "Specifies whether a field is mandatory by displaying a visual indicator. This property accepts either a Boolean (true / false) or a single character (e.g., '!') as its value.\n\nBy default, the indicator is a red asterisk (*) displayed at the end of the field's caption. You can customize the indicator character by setting this property. Additionally, the appearance (e.g., color or size) can be styled through metadata as well.\n\nNote:\n\n- This indicator is **purely visual**—it does **not** enforce that the user must fill out the field.\n- If more than one character is defined, the system will revert to using the default indicator.\n\n<!--  -->"
     },
     "_Name": {
       "type": "string"

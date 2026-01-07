@@ -64,7 +64,7 @@
     },
     "OnSelectedDateChange": {
       "$ref": "definitions/ActionOrRule",
-      "description": "Action/Rule to be triggered when the selected date is changed, including scenarios where the selected date is adjusted to the nearest date within the range specified by `StartDate` and `EndDate`. Not applicable to DateRange `CalendarType`."
+      "description": "Action/Rule to be triggered when the selected date is changed, including scenarios where the selected date is adjusted to the nearest date within the range specified by `StartDate` and `EndDate`. Not applicable to DateRange `CalendarType`.\n\nIf the selected date is displaying indicator, user may access information related to the indicator such as `IndicatorName`, `EntitySets`, and `Date` itself through the context binding object."
     },
     "SelectedDateRange": {
       "description": "Initial selected date range when the calendar is rendered. Only applicable to DateRange `CalendarType`. If not set, today's date will be selected by default. If one of the date value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range.\n\nWhen the calendar is redrawn, the selected date is retained.",
@@ -81,7 +81,7 @@
     },
     "OnSelectedDateRangeChange": {
       "$ref": "definitions/ActionOrRule",
-      "description": "Action/Rule to be triggered when the selected date range is changed. Only applicable to DateRange `CalendarType`. This event is only triggered when a valid range is formed, which means the selected start date is earlier or equal to the selected end date."
+      "description": "Action/Rule to be triggered when the selected date range is changed. Only applicable to DateRange `CalendarType`. This event is only triggered when a valid range is formed, which means the selected start date is earlier or equal to the selected end date.\n\nIf date(s) within the selected date range is displaying indicator, user may access information related to the indicator such as `IndicatorName`, `EntitySets`, and `Date` itself through the context binding array."
     },
     "Styles": {
       "properties": {

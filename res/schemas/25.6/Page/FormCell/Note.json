@@ -17,13 +17,13 @@
     },
     "MaxNumberOfLines": {
       "type": "integer",
-      "description": "The maximum number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 2. Any value less than or equal to zero is considered as no limit.",
-      "default": 2
+      "description": "The maximum number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 6. Any value less than or equal to zero is considered as no limit.",
+      "default": 6
     },
     "MinNumberOfLines": {
       "type": "integer",
-      "description": "The minimum number of lines in which the text is displayed. The height of the cell is restricted to the specified limit and the text is displayed within the line limit. The default value is 1 on the mobile platform and 4 on the web platform. Any value less than or equal to zero is not considered or is ignored.",
-      "default": 1
+      "description": "The minimum number of lines in which the text is displayed. The minimum height of the cell is constrained to accommodate at least the specified number of lines of text. The default value is 3. On iOS, the height of the cell will not shrink below 88px (equivalent to approximately 3 to 4 lines). Any value less than or equal to zero is ignored.",
+      "default": 3
     },
     "IsEditable": {
       "type": "boolean",

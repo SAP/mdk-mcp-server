@@ -17,7 +17,7 @@
     },
     "IsScrollable": {
       "type": "boolean",
-      "description": "Android only. Indicates the extension view is scrollable",
+      "description": "If the height of the extension area cannot display the full content, you can use this property in the Section Extension control to enable nested scrolling within the extension view. This is Android only.",
       "default": false
     },
     "Target": {

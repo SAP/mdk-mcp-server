@@ -9,11 +9,11 @@
           "items": {
             "$ref": "Page/TabControl/TabItem"
           },
-          "description": "List of tab items defined for the tab control. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified."
+          "description": "List of tab items defined for the tab control."
         },
         {
           "$ref": "definitions/Rule",
-          "description": "Return result in TabItemArray format. Rule will not be triggered again when Tabs redraw. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified."
+          "description": "Return result in TabItemArray format. Rule will not be triggered again when Tabs redraw."
         }
       ]
     },

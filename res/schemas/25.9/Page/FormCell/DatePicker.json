@@ -89,7 +89,7 @@
     "RequiredIndicator": {
       "$ref": "definitions/BooleanOrString",
       "default": false,
-      "description": "Sets required indicator. Either `Boolean` or a single character, E.g. `true` / `false` / `'!'`.\nThe default character is an asterisk `*`.\nThis feature currently only support a single character to be defined in Android, so iOS will also mirror this behaviour and only allow a single character. Any string set will default to the asterisk `*`."
+      "description": "Specifies whether a field is mandatory by displaying a visual indicator. This property accepts either a Boolean (true / false) or a single character (e.g., '!') as its value.\n\nBy default, the indicator is a red asterisk (*) displayed at the end of the field's caption. You can customize the indicator character by setting this property. Additionally, the appearance (e.g., color or size) can be styled through metadata as well.\n\nNote:\n\n- This indicator is **purely visual**—it does **not** enforce that the user must fill out the field.\n- If more than one character is defined, the system will revert to using the default indicator.\n\n<!--  -->"
     },
     "_Name": {
       "type": "string"
