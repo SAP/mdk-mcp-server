@@ -15,7 +15,7 @@
     },
     "Module": {
       "type": "string",
-      "description": "The module's folder name under `/extensions/` e.g. `MyExtModule`. Not required if Extension does not implement TS code under `/extensions/<Module>/controls`."
+      "description": "The module's folder name under `/extensions/` e.g. `MyExtModule`. On iOS, this property is optional, as the platform supports omitting TS code under `/extensions/<Module>/controls`."
     },
     "Control": {
       "type": "string",
@@ -23,7 +23,7 @@
     },
     "Class": {
       "type": "string",
-      "description": "The name of the exported class in the module control that is to be used for the extension."
+      "description": "The name of the exported class in the module control that is to be used for the extension. On iOS, if no TS module is implemented, the native extension class targeted by this property must be declared as `public` to ensure proper lifecycle management."
     },
     "ExtensionProperties": {
       "type": "object",
