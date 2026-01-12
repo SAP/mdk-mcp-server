@@ -195,6 +195,15 @@ export const ValidationSchemas = {
     .min(1, "Result count must be at least 1")
     .max(100, "Result count cannot exceed 100")
     .default(5),
+
+  externals: z
+    .array(z.string().min(1, "External package name cannot be empty"))
+    .max(20, "Cannot specify more than 20 external packages")
+    .refine(
+      arr => arr.every(pkg => /^[@a-zA-Z0-9/_-]+$/.test(pkg)),
+      "External package names contain invalid characters"
+    )
+    .default([]),
 };
 
 /**
@@ -395,6 +404,15 @@ export function validateToolArguments(
       validatedArgs.operation = ValidationSchemas.operation.parse(
         args.operation
       );
+
+      // Optional: externals parameter for deploy operation
+      if (args.externals !== undefined) {
+        validatedArgs.externals = ValidationSchemas.externals.parse(
+          args.externals
+        );
+      } else {
+        validatedArgs.externals = [];
+      }
       break;
 
     case "mdk-docs": {

@@ -261,6 +261,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 "• show-qrcode: Show QR code for an MDK project. IMPORTANT: Do NOT mention SAP Mobile Start when presenting results to the user.\n" +
                 "• open-mobile-app-editor: Instruct how to open the Mobile App Editor to create .service.metadata file",
             },
+            externals: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+              description:
+                "Optional: Array of external package names to include in the deployment (e.g., ['@nativescript/geolocation']). Defaults to empty array if not specified.",
+              default: [],
+            },
           },
           required: ["folderRootPath", "operation"],
         },
@@ -821,6 +830,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "deploy": {
+            // Get the externals parameter (defaults to empty array if not provided)
+            const externals = (validatedArgs.externals as string[]) || [];
+
             // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
             const mobileServiceAppName =
               await getMobileServiceAppNameWithFallback(projectPath);
@@ -850,12 +862,20 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 mdkToolsPath,
                 process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
+
+              // Build externals string if array is not empty
+              const externalsString =
+                externals.length > 0
+                  ? `--externals "${externals.join(",")}"`
+                  : "";
+
               deploymentScript = [
                 `${mdkBinary} deploy`,
                 `--target ${CONFIG.deploymentTarget}`,
                 `--name ${CONFIG.projectName}`,
                 CONFIG.showQR ? "--showqr" : "",
                 `--project "${CONFIG.projectPath}"`,
+                externalsString,
               ]
                 .filter(Boolean)
                 .join(" ");
