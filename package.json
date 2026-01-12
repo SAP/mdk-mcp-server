@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",
-    "@modelcontextprotocol/sdk": "^1.25.1",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@sap-ux/btp-utils": "1.1.5",
     "@sap-ux/feature-toggle": "0.3.4",
     "@sap-ux/telemetry": "0.6.38",
