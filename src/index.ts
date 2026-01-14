@@ -831,7 +831,42 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
 
           case "deploy": {
             // Get the externals parameter (defaults to empty array if not provided)
-            const externals = (validatedArgs.externals as string[]) || [];
+            let externals = (validatedArgs.externals as string[]) || [];
+
+            // If externals not provided as argument, try to read from .vscode/settings.json
+            if (externals.length === 0) {
+              const vscodeSettingsPath = path.join(
+                projectPath,
+                ".vscode",
+                "settings.json"
+              );
+              if (fs.existsSync(vscodeSettingsPath)) {
+                try {
+                  const settingsContent = fs.readFileSync(
+                    vscodeSettingsPath,
+                    "utf-8"
+                  );
+                  const settings = JSON.parse(settingsContent);
+                  if (
+                    settings["mdk.bundlerExternals"] &&
+                    Array.isArray(settings["mdk.bundlerExternals"])
+                  ) {
+                    externals = settings["mdk.bundlerExternals"];
+                    console.error(
+                      `[MDK MCP Server] Using externals from .vscode/settings.json: ${externals.join(
+                        ", "
+                      )}`
+                    );
+                  }
+                } catch (error) {
+                  console.error(
+                    `[MDK MCP Server] Failed to read externals from .vscode/settings.json: ${
+                      error instanceof Error ? error.message : String(error)
+                    }`
+                  );
+                }
+              }
+            }
 
             // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
             const mobileServiceAppName =
