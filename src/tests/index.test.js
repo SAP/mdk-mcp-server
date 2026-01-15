@@ -21,28 +21,23 @@ describe("index.ts - MCP Server", () => {
   describe("Tool Configuration Validation", () => {
     test("should have all expected MCP tools defined", _t => {
       const expectedTools = [
-        "mdk-gen-project",
-        "mdk-gen-i18n",
-        "mdk-gen-databinding-page",
-        "mdk-gen-layout-page",
-        "mdk-gen-entity",
-        "mdk-gen-action",
+        "mdk-create",
+        "mdk-gen",
         "mdk-manage",
         "mdk-docs",
-        "mdk-gen-rule",
       ];
 
       // Verify we have the expected number of tools
-      assert.strictEqual(expectedTools.length, 9);
+      assert.strictEqual(expectedTools.length, 4);
 
       // Verify specific tools are included
-      assert.ok(expectedTools.includes("mdk-gen-project"));
+      assert.ok(expectedTools.includes("mdk-create"));
+      assert.ok(expectedTools.includes("mdk-gen"));
       assert.ok(expectedTools.includes("mdk-docs"));
       assert.ok(expectedTools.includes("mdk-manage"));
-      assert.ok(expectedTools.includes("mdk-gen-entity"));
     });
 
-    test("should have correct template types for mdk-gen-project", _t => {
+    test("should have correct template types for mdk-create", _t => {
       const validTemplateTypes = ["crud", "list detail", "base"];
       const requiredFields = [
         "folderRootPath",
@@ -62,7 +57,7 @@ describe("index.ts - MCP Server", () => {
       assert.ok(requiredFields.includes("oDataEntitySets"));
     });
 
-    test("should have correct control types for mdk-gen-databinding-page", _t => {
+    test("should have correct control types for mdk-gen with databinding pages", _t => {
       const validControlTypes = [
         "ObjectTable",
         "FormCell",
@@ -88,7 +83,7 @@ describe("index.ts - MCP Server", () => {
       assert.strictEqual(validControlTypes.length, 14);
     });
 
-    test("should have correct layout types for mdk-gen-layout-page", _t => {
+    test("should have correct layout types for mdk-gen with layout pages", _t => {
       const validLayoutTypes = [
         "Section",
         "BottomNavigation",
@@ -106,7 +101,7 @@ describe("index.ts - MCP Server", () => {
       assert.strictEqual(validLayoutTypes.length, 6);
     });
 
-    test("should have comprehensive action types for mdk-gen-action", _t => {
+    test("should have comprehensive action types for mdk-gen with actions", _t => {
       const validActionTypes = [
         "CreateODataEntity",
         "UpdateODataEntity",
@@ -164,16 +159,12 @@ describe("index.ts - MCP Server", () => {
   describe("Default Prompt Logic", () => {
     test("should provide sensible default prompts", _t => {
       const defaultPrompts = {
-        "mdk-gen-project":
-          "Create a initial mdk project creates and updates customers",
-        "mdk-gen-entity":
-          "Generate pages displaying list of products and its related details and create, edit and delete a product.",
-        "mdk-gen-i18n":
-          "Translate base i18n file to Chinese, German and Japanese.",
-        "mdk-gen-databinding-page":
-          "Generate a mdk action creating a new product.",
-        "mdk-gen-layout-page": "Generate a mdk section page.",
-        "mdk-manage": "Manage MDK project operations like build, deploy, validate.",
+        "mdk-create":
+          "Create an initial MDK project that creates and updates customers",
+        "mdk-gen":
+          "Generate pages displaying list of products and its related details",
+        "mdk-manage": "Manage MDK project operations like build, deploy, validate",
+        "mdk-docs": "Search MDK documentation for ObjectHeader component",
       };
 
       // Test that defaults are reasonable and not empty
@@ -189,10 +180,10 @@ describe("index.ts - MCP Server", () => {
       });
 
       // Test specific default behaviors
-      assert.ok(defaultPrompts["mdk-gen-project"].includes("customers"));
-      assert.ok(defaultPrompts["mdk-gen-entity"].includes("products"));
-      assert.ok(defaultPrompts["mdk-gen-i18n"].includes("Chinese"));
+      assert.ok(defaultPrompts["mdk-create"].includes("customers"));
+      assert.ok(defaultPrompts["mdk-gen"].includes("products"));
       assert.ok(defaultPrompts["mdk-manage"].includes("build"));
+      assert.ok(defaultPrompts["mdk-docs"].includes("documentation"));
     });
   });
 
@@ -206,9 +197,10 @@ describe("index.ts - MCP Server", () => {
         };
       }
 
-      // Test mdk-gen-project parameters
-      const projectRequiredParams = [
+      // Test mdk-create parameters
+      const createRequiredParams = [
         "folderRootPath",
+        "scope",
         "templateType",
         "oDataEntitySets",
       ];
@@ -216,12 +208,13 @@ describe("index.ts - MCP Server", () => {
       // Valid case
       const validParams = {
         folderRootPath: "/path/to/project",
+        scope: "project",
         templateType: "crud",
         oDataEntitySets: "Products,Orders",
       };
       const validResult = validateRequiredParams(
         validParams,
-        projectRequiredParams
+        createRequiredParams
       );
       assert.ok(validResult.isValid);
       assert.strictEqual(validResult.missingParams.length, 0);
@@ -229,14 +222,15 @@ describe("index.ts - MCP Server", () => {
       // Missing parameters case
       const invalidParams = {
         folderRootPath: "/path/to/project",
-        // Missing templateType and oDataEntitySets
+        // Missing scope, templateType and oDataEntitySets
       };
       const invalidResult = validateRequiredParams(
         invalidParams,
-        projectRequiredParams
+        createRequiredParams
       );
       assert.ok(!invalidResult.isValid);
       assert.deepStrictEqual(invalidResult.missingParams, [
+        "scope",
         "templateType",
         "oDataEntitySets",
       ]);
