@@ -655,8 +655,8 @@ describe("index.ts - MCP Server", () => {
 
   describe("MDK Documentation Integration Tests", () => {
     // Test server configuration
-    test("should get server configuration correctly", _t => {
-      const serverConfig = getServerConfig();
+    test("should get server configuration correctly", async _t => {
+      const serverConfig = await getServerConfig();
       
       assert.ok(serverConfig);
       assert.ok(serverConfig.schemaVersion);
@@ -665,8 +665,8 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test document loading
-    test("should load MDK documentation files", _t => {
-      const serverConfig = getServerConfig();
+    test("should load MDK documentation files", async _t => {
+      const serverConfig = await getServerConfig();
       const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
       
       assert.ok(Array.isArray(filenameList));
@@ -685,7 +685,7 @@ describe("index.ts - MCP Server", () => {
 
     // Test search functionality
     test("should perform semantic search on MDK documentation", async _t => {
-      const serverConfig = getServerConfig();
+      const serverConfig = await getServerConfig();
       const schemaPath = path.join(projectRoot, "res/schemas");
       
       // Ensure embeddings exist for testing
@@ -714,7 +714,7 @@ describe("index.ts - MCP Server", () => {
 
     // Test name search functionality
     test("should search component names", async _t => {
-      const serverConfig = getServerConfig();
+      const serverConfig = await getServerConfig();
       const schemaPath = path.join(projectRoot, "res/schemas");
       
       // Ensure embeddings exist for testing
@@ -742,7 +742,7 @@ describe("index.ts - MCP Server", () => {
 
     // Test result formatting
     test("should format search results correctly", async _t => {
-      const serverConfig = getServerConfig();
+      const serverConfig = await getServerConfig();
       const searchResults = await search("FormCell", 2, serverConfig.schemaVersion);
       
       const formattedResults = printResults(searchResults);
@@ -766,7 +766,7 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test schema version detection
-    test("should detect schema version from project structure", _t => {
+    test("should detect schema version from project structure", async _t => {
       // Test with a mock project structure
       const testProjectPath = path.join(projectRoot, "test-project");
       
@@ -776,7 +776,7 @@ describe("index.ts - MCP Server", () => {
       }
       
       // Get the current server configuration to use the actual schema version
-      const serverConfig = getServerConfig();
+      const serverConfig = await getServerConfig();
       const expectedVersion = serverConfig.schemaVersion;
       
       // Create a mock .project.json file with the current schema version
@@ -790,7 +790,7 @@ describe("index.ts - MCP Server", () => {
       );
       
       try {
-        const detectedVersion = getSchemaVersion(testProjectPath);
+        const detectedVersion = await getSchemaVersion(testProjectPath);
         assert.strictEqual(detectedVersion, expectedVersion);
       } finally {
         // Clean up test files
@@ -799,8 +799,8 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test component documentation lookup
-    test("should find component files in documentation", _t => {
-      const serverConfig = getServerConfig();
+    test("should find component files in documentation", async _t => {
+      const serverConfig = await getServerConfig();
       const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
       
       // Test finding a component file
@@ -843,8 +843,8 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test example file lookup
-    test("should find example files in documentation", _t => {
-      const serverConfig = getServerConfig();
+    test("should find example files in documentation", async _t => {
+      const serverConfig = await getServerConfig();
       const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
       
       // Test finding example files
@@ -864,8 +864,8 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test property extraction from schema
-    test("should extract component properties from schema", _t => {
-      const serverConfig = getServerConfig();
+    test("should extract component properties from schema", async _t => {
+      const serverConfig = await getServerConfig();
       const [filenameList, contentList] = getDocuments(serverConfig.schemaVersion);
       
       // Find a schema file with properties
@@ -904,8 +904,8 @@ describe("index.ts - MCP Server", () => {
     });
 
     // Test embeddings file existence
-    test("should create and use embeddings files", _t => {
-      const serverConfig = getServerConfig();
+    test("should create and use embeddings files", async _t => {
+      const serverConfig = await getServerConfig();
       const embeddingsDir = path.join(projectRoot, "build/embeddings");
       
       // Check if embeddings directory exists
