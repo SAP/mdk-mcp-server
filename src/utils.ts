@@ -693,9 +693,9 @@ export async function getMobileServiceAppNameWithFallback(
 
     if (fs.existsSync(projectJsonPath)) {
       const projectJsonContent = fs.readFileSync(projectJsonPath, "utf-8");
-      const projectConfig = JSON.parse(projectJsonContent);
+            const projectConfig = (await safeJsonParse(projectJsonContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      // Get project name from MobileService.AppId
+            // Get project name from MobileService.AppId
       if (projectConfig.MobileService?.AppId) {
         return projectConfig.MobileService.AppId as string;
       }
@@ -759,7 +759,7 @@ export async function getServiceDataWithFallback(
 
     if (fs.existsSync(projectJsonPath)) {
       const projectJsonContent = fs.readFileSync(projectJsonPath, "utf-8");
-      const projectConfig = JSON.parse(projectJsonContent);
+      const projectConfig = (await safeJsonParse(projectJsonContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Get destination name from CF.Deploy.Destination[].MDK or CF.Deploy.Destination.MDK
       let destinationName: string | null = null;
@@ -906,9 +906,9 @@ async function filterServiceDataByEntitySets(
  * Get server configuration from package.json with command line argument override
  * @returns MDK server configuration object with defaults
  */
-export function getServerConfig(): {
+export async function getServerConfig(): Promise<{
   schemaVersion: string;
-} {
+}> {
   try {
     // Check for schema version in command line arguments first
     const args = process.argv.slice(2);
@@ -946,7 +946,7 @@ export function getServerConfig(): {
 
     // Read configuration from package.json
     const packageJsonPath = path.join(projectRoot, "package.json");
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+    const packageJson = (await safeJsonParse(fs.readFileSync(packageJsonPath, "utf-8"))) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Use command line argument if valid, otherwise use package.json config
     const schemaVersion =
@@ -972,13 +972,13 @@ export function getServerConfig(): {
  * @param projectPath - The path of the project root folder
  * @returns Schema version as string, uses server default if not found
  */
-export function getSchemaVersion(projectPath: string): string {
+export async function getSchemaVersion(projectPath: string): Promise<string> {
   try {
     const applicationAppPath = path.join(projectPath, "Application.app");
 
     if (fs.existsSync(applicationAppPath)) {
       const applicationContent = fs.readFileSync(applicationAppPath, "utf-8");
-      const applicationConfig = JSON.parse(applicationContent);
+      const applicationConfig = (await safeJsonParse(applicationContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Check if _SchemaVersion property exists
       if (applicationConfig._SchemaVersion) {

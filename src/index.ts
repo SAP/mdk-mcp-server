@@ -846,7 +846,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                     vscodeSettingsPath,
                     "utf-8"
                   );
-                  const settings = JSON.parse(settingsContent);
+                  const settings = (await safeJsonParse(settingsContent)) as Record<string, any>;
                   if (
                     settings["mdk.bundlerExternals"] &&
                     Array.isArray(settings["mdk.bundlerExternals"])
@@ -1078,7 +1078,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         const folderPath = validatedArgs.folderRootPath as string;
 
         // Get server configuration
-        const serverConfig = getServerConfig();
+        const serverConfig = await getServerConfig();
 
         // Validate the required folderRootPath and check schema version
         try {
@@ -1105,7 +1105,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             };
           }
 
-          const schemaVersion = getSchemaVersion(folderPath);
+          const schemaVersion = await getSchemaVersion(folderPath);
 
           // Check if getSchemaVersion equals serverConfig.schemaVersion, if not, return
           if (schemaVersion !== serverConfig.schemaVersion) {
@@ -1399,7 +1399,7 @@ export default async function run(_options = {}) {
   console.error("[MDK MCP Server] Server connected and running");
 
   // Get server configuration
-  const serverConfig = getServerConfig();
+  const serverConfig = await getServerConfig();
   console.error(
     `[MDK MCP Server] Using schema version: ${serverConfig.schemaVersion}`
   );
