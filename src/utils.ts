@@ -693,9 +693,9 @@ export async function getMobileServiceAppNameWithFallback(
 
     if (fs.existsSync(projectJsonPath)) {
       const projectJsonContent = fs.readFileSync(projectJsonPath, "utf-8");
-            const projectConfig = (await safeJsonParse(projectJsonContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const projectConfig = (await safeJsonParse(projectJsonContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-            // Get project name from MobileService.AppId
+      // Get project name from MobileService.AppId
       if (projectConfig.MobileService?.AppId) {
         return projectConfig.MobileService.AppId as string;
       }
@@ -946,7 +946,9 @@ export async function getServerConfig(): Promise<{
 
     // Read configuration from package.json
     const packageJsonPath = path.join(projectRoot, "package.json");
-    const packageJson = (await safeJsonParse(fs.readFileSync(packageJsonPath, "utf-8"))) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const packageJson = (await safeJsonParse(
+      fs.readFileSync(packageJsonPath, "utf-8")
+    )) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Use command line argument if valid, otherwise use package.json config
     const schemaVersion =
@@ -978,7 +980,9 @@ export async function getSchemaVersion(projectPath: string): Promise<string> {
 
     if (fs.existsSync(applicationAppPath)) {
       const applicationContent = fs.readFileSync(applicationAppPath, "utf-8");
-      const applicationConfig = (await safeJsonParse(applicationContent)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const applicationConfig = (await safeJsonParse(
+        applicationContent
+      )) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Check if _SchemaVersion property exists
       if (applicationConfig._SchemaVersion) {

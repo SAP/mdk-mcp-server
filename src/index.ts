@@ -846,7 +846,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                     vscodeSettingsPath,
                     "utf-8"
                   );
-                  const settings = (await safeJsonParse(settingsContent)) as Record<string, any>;
+                  const settings = (await safeJsonParse(
+                    settingsContent
+                  )) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
                   if (
                     settings["mdk.bundlerExternals"] &&
                     Array.isArray(settings["mdk.bundlerExternals"])
