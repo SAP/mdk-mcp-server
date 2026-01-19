@@ -66,7 +66,9 @@
     "@octokit/request-error": "^6.1.5",
     "form-data": "^4.0.1",
     "tough-cookie": "^5.0.0",
-    "qs": "6.14.1"
+    "qs": "6.14.1",
+    "diff": "^8.0.3",
+    "tar": "^7.5.3"
   },
   "mdkConfig": {
     "schemaVersion": "25.9"
