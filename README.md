@@ -20,6 +20,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 - [Setup](#setup)
 - [Available Tools](#available-tools)
 - [Support, Feedback, Contributing](#support-feedback-contributing)
+- [Telemetry](#telemetry)
 - [Security / Disclosure](#security--disclosure)
 - [Code of Conduct](#code-of-conduct)
 - [Licensing](#licensing)
@@ -192,7 +193,27 @@ These instructions help contributors set up, test, and maintain code quality for
 
 For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
+## Telemetry
 
+You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the MDK MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.
+
+Method 1: Configuration File
+Create or change the file ~/.fioritools/telemetrysettings.json:
+
+{
+  "telemetrysettings": {
+    "telemetrySetting": {
+      "enableTelemetry": false
+    }
+  }
+}
+Set enableTelemetry to false to disable telemetry collection.
+
+Method 2: Environment Variable
+Set the environment variable SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY to true:
+
+export SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true
+Setting this environment variable will disable the telemetry client.
 
 ## Security / Disclosure
 
