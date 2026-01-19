@@ -83,20 +83,22 @@ describe('Input Validation Tests', () => {
   });
 
   test('should validate tool arguments', () => {
-    // Valid mdk-gen-project arguments
+    // Valid mdk-create arguments
     const args = {
       folderRootPath: "/Users/test/project",
+      scope: "project",
       templateType: "crud",
-      oDataEntitySets: "Users,Projects"
+      oDataEntitySets: "Users,Projects",
+      offline: false
     };
 
     assert.doesNotThrow(() => {
-      validateToolArguments("mdk-gen-project", args);
+      validateToolArguments("mdk-create", args);
     });
 
     // Invalid arguments - these throw ZodError, not ValidationError
     assert.throws(() => {
-      validateToolArguments("mdk-gen-project", {
+      validateToolArguments("mdk-create", {
         ...args,
         templateType: "invalid"
       });
@@ -105,6 +107,90 @@ describe('Input Validation Tests', () => {
     assert.throws(() => {
       validateToolArguments("unknown-tool", args);
     }, ValidationError);
+  });
+
+  test('should validate mdk-gen rule arguments', () => {
+    // Valid mdk-gen arguments with rule artifact type
+    const validQueryArgs = {
+      artifactType: "rule",
+      query: "get app name"
+    };
+
+    assert.doesNotThrow(() => {
+      validateToolArguments("mdk-gen", validQueryArgs);
+    });
+
+    // Test with different valid user queries
+    const validQueries = [
+      "navigate to page",
+      "handle form validation", 
+      "send HTTP request",
+      "get current user",
+      "format date"
+    ];
+
+    validQueries.forEach(query => {
+      assert.doesNotThrow(() => {
+        validateToolArguments("mdk-gen", { artifactType: "rule", query });
+      }, `Should accept valid user query: ${query}`);
+    });
+
+    // Invalid user query - empty string (throws ValidationError because Zod validates it)
+    assert.throws(() => {
+      validateToolArguments("mdk-gen", { artifactType: "rule", query: "" });
+    }, Error); // Can be either ZodError or ValidationError
+
+    // Invalid user query - contains invalid characters
+    assert.throws(() => {
+      validateToolArguments("mdk-gen", { artifactType: "rule", query: "Invalid<script>" });
+    }, ZodError);
+
+    // Invalid user query - too long
+    assert.throws(() => {
+      validateToolArguments("mdk-gen", { artifactType: "rule", query: "a".repeat(1001) });
+    }, ZodError);
+
+    // Missing required argument (artifactType)
+    assert.throws(() => {
+      validateToolArguments("mdk-gen", { query: "test" });
+    }, ZodError);
+  });
+
+  test('should validate user prompt schema directly', () => {
+    // Valid queries
+    const validQueries = [
+      "get app name",
+      "navigate to page", 
+      "handle form validation",
+      "send HTTP request",
+      "get current user info",
+      "format date and time",
+      "validate input fields",
+      "show loading banner",
+      "handle navigation events",
+      "process API response"
+    ];
+
+    validQueries.forEach(query => {
+      assert.doesNotThrow(() => {
+        validateInput(ValidationSchemas.searchQuery, query, "query");
+      }, `Should validate query: ${query}`);
+    });
+
+    // Invalid queries
+    const invalidQueries = [
+      "",              // Empty string
+      null,            // Null value
+      undefined,       // Undefined value
+      123,             // Number instead of string
+      "a".repeat(1001) // Too long
+    ];
+
+    invalidQueries.forEach(query => {
+      assert.throws(() => {
+        validateInput(ValidationSchemas.searchQuery, query, "query");
+      }, ValidationError, `Should reject invalid query: ${query}`);
+    });
   });
 });
 

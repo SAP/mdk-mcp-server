@@ -1,14 +1,14 @@
 {
   "$id": "definitions/Search",
   "title": "Search",
-  "description": "Search over the items in the list.\n\n For Section, only the property names available in the target EntitySet are valid search keys. By default, these keys are generated from the searchable parameters of items with values of [Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/binding.html) or [TargetPath](./TargetPath.schema.html). [Rules](./Rule.schema.html) results or other complex mappings (e.g. [Formatters](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/i18n-formatter.html) or [Default Value Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/default-value-binding.html)) are not considered.\n\n Specifically for iOS, `Search` in `SectionedTable` with `ObjectHeader` as first section cannot be displayed even if `Search` is enabled.",
+  "description": "Search over the items in the list.\n\n For Section, or ListPicker using target binding, only the property names available in the target EntitySet are valid search keys. By default, these keys are generated from the searchable parameters of items with values of [Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/binding.html) or [TargetPath](./TargetPath.schema.html). [Rules](./Rule.schema.html) results or other complex mappings (e.g. [Formatters](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/i18n-formatter.html) or [Default Value Binding](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/development/property-binding/default-value-binding.html)) are not considered.\n\n Specifically for iOS, `Search` in `SectionedTable` with `ObjectHeader` as first section cannot be displayed even if `Search` is enabled.",
   "properties": {
     "AdditionalProperties": {
       "items": {
         "type": "string"
       },
       "type": "array",
-      "description": "Additional properties of the EntitySet that will be added to the search keys, in addition to the default ones. Strings not available in the EntitySet, and the number-typed properties if `NumberSearch` is not enabled, will be ignored."
+      "description": "Additional properties of the EntitySet that will be added to the search keys, in addition to the default ones. Strings not available in the EntitySet, and the number-typed properties if `NumberSearch` is not enabled, will be ignored. Not applicable to ListPicker using fixed collection."
     },
     "BarcodeScanner": {
       "type": "boolean",
@@ -20,7 +20,7 @@
     },
     "Enabled": {
       "type": "boolean",
-      "description": "Enables search on the Section."
+      "description": "Enables search on the Section or the ListPicker."
     },
     "Mode": {
        "type": "string",
@@ -49,7 +49,7 @@
     },
     "Options": {
       "$ref": "definitions/SearchOptions",
-      "description": "Options for generating the OData search query.",
+      "description": "Options for generating the OData search query. Not applicable to ListPicker using fixed collection.",
       "type": "object"
     }
   },

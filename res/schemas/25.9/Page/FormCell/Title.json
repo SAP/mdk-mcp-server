@@ -1,7 +1,7 @@
 {
   "$id": "Page/FormCell/Title",
   "title": "Title",
-  "description": "This is a single-line text entry control.",
+  "description": "This is a single-line text entry control. On Android, when `IsEditable` is set to true, the full text is displayed on multiple lines.",
   "additionalProperties": {
     "proxy": "TitleFormCellProxy"  
   },
@@ -12,7 +12,7 @@
     },
     "IsEditable": {
       "type": "boolean",
-      "description": "Indicates if the cell’s value may be modified.",
+      "description": "Indicates if the cell’s value may be modified. On Android, when this property is set to true, the full text is displayed on multiple lines.",
       "default": true
     },
     "Enabled": {

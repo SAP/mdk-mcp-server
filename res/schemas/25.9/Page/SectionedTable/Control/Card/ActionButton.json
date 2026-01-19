@@ -16,7 +16,7 @@
     },
     "OnPress": {
       "$ref": "definitions/ActionOrRule",
-      "description": "Action/Rule to be triggered when the action button is pressed. When both `OnPress` and `OverflowItems` are defined, it is recommended for the `OnPress` to not trigger UI related actions e.g. `Message` action, `ToastMessage` action, etc, as it could cause render issue for the `OverflowItems` popup.\nThe ClientAPI object to be received in rule function is [CardHeaderActionButtonProxy](../../../../../apidoc/classes/cardheaderactionbuttonproxy.md)."
+      "description": "Action/Rule to be triggered when the action button is pressed. When both `OnPress` and `OverflowItems` are defined, it is recommended for the `OnPress` to not trigger UI related actions e.g. `Message`, `ToastMessage`, and `PopoverMenu` actions, as it could cause render issue for the `OverflowItems` popup.\nThe ClientAPI object to be received in rule function is [CardHeaderActionButtonProxy](../../../../../apidoc/classes/cardheaderactionbuttonproxy.md)."
     },
     "OverflowItems": {
       "$ref": "Page/SectionedTable/Control/Card/OverflowItem",

@@ -20,13 +20,13 @@
     },
     "MaxNumberOfLines": {
       "type": "integer",
-      "description": "The maximum number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 2. Any value less than or equal to zero is considered as no limit.",
-      "default": 2
+      "description": "The maximum number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 6. Any value less than or equal to zero is considered as no limit.",
+      "default": 6
     },
     "MinNumberOfLines": {
       "type": "integer",
-      "description": "The minimum number of lines in which the text is displayed. The height of the cell is restricted to the specified limit and the text is displayed within the line limit. The default value is 1 on the mobile platform and 4 on the web platform. Any value less than or equal to zero is not considered or is ignored.",
-      "default": 1
+      "description": "The minimum number of lines in which the text is displayed. The minimum height of the cell is constrained to accommodate at least the specified number of lines of text. The default value is 3. On iOS, the height of the cell will not shrink below 88px (equivalent to approximately 3 to 4 lines). Any value less than or equal to zero is ignored.",
+      "default": 3
     },
     "IsEditable": {
       "type": "boolean",
@@ -97,7 +97,7 @@
     "RequiredIndicator": {
       "$ref": "definitions/BooleanOrString",
       "default": false,
-      "description": "Sets required indicator. Either `Boolean` or a single character, E.g. `true` / `false` / `'!'`.\nThe default character is an asterisk `*`.\nThis feature currently only support a single character to be defined in Android, so iOS will also mirror this behaviour and only allow a single character. Any string set will default to the asterisk `*`."
+      "description": "Specifies whether a field is mandatory by displaying a visual indicator. This property accepts either a Boolean (true / false) or a single character (e.g., '!') as its value.\n\nBy default, the indicator is a red asterisk (*) displayed at the end of the field's caption. You can customize the indicator character by setting this property. Additionally, the appearance (e.g., color or size) can be styled through metadata as well.\n\nNote:\n\n- This indicator is **purely visual**—it does **not** enforce that the user must fill out the field.\n- If more than one character is defined, the system will revert to using the default indicator.\n\n<!--  -->"
     },
     "_Name": {
       "type": "string"

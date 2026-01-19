@@ -13,7 +13,7 @@ const MAX_ENTITY_SETS = 50;
 
 // Allowed characters for different input types - support Windows paths with drive letters and backslashes
 const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\\s:()]+$/;
-const SAFE_PROMPT_REGEX = /^[\w\s.-_,;:!?()[\]{}"'=+/<>@#$%&*`~\n\r\t]+$/;
+const SAFE_PROMPT_REGEX = /^[\w\s.,;:!?()[\]{}"'=+/@#$%&*`~\n\r\t_-]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
@@ -195,6 +195,15 @@ export const ValidationSchemas = {
     .min(1, "Result count must be at least 1")
     .max(100, "Result count cannot exceed 100")
     .default(5),
+
+  externals: z
+    .array(z.string().min(1, "External package name cannot be empty"))
+    .max(20, "Cannot specify more than 20 external packages")
+    .refine(
+      arr => arr.every(pkg => /^[@a-zA-Z0-9/_-]+$/.test(pkg)),
+      "External package names contain invalid characters"
+    )
+    .default([]),
 };
 
 /**
@@ -278,10 +287,17 @@ export function validateToolArguments(
   const validatedArgs: Record<string, unknown> = {};
 
   switch (toolName) {
-    case "mdk-gen-project":
+    case "mdk-create": {
       validatedArgs.folderRootPath = validateSecurePath(
         String(args.folderRootPath)
       );
+
+      // Validate scope
+      const scopeSchema = z.enum(["project", "entity"], {
+        message: "Invalid scope type",
+      });
+      validatedArgs.scope = scopeSchema.parse(args.scope);
+
       validatedArgs.templateType = ValidationSchemas.templateType.parse(
         args.templateType
       );
@@ -290,51 +306,96 @@ export function validateToolArguments(
       );
       validatedArgs.offline = ValidationSchemas.offline.parse(args.offline);
       break;
+    }
 
-    case "mdk-gen-entity":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      validatedArgs.templateType = ValidationSchemas.templateType.parse(
-        args.templateType
-      );
-      validatedArgs.oDataEntitySets = ValidationSchemas.oDataEntitySets.parse(
-        args.oDataEntitySets
-      );
-      break;
+    case "mdk-gen": {
+      // Validate artifact type
+      const artifactTypeSchema = z.enum(["page", "action", "i18n", "rule"], {
+        message: "Invalid artifact type",
+      });
+      validatedArgs.artifactType = artifactTypeSchema.parse(args.artifactType);
 
-    case "mdk-gen-i18n":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      break;
+      const artifactType = validatedArgs.artifactType as string;
 
-    case "mdk-gen-databinding-page":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      validatedArgs.controlType = ValidationSchemas.controlType.parse(
-        args.controlType
-      );
-      break;
+      // Validate artifact-specific parameters
+      if (artifactType === "page") {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
 
-    case "mdk-gen-layout-page":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      validatedArgs.layoutType = ValidationSchemas.layoutType.parse(
-        args.layoutType
-      );
-      break;
+        // Validate page type
+        const pageTypeSchema = z.enum(["databinding", "layout"], {
+          message: "Invalid page type",
+        });
 
-    case "mdk-gen-action":
-      validatedArgs.folderRootPath = validateSecurePath(
-        String(args.folderRootPath)
-      );
-      validatedArgs.actionType = ValidationSchemas.actionType.parse(
-        args.actionType
-      );
+        if (!args.pageType) {
+          throw new ValidationError("pageType", args.pageType, [
+            "Page type is required for page artifact",
+          ]);
+        }
+
+        validatedArgs.pageType = pageTypeSchema.parse(args.pageType);
+        const pageType = validatedArgs.pageType as string;
+
+        if (pageType === "databinding") {
+          if (!args.controlType) {
+            throw new ValidationError("controlType", args.controlType, [
+              "Control type is required for databinding pages",
+            ]);
+          }
+          validatedArgs.controlType = ValidationSchemas.controlType.parse(
+            args.controlType
+          );
+
+          // Optional: oDataEntitySets for databinding pages
+          if (args.oDataEntitySets) {
+            validatedArgs.oDataEntitySets =
+              ValidationSchemas.oDataEntitySets.parse(args.oDataEntitySets);
+          }
+        } else if (pageType === "layout") {
+          if (!args.layoutType) {
+            throw new ValidationError("layoutType", args.layoutType, [
+              "Layout type is required for layout pages",
+            ]);
+          }
+          validatedArgs.layoutType = ValidationSchemas.layoutType.parse(
+            args.layoutType
+          );
+        }
+      } else if (artifactType === "action") {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
+
+        if (!args.actionType) {
+          throw new ValidationError("actionType", args.actionType, [
+            "Action type is required for action artifact",
+          ]);
+        }
+
+        validatedArgs.actionType = ValidationSchemas.actionType.parse(
+          args.actionType
+        );
+
+        // Optional: oDataEntitySets for action artifact
+        if (args.oDataEntitySets) {
+          validatedArgs.oDataEntitySets =
+            ValidationSchemas.oDataEntitySets.parse(args.oDataEntitySets);
+        }
+      } else if (artifactType === "i18n") {
+        validatedArgs.folderRootPath = validateSecurePath(
+          String(args.folderRootPath)
+        );
+      } else if (artifactType === "rule") {
+        if (!args.query) {
+          throw new ValidationError("query", args.query, [
+            "Query is required for rule artifact",
+          ]);
+        }
+        validatedArgs.query = ValidationSchemas.searchQuery.parse(args.query);
+      }
       break;
+    }
 
     case "mdk-manage":
       validatedArgs.folderRootPath = validateSecurePath(
@@ -343,6 +404,15 @@ export function validateToolArguments(
       validatedArgs.operation = ValidationSchemas.operation.parse(
         args.operation
       );
+
+      // Optional: externals parameter for deploy operation
+      if (args.externals !== undefined) {
+        validatedArgs.externals = ValidationSchemas.externals.parse(
+          args.externals
+        );
+      } else {
+        validatedArgs.externals = [];
+      }
       break;
 
     case "mdk-docs": {

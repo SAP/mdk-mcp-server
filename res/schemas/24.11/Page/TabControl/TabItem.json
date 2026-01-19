@@ -10,11 +10,11 @@
       "$ref": "definitions/Image"
     },
     "PageToOpen": {
-      "description": "Page to be rendered as the content of the tab item, references a .page file. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified.",
+      "description": "Page to be rendered as the content of the tab item, references a .page file.",
       "$ref": "definitions/Page"
     },
     "PageMetadata": {
-      "description": "Only supported on `Tabs`, not supported on `BottomNavigation`. Page's metadata will be rendered, when the PageMetadata is specified it will take preference over the PageToOpen.\n\nThe properties defined in [Page](../../Page.schema.md) are also applicable to it. For each tab item, please ensure either `PageToOpen` or `PageMetadata` is specified.",
+      "description": "Page's metadata will be rendered, when the PageMetadata is specified it will take preference over the PageToOpen.\n\nThe properties defined in [Page](../../Page.schema.md) are also applicable to it.",
       "type": [
         "string",
         "object"

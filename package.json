@@ -16,10 +16,12 @@
   "files": [
     "build/",
     "res/",
-    "images/"  
+    "images/"
   ],
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
+    "audit:signatures": "npm audit signatures",
+    "build": "npm run audit:signatures && tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
+    "build:no-audit": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
     "test": "node --test --test-concurrency=1 src/tests/*.test.js",
     "lint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\" --fix",
@@ -31,9 +33,15 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",
-    "@modelcontextprotocol/sdk": "^1.21.0",
-    "@sap/mdk-tools": "^1.14.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@sap-ux/btp-utils": "1.1.5",
+    "@sap-ux/feature-toggle": "0.3.4",
+    "@sap-ux/telemetry": "0.6.38",
     "@sap/generator-mdk": "1.0.0-2",
+    "@sap/mdk-tools": "^1.14.0",
+    "dotenv": "^17.2.3",
+    "i18next": "25.3.0",
+    "os-name": "4.0.1",
     "xml2js": "^0.6.2",
     "zod": "^4.1.12"
   },
@@ -57,7 +65,10 @@
     "@octokit/request": "^9.1.3",
     "@octokit/request-error": "^6.1.5",
     "form-data": "^4.0.1",
-    "tough-cookie": "^5.0.0"
+    "tough-cookie": "^5.0.0",
+    "qs": "6.14.1",
+    "diff": "^8.0.3",
+    "tar": "^7.5.3"
   },
   "mdkConfig": {
     "schemaVersion": "25.9"

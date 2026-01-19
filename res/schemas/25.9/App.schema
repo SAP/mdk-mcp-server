@@ -8,8 +8,15 @@
   },
   "properties": {
     "MainPage": {
-      "$ref": "definitions/Page",
-      "description": "Refers to a file underneath the project root's `Pages` folder that has a .page extension.",
+      "anyOf": [
+        {
+          "$ref": "definitions/Page"
+        },
+        {
+          "$ref": "definitions/Rule"
+        }
+      ],
+      "description": "Refers to a file in the project's `Pages` folder with a .page extension, or a .js file that returns a valid reference to a .page file.",
       "examples": ["/_Name/Pages/SomePage.page"]
     },
     "OnDidUpdate": {

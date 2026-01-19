@@ -8,12 +8,12 @@
     "AllowEmptySelection": {
       "type": "boolean",
       "default": true,
-      "description": "Disables or enables the selection of empty value set.\n\nIn Android, this is not supported. Empty selection is always possible on List Pickers that `AllowMultipleSelection` and never possible otherwise.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well.\n\nIn iOS, the back button will be hidden if this property is set to false, and it will only become visible when an item is selected.\n\nIn Web, setting this property to false automatically selects the first item, ensuring one item is always selected and cannot be deselected."
+      "description": "Allows the user to close the picker without selecting a value or to clear all existing selections.\n\niOS: If this property is set to false, the back button will be hidden, and the user must make a selection to close the picker.\n\nAndroid: This behavior is not supported. The user can always deselect any previously selected value.\n\nWeb: If this property is set to false, the first item is automatically selected. This ensures that one item is always selected and cannot be deselected."
     },
     "AllowMultipleSelection": {
       "type": "boolean",
       "default": true,
-      "description": "Disables or enables the selection of multiple entries.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well."
+      "description": "Allows user to select more than one value from the list."
     },
     "Caption": {
       "type": "string",
@@ -149,7 +149,7 @@
     "RequiredIndicator": {
       "$ref": "definitions/BooleanOrString",
       "default": false,
-      "description": "Sets required indicator. Either `Boolean` or a single character, E.g. `true` / `false` / `'!'`.\nThe default character is an asterisk `*`.\nThis feature currently only support a single character to be defined in Android, so iOS will also mirror this behaviour and only allow a single character. Any string set will default to the asterisk `*`."
+      "description": "Specifies whether a field is mandatory by displaying a visual indicator. This property accepts either a Boolean (true / false) or a single character (e.g., '!') as its value.\n\nBy default, the indicator is a red asterisk (*) displayed at the end of the field's caption. You can customize the indicator character by setting this property. Additionally, the appearance (e.g., color or size) can be styled through metadata as well.\n\nNote:\n\n- This indicator is **purely visual**—it does **not** enforce that the user must fill out the field.\n- If more than one character is defined, the system will revert to using the default indicator.\n\n<!--  -->"
     },
     "_Name": {
       "type": "string",
