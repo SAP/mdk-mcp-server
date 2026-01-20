@@ -23,19 +23,8 @@ jobs:
         run: |
           echo "Current npm version: $(npm --version)"
           echo "Latest npm version: $(npx npm@latest --version)"
-      # jacobtomlinson/gha-find-replace@v3.0.4
-      - name: Set instrumentation key in mdk-mcp-server
-        uses: jacobtomlinson/gha-find-replace@dfbfef71bc27c27c39d89534540a8960e0eee6b0
-        with:
-          include: src/telemetry/index.ts
-          find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
-          replace: ${{ secrets.INSTRUMENTATION_KEY }}
-          regex: false
       - name: run tests
-        run: |
-          npm i --include=optional
-          npm run build
-          npm test
+        run: npm ci
       # martinbeentjes/npm-get-version-action@v1.3.1
       - name: get version
         id: package-version
