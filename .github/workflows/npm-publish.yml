@@ -12,8 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: npmjs:@sap/mdk-mcp-server
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # actions/checkout@v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      # actions/setup-node@v4.1.0
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
@@ -21,8 +23,9 @@ jobs:
         run: |
           echo "Current npm version: $(npm --version)"
           echo "Latest npm version: $(npx npm@latest --version)"
+      # jacobtomlinson/gha-find-replace@v3.0.4
       - name: Set instrumentation key in mdk-mcp-server
-        uses: jacobtomlinson/gha-find-replace@v3
+        uses: jacobtomlinson/gha-find-replace@dfbfef71bc27c27c39d89534540a8960e0eee6b0
         with:
           include: src/telemetry/index.ts
           find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
@@ -33,16 +36,19 @@ jobs:
           npm i --include=optional
           npm run build
           npm test
+      # martinbeentjes/npm-get-version-action@v1.3.1
       - name: get version
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.2.3
+        uses: martinbeentjes/npm-get-version-action@3cf273023a0dda27efcd3164bdfb51908dd46a5b
+      # schwma/parse-changelog-action@v1.0.0
       - name: parse changelog
         id: parse-changelog
-        uses: schwma/parse-changelog-action@v1.0.0
+        uses: schwma/parse-changelog-action@51281ae71f93dc715a18110de791d3ae8a74338d
         with:
           version: '${{ steps.package-version.outputs.current-version }}'
+      # ncipollo/release-action@v1.14.0
       - name: create a GitHub release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
         with:
           tag: 'v${{ steps.package-version.outputs.current-version }}'
           body: '${{ steps.parse-changelog.outputs.body }}'
