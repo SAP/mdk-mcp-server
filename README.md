@@ -29,7 +29,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 ## Setup
 
-1. Install [node.js](https://nodejs.org/en).
+1. Install [node.js 22.14.0](https://nodejs.org/dist/v22.14.0/).
 
 2. Install [Yeoman](https://yeoman.io/).
 
