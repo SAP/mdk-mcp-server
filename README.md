@@ -147,7 +147,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       3.	Log in to your SAP BTP Cloud Foundry environment. For more details you can refer to [this help documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/log-on-to-cloud-foundry-environment-using-cloud-foundry-command-line-interface).
 
       ```bash
-      cf login <your target endpoint> --sso
+      cf login -a <your target endpoint> --sso
       ```
 
       4. Create an empty folder on your machine and open it in VS Code.
