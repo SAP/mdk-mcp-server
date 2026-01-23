@@ -27,7 +27,7 @@ jobs:
       - name: Set instrumentation key in mdk-mcp-server
         uses: jacobtomlinson/gha-find-replace@dfbfef71bc27c27c39d89534540a8960e0eee6b0
         with:
-          include: src/telemetry/index.ts
+          include: build/telemetry/index.js
           find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
           replace: ${{ secrets.INSTRUMENTATION_KEY }}
           regex: false
