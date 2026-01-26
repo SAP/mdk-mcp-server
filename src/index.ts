@@ -65,6 +65,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "mdk-create",
         description:
           "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects.",
+        annotations: {
+          title: "Create MDK Project",
+          destructiveHint: true,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
         inputSchema: {
           type: "object",
           properties: {
@@ -110,6 +116,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "mdk-gen",
         description:
           "Generates MDK artifacts including pages, actions, i18n files, and rule references. Returns prompts for LLM processing (pages, actions, i18n) or searches for rule examples.",
+        annotations: {
+          title: "Generate MDK Artifacts",
+          readOnlyHint: true,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
         inputSchema: {
           type: "object",
           properties: {
@@ -235,6 +247,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "mdk-manage",
         description:
           "Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.",
+        annotations: {
+          title: "Manage MDK Project",
+          destructiveHint: true,
+          idempotentHint: true,
+          openWorldHint: true,
+        },
         inputSchema: {
           type: "object",
           properties: {
@@ -278,6 +296,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "mdk-docs",
         description:
           "Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.",
+        annotations: {
+          title: "Search MDK Documentation",
+          readOnlyHint: true,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
         inputSchema: {
           type: "object",
           properties: {
