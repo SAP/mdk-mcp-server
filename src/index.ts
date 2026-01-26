@@ -1038,8 +1038,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             // Use platform-specific command to open the QR code image
             let openCommand: string;
             if (process.platform === "win32") {
-              // Windows: use 'start' command
-              openCommand = `start "${qrCodePath}"`;
+              // Windows: use 'start' command with empty title to avoid prompting
+              // The empty string "" before the path is the window title parameter
+              openCommand = `start "" "${qrCodePath}"`;
             } else if (process.platform === "darwin") {
               // macOS: use 'open' command
               openCommand = `open "${qrCodePath}"`;
