@@ -204,6 +204,27 @@ export const ValidationSchemas = {
       "External package names contain invalid characters"
     )
     .default([]),
+
+  applicationId: z
+    .string()
+    .min(1, "Application ID cannot be empty")
+    .max(200, "Application ID cannot exceed 200 characters")
+    .regex(/^[a-zA-Z0-9._-]+$/, "Application ID contains invalid characters"),
+
+  destinationName: z
+    .string()
+    .min(1, "Destination name cannot be empty")
+    .max(200, "Destination name cannot exceed 200 characters")
+    .regex(/^[a-zA-Z0-9._-]+$/, "Destination name contains invalid characters"),
+
+  odataContent: z
+    .string()
+    .min(1, "OData content cannot be empty")
+    .max(10 * 1024 * 1024, "OData content cannot exceed 10MB")
+    .refine(
+      str => str.includes("<?xml") || str.includes("<edmx:Edmx"),
+      "OData content must be valid XML metadata"
+    ),
 };
 
 /**
@@ -462,6 +483,21 @@ export function validateToolArguments(
       }
       break;
     }
+
+    case "mdk-save-metadata":
+      validatedArgs.folderRootPath = validateSecurePath(
+        String(args.folderRootPath)
+      );
+      validatedArgs.applicationId = ValidationSchemas.applicationId.parse(
+        args.applicationId
+      );
+      validatedArgs.destinationName = ValidationSchemas.destinationName.parse(
+        args.destinationName
+      );
+      validatedArgs.odataContent = ValidationSchemas.odataContent.parse(
+        args.odataContent
+      );
+      break;
 
     default:
       throw new ValidationError("toolName", toolName, ["Unknown tool name"]);

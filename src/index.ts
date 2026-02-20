@@ -344,6 +344,47 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
+      {
+        name: "mdk-save-metadata",
+        description:
+          "Saves OData metadata to a .service.metadata file in the project folder. This tool creates or updates the service metadata configuration file with mobile service app ID, destination name, and OData content.",
+        annotations: {
+          title: "Save Service Metadata",
+          destructiveHint: true,
+          idempotentHint: false,
+          openWorldHint: false,
+        },
+        inputSchema: {
+          type: "object",
+          properties: {
+            folderRootPath: {
+              type: "string",
+              description:
+                "The path of the current project root folder where the .service.metadata file will be saved.",
+            },
+            applicationId: {
+              type: "string",
+              description:
+                "The mobile service application ID (e.g., 'testMDK2').",
+            },
+            destinationName: {
+              type: "string",
+              description:
+                "The destination name (e.g., 'com.sap.edm.sampleservice.v4').",
+            },
+            odataContent: {
+              type: "string",
+              description: "The OData metadata XML content as a string.",
+            },
+          },
+          required: [
+            "folderRootPath",
+            "applicationId",
+            "destinationName",
+            "odataContent",
+          ],
+        },
+      },
     ],
   };
 });
@@ -355,7 +396,13 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
   TelemetryHelper.markToolStartTime();
 
   // List of valid tool names
-  const validTools = ["mdk-create", "mdk-gen", "mdk-manage", "mdk-docs"];
+  const validTools = [
+    "mdk-create",
+    "mdk-gen",
+    "mdk-manage",
+    "mdk-docs",
+    "mdk-save-metadata",
+  ];
 
   const isValidTool = validTools.includes(request.params.name);
 
@@ -1395,6 +1442,64 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             {
               type: "text",
               text: error instanceof Error ? error.toString() : String(error),
+            },
+          ],
+        };
+      }
+    }
+
+    case "mdk-save-metadata": {
+      try {
+        // Validate all arguments using comprehensive validation
+        const validatedArgs = validateToolArguments(
+          "mdk-save-metadata",
+          request.params.arguments || {}
+        );
+
+        const projectPath = validatedArgs.folderRootPath as string;
+        const applicationId = validatedArgs.applicationId as string;
+        const destinationName = validatedArgs.destinationName as string;
+        const odataContent = validatedArgs.odataContent as string;
+
+        // Create the metadata structure following the .service.metadata format
+        const metadata = {
+          mobile: {
+            api: "https://mobile-service-cockpit-api.cfapps.sap.hana.ondemand.com/cockpit/v1/org/a5eea9ac-e946-4f67-bcca-b8309caf24c2/space/5c2afc4c-3bad-4e11-84c6-5ebdbeb662ec",
+            app: applicationId,
+            destinations: [
+              {
+                name: destinationName,
+                relativeUrl: "",
+                metadata: {
+                  odataContent: odataContent,
+                },
+                type: "Mobile",
+              },
+            ],
+          },
+        };
+
+        // Write the metadata to .service.metadata file
+        const metadataFilePath = path.join(projectPath, ".service.metadata");
+        fs.writeFileSync(metadataFilePath, JSON.stringify(metadata, null, 4));
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Successfully saved service metadata to ${metadataFilePath}\n\nConfiguration:\n- Application ID: ${applicationId}\n- Destination: ${destinationName}\n- Metadata file: .service.metadata`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("MDK save metadata operation failed:", error);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Failed to save metadata: ${
+                error instanceof Error ? error.message : String(error)
+              }`,
             },
           ],
         };
