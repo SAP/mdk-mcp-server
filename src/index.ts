@@ -15,6 +15,12 @@ import {
   getServerConfig,
   safeJsonParse,
 } from "./utils.js";
+import {
+  isCapProject,
+  getCapProjectName,
+  getCapMdkConfig,
+  resolveMdkProjectPath,
+} from "./cap-utils.js";
 import { validateToolArguments } from "./validation.js";
 import path from "path";
 import fs from "fs";
@@ -64,7 +70,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-create",
         description:
-          "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects.",
+          "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects. Supports CAP projects - automatically creates MDK apps in the app/ folder with proper naming and configuration.",
         annotations: {
           title: "Create MDK Project",
           destructiveHint: true,
@@ -76,7 +82,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             folderRootPath: {
               type: "string",
-              description: "The path of the current project root folder.",
+              description: "The path of the current project root folder. For CAP projects, provide the CAP project root - the MDK app will be created in app/<projectname>_mdk/.",
             },
             scope: {
               type: "string",
@@ -432,7 +438,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           request.params.arguments || {}
         );
 
-        const projectPath = validatedArgs.folderRootPath as string;
+        let projectPath = validatedArgs.folderRootPath as string;
         const scope = validatedArgs.scope as string;
         const templateType = validatedArgs.templateType as string;
         const oDataEntitySetsString = validatedArgs.oDataEntitySets as string;
@@ -451,6 +457,27 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         }
 
         const isEntity = scope === "entity";
+
+        // Check if this is a CAP project and handle accordingly
+        if (scope === "project" && isCapProject(projectPath)) {
+          const capConfig = await getCapMdkConfig(projectPath);
+          
+          // Create app directory if needed
+          const appDir = path.join(projectPath, 'app');
+          if (!fs.existsSync(appDir)) {
+            fs.mkdirSync(appDir, { recursive: true });
+          }
+
+          // Use the MDK project path from CAP config and create if needed
+          projectPath = capConfig.mdkProjectPath;
+          if (!fs.existsSync(projectPath)) {
+            fs.mkdirSync(projectPath, { recursive: true });
+          }
+        } else if (isEntity) {
+          // For entity scope, resolve to the MDK app folder if in CAP project
+          projectPath = resolveMdkProjectPath(projectPath);
+        }
+
         const useOffline = scope === "project" ? offline : false;
 
         const script = await generateTemplateBasedMetadata(
