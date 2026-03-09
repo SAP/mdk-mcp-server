@@ -2,38 +2,39 @@
  * Utility functions for CAP project operations
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 import {
   getServicesInfo,
   getServiceEdmx,
   extractEntitySetsFromServicesInfo,
   isArtifactManagementAvailable,
-} from './artifact-management-wrapper.js';
+} from "./artifact-management-wrapper.js";
 
 /**
  * Check if a directory is a CAP project
  */
 export function isCapProject(projectPath: string): boolean {
   // Check for .cdsrc.json
-  const cdsrcPath = path.join(projectPath, '.cdsrc.json');
+  const cdsrcPath = path.join(projectPath, ".cdsrc.json");
   if (fs.existsSync(cdsrcPath)) {
     return true;
   }
 
   // Check for @sap/cds dependency
-  const packageJsonPath = path.join(projectPath, 'package.json');
+  const packageJsonPath = path.join(projectPath, "package.json");
   if (fs.existsSync(packageJsonPath)) {
     try {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
       if (
-        (packageJson.dependencies && '@sap/cds' in packageJson.dependencies) ||
-        (packageJson.devDependencies && '@sap/cds' in packageJson.devDependencies)
+        (packageJson.dependencies && "@sap/cds" in packageJson.dependencies) ||
+        (packageJson.devDependencies &&
+          "@sap/cds" in packageJson.devDependencies)
       ) {
         return true;
       }
     } catch (error) {
-      console.error('Error reading package.json:', error);
+      console.error("Error reading package.json:", error);
     }
   }
 
@@ -44,13 +45,13 @@ export function isCapProject(projectPath: string): boolean {
  * Get CAP project name from package.json
  */
 export function getCapProjectName(projectPath: string): string {
-  const packageJsonPath = path.join(projectPath, 'package.json');
+  const packageJsonPath = path.join(projectPath, "package.json");
   if (fs.existsSync(packageJsonPath)) {
     try {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
       return packageJson.name || path.basename(projectPath);
     } catch (error) {
-      console.error('Error reading project name:', error);
+      console.error("Error reading project name:", error);
     }
   }
   return path.basename(projectPath);
@@ -61,14 +62,14 @@ export function getCapProjectName(projectPath: string): string {
  */
 export async function getCapServicesInfo(projectPath: string) {
   if (!isArtifactManagementAvailable()) {
-    console.warn('Artifact management not available');
+    console.warn("Artifact management not available");
     return [];
   }
 
   try {
     return await getServicesInfo(projectPath);
   } catch (error) {
-    console.error('Error getting CAP services info:', error);
+    console.error("Error getting CAP services info:", error);
     return [];
   }
 }
@@ -81,15 +82,15 @@ export async function getCapServiceEdmx(
   serviceName: string
 ): Promise<string> {
   if (!isArtifactManagementAvailable()) {
-    console.warn('Artifact management not available');
-    return '';
+    console.warn("Artifact management not available");
+    return "";
   }
 
   try {
     return await getServiceEdmx(projectPath, serviceName);
   } catch (error) {
-    console.error('Error getting CAP service EDMX:', error);
-    return '';
+    console.error("Error getting CAP service EDMX:", error);
+    return "";
   }
 }
 
@@ -103,7 +104,7 @@ export async function extractEntitySetsFromCapProject(
     const servicesInfo = await getCapServicesInfo(projectPath);
     return extractEntitySetsFromServicesInfo(servicesInfo);
   } catch (error) {
-    console.error('Error extracting entity sets:', error);
+    console.error("Error extracting entity sets:", error);
     return [];
   }
 }
@@ -116,7 +117,7 @@ export async function extractEntitySetsFromCapProject(
  */
 export function resolveMdkProjectPath(folderRootPath: string): string {
   // If the path itself contains Application.app, it's already an MDK project
-  if (fs.existsSync(path.join(folderRootPath, 'Application.app'))) {
+  if (fs.existsSync(path.join(folderRootPath, "Application.app"))) {
     return folderRootPath;
   }
 
@@ -126,14 +127,14 @@ export function resolveMdkProjectPath(folderRootPath: string): string {
   }
 
   // Look for MDK sub-project under app/ directory
-  const appDir = path.join(folderRootPath, 'app');
+  const appDir = path.join(folderRootPath, "app");
   if (fs.existsSync(appDir) && fs.statSync(appDir).isDirectory()) {
     const entries = fs.readdirSync(appDir);
     for (const entry of entries) {
       const subPath = path.join(appDir, entry);
       if (
         fs.statSync(subPath).isDirectory() &&
-        fs.existsSync(path.join(subPath, 'Application.app'))
+        fs.existsSync(path.join(subPath, "Application.app"))
       ) {
         return subPath;
       }
@@ -188,7 +189,7 @@ export async function getCapProjectInfo(projectPath: string): Promise<{
   // Check for .service.metadata
   const metadataPath = path.join(
     result.mdkProjectPath || projectPath,
-    '.service.metadata'
+    ".service.metadata"
   );
   result.hasServiceMetadata = fs.existsSync(metadataPath);
 
@@ -197,9 +198,9 @@ export async function getCapProjectInfo(projectPath: string): Promise<{
     const servicesInfo = await getCapServicesInfo(projectPath);
     if (servicesInfo.length > 0) {
       result.edmxAvailable = true;
-      result.services = servicesInfo.map((s: any) => ({
+      result.services = servicesInfo.map(s => ({
         name: s.name,
-        path: s.urlPath || s.path || '',
+        path: s.urlPath || s.path || "",
         entities: s.entities || extractEntitySetsFromServicesInfo([s]),
       }));
     }
@@ -227,21 +228,21 @@ export async function generateServiceMetadataFromCap(
     }
 
     // Use service name as destination name
-    const destinationName = serviceName.replace(/\./g, '_');
+    const destinationName = serviceName.replace(/\./g, "_");
 
     // Create .service.metadata structure
     const metadata = {
       mobile: {
-        api: '',
+        api: "",
         app: applicationId,
         destinations: [
           {
             name: destinationName,
-            relativeUrl: '',
+            relativeUrl: "",
             metadata: {
               odataContent: edmx,
             },
-            type: 'Mobile',
+            type: "Mobile",
           },
         ],
       },
@@ -249,7 +250,7 @@ export async function generateServiceMetadataFromCap(
 
     return JSON.stringify(metadata, null, 4);
   } catch (error) {
-    console.error('Error generating service metadata from CAP:', error);
+    console.error("Error generating service metadata from CAP:", error);
     return null;
   }
 }
@@ -261,8 +262,13 @@ export interface CapMdkConfig {
   isCapProject: boolean;
   projectName: string;
   mdkProjectPath: string;
-  projectType: 'lcap-headless' | 'headless';
-  services: any[];
+  projectType: "lcap-headless" | "headless";
+  services: Array<{
+    name: string;
+    urlPath?: string;
+    path?: string;
+    entities?: string[];
+  }>;
   entitySets: string[];
 }
 
@@ -277,7 +283,7 @@ export async function getCapMdkConfig(
       isCapProject: false,
       projectName,
       mdkProjectPath: projectPath,
-      projectType: 'headless',
+      projectType: "headless",
       services: [],
       entitySets: [],
     };
@@ -285,7 +291,7 @@ export async function getCapMdkConfig(
 
   // For CAP projects, MDK project goes in app/ subfolder
   const mdkProjectName = `${projectName}_mdk`;
-  const mdkProjectPath = path.join(projectPath, 'app', mdkProjectName);
+  const mdkProjectPath = path.join(projectPath, "app", mdkProjectName);
 
   const services = await getCapServicesInfo(projectPath);
   const entitySets = await extractEntitySetsFromCapProject(projectPath);
@@ -294,7 +300,7 @@ export async function getCapMdkConfig(
     isCapProject: true,
     projectName: mdkProjectName,
     mdkProjectPath,
-    projectType: 'lcap-headless',
+    projectType: "lcap-headless",
     services,
     entitySets,
   };

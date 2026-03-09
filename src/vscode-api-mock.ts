@@ -3,8 +3,8 @@
  * This provides the minimal VSCode API surface needed by @sap/artifact-management
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Mock Uri class compatible with VSCode's Uri
@@ -33,17 +33,17 @@ export class Uri {
   }
 
   static file(fsPath: string): Uri {
-    return new Uri('file', '', fsPath, '', '');
+    return new Uri("file", "", fsPath, "", "");
   }
 
   static parse(value: string): Uri {
     const url = new URL(value);
     return new Uri(
-      url.protocol.replace(':', ''),
+      url.protocol.replace(":", ""),
       url.hostname,
       url.pathname,
-      url.search.replace('?', ''),
-      url.hash.replace('#', '')
+      url.search.replace("?", ""),
+      url.hash.replace("#", "")
     );
   }
 
@@ -68,13 +68,26 @@ export class Uri {
   }
 }
 
+interface WorkspaceFolder {
+  uri: Uri;
+  name: string;
+  index: number;
+}
+
+interface FileStat {
+  type: number;
+  ctime: number;
+  mtime: number;
+  size: number;
+}
+
 /**
  * Mock workspace API
  */
 export const workspace = {
-  workspaceFolders: [] as any[],
-  
-  getWorkspaceFolder(uri: Uri): any {
+  workspaceFolders: [] as WorkspaceFolder[],
+
+  getWorkspaceFolder(_uri: Uri): WorkspaceFolder | undefined {
     // Simple implementation - assumes single workspace
     if (this.workspaceFolders.length > 0) {
       return this.workspaceFolders[0];
@@ -101,7 +114,7 @@ export const workspace = {
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
         }
-        fs.writeFile(uri.fsPath, Buffer.from(content), (err) => {
+        fs.writeFile(uri.fsPath, Buffer.from(content), err => {
           if (err) {
             reject(err);
           } else {
@@ -111,7 +124,7 @@ export const workspace = {
       });
     },
 
-    stat(uri: Uri): Promise<any> {
+    stat(uri: Uri): Promise<FileStat> {
       return new Promise((resolve, reject) => {
         fs.stat(uri.fsPath, (err, stats) => {
           if (err) {
@@ -134,7 +147,7 @@ export const workspace = {
           if (err) {
             reject(err);
           } else {
-            const result: [string, number][] = files.map((file) => [
+            const result: [string, number][] = files.map(file => [
               file.name,
               file.isDirectory() ? 2 : 1, // 1 = File, 2 = Directory
             ]);

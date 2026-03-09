@@ -225,6 +225,28 @@ export const ValidationSchemas = {
       str => str.includes("<?xml") || str.includes("<edmx:Edmx"),
       "OData content must be valid XML metadata"
     ),
+
+  // Mobile Services validation schemas
+  landscapeType: z
+    .enum(["Standard", "Preview"], {
+      message: "Invalid landscape type",
+    })
+    .default("Standard"),
+
+  mobileAppId: z
+    .string()
+    .min(1, "Mobile Services application ID cannot be empty")
+    .max(200, "Mobile Services application ID cannot exceed 200 characters")
+    .regex(
+      /^[a-zA-Z0-9._-]+$/,
+      "Mobile Services application ID contains invalid characters"
+    ),
+
+  pathSuffix: z
+    .string()
+    .max(500, "Path suffix cannot exceed 500 characters")
+    .regex(/^[a-zA-Z0-9._\-/]*$/, "Path suffix contains invalid characters")
+    .default(""),
 };
 
 /**
@@ -496,6 +518,35 @@ export function validateToolArguments(
       );
       validatedArgs.odataContent = ValidationSchemas.odataContent.parse(
         args.odataContent
+      );
+      break;
+
+    case "mdk-list-mobile-apps":
+      validatedArgs.landscapeType = ValidationSchemas.landscapeType.parse(
+        args.landscapeType || "Standard"
+      );
+      break;
+
+    case "mdk-get-mobile-app":
+      validatedArgs.appId = ValidationSchemas.mobileAppId.parse(args.appId);
+      validatedArgs.landscapeType = ValidationSchemas.landscapeType.parse(
+        args.landscapeType || "Standard"
+      );
+      break;
+
+    case "mdk-fetch-mobile-metadata":
+      validatedArgs.folderRootPath = ValidationSchemas.folderRootPath.parse(
+        args.folderRootPath
+      );
+      validatedArgs.appId = ValidationSchemas.mobileAppId.parse(args.appId);
+      validatedArgs.destination = ValidationSchemas.destinationName.parse(
+        args.destination
+      );
+      validatedArgs.pathSuffix = ValidationSchemas.pathSuffix.parse(
+        args.pathSuffix || ""
+      );
+      validatedArgs.landscapeType = ValidationSchemas.landscapeType.parse(
+        args.landscapeType || "Standard"
       );
       break;
 

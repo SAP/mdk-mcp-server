@@ -17,11 +17,17 @@ import {
 } from "./utils.js";
 import {
   isCapProject,
-  getCapProjectName,
   getCapMdkConfig,
   resolveMdkProjectPath,
 } from "./cap-utils.js";
 import { validateToolArguments } from "./validation.js";
+import {
+  getCFToken,
+  getMobileServicesAdminAPI,
+  getCFAuthErrorMessage,
+  isCFLoggedIn,
+} from "./cf-auth.js";
+import { createMobileServicesClient } from "./mobile-services-client.js";
 import path from "path";
 import fs from "fs";
 import {
@@ -82,7 +88,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             folderRootPath: {
               type: "string",
-              description: "The path of the current project root folder. For CAP projects, provide the CAP project root - the MDK app will be created in app/<projectname>_mdk/.",
+              description:
+                "The path of the current project root folder. For CAP projects, provide the CAP project root - the MDK app will be created in app/<projectname>_mdk/.",
             },
             scope: {
               type: "string",
@@ -350,15 +357,68 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
+      // {
+      //   name: "mdk-list-mobile-apps",
+      //   description:
+      //     "Lists all Mobile Services applications in the current CF space that have OData destinations configured. Requires CF CLI authentication (cf login). Returns application details including names, IDs, and configured destinations.",
+      //   annotations: {
+      //     title: "List Mobile Services Apps",
+      //     readOnlyHint: true,
+      //     idempotentHint: true,
+      //     openWorldHint: true,
+      //   },
+      //   inputSchema: {
+      //     type: "object",
+      //     properties: {
+      //       landscapeType: {
+      //         type: "string",
+      //         enum: ["Standard", "Preview"],
+      //         description:
+      //           "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
+      //         default: "Standard",
+      //       },
+      //     },
+      //     required: [],
+      //   },
+      // },
+      // {
+      //   name: "mdk-get-mobile-app",
+      //   description:
+      //     "Gets detailed information about a specific Mobile Services application, including its configured destinations. Requires CF CLI authentication (cf login).",
+      //   annotations: {
+      //     title: "Get Mobile Services App Details",
+      //     readOnlyHint: true,
+      //     idempotentHint: true,
+      //     openWorldHint: true,
+      //   },
+      //   inputSchema: {
+      //     type: "object",
+      //     properties: {
+      //       appId: {
+      //         type: "string",
+      //         description:
+      //           "The Mobile Services application ID (e.g., 'com.sap.mdk.demo').",
+      //       },
+      //       landscapeType: {
+      //         type: "string",
+      //         enum: ["Standard", "Preview"],
+      //         description:
+      //           "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
+      //         default: "Standard",
+      //       },
+      //     },
+      //     required: ["appId"],
+      //   },
+      // },
       {
-        name: "mdk-save-metadata",
+        name: "mdk-fetch-mobile-metadata",
         description:
-          "Saves OData metadata to a .service.metadata file in the project folder. This tool creates or updates the service metadata configuration file with mobile service app ID, destination name, and OData content.",
+          "Fetches OData metadata from a Mobile Services destination and automatically saves it to .service.metadata file in the project. This retrieves the $metadata document from a configured destination in a Mobile Services application and creates the service metadata configuration file. Requires CF CLI authentication (cf login).",
         annotations: {
-          title: "Save Service Metadata",
+          title: "Fetch and Save Mobile Services Metadata",
           destructiveHint: true,
           idempotentHint: false,
-          openWorldHint: false,
+          openWorldHint: true,
         },
         inputSchema: {
           type: "object",
@@ -366,29 +426,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             folderRootPath: {
               type: "string",
               description:
-                "The path of the current project root folder where the .service.metadata file will be saved.",
+                "The path of the MDK project root folder where .service.metadata will be saved.",
             },
-            applicationId: {
+            appId: {
               type: "string",
               description:
-                "The mobile service application ID (e.g., 'testMDK2').",
+                "The Mobile Services application ID (e.g., 'com.sap.mdk.demo').",
             },
-            destinationName: {
+            destination: {
               type: "string",
               description:
-                "The destination name (e.g., 'com.sap.edm.sampleservice.v4').",
+                "The destination name configured in Mobile Services (e.g., 'com.sap.edm.sampleservice.v4').",
             },
-            odataContent: {
+            pathSuffix: {
               type: "string",
-              description: "The OData metadata XML content as a string.",
+              description:
+                "Optional path suffix to append before /$metadata (e.g., '/api/v1'). Leave empty if not needed.",
+              default: "",
+            },
+            landscapeType: {
+              type: "string",
+              enum: ["Standard", "Preview"],
+              description:
+                "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
+              default: "Standard",
             },
           },
-          required: [
-            "folderRootPath",
-            "applicationId",
-            "destinationName",
-            "odataContent",
-          ],
+          required: ["folderRootPath", "appId", "destination"],
         },
       },
     ],
@@ -461,9 +525,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         // Check if this is a CAP project and handle accordingly
         if (scope === "project" && isCapProject(projectPath)) {
           const capConfig = await getCapMdkConfig(projectPath);
-          
+
           // Create app directory if needed
-          const appDir = path.join(projectPath, 'app');
+          const appDir = path.join(projectPath, "app");
           if (!fs.existsSync(appDir)) {
             fs.mkdirSync(appDir, { recursive: true });
           }
@@ -1525,6 +1589,285 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             {
               type: "text",
               text: `Failed to save metadata: ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
+        };
+      }
+    }
+
+    // case "mdk-list-mobile-apps": {
+    //   try {
+    //     // Check if CF is logged in
+    //     if (!(await isCFLoggedIn())) {
+    //       return {
+    //         content: [
+    //           {
+    //             type: "text",
+    //             text: getCFAuthErrorMessage(),
+    //           },
+    //         ],
+    //       };
+    //     }
+
+    //     // Validate all arguments
+    //     const validatedArgs = validateToolArguments(
+    //       "mdk-list-mobile-apps",
+    //       request.params.arguments || {}
+    //     );
+
+    //     const landscapeType =
+    //       (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
+
+    //     // Get CF token and Mobile Services API URL
+    //     const cfToken = await getCFToken();
+    //     if (!cfToken) {
+    //       throw new Error("Failed to get CF token");
+    //     }
+    //     const apiUrl = getMobileServicesAdminAPI(landscapeType);
+    //     if (!apiUrl) {
+    //       throw new Error(
+    //         "Failed to get Mobile Services API URL from CF configuration"
+    //       );
+    //     }
+
+    //     // Create Mobile Services client and list apps
+    //     const client = createMobileServicesClient(apiUrl, cfToken);
+    //     const apps = await client.listApplications();
+
+    //     if (apps.length === 0) {
+    //       return {
+    //         content: [
+    //           {
+    //             type: "text",
+    //             text: "No Mobile Services applications with proxy service found in the current CF space.",
+    //           },
+    //         ],
+    //       };
+    //     }
+
+    //     // Format the results
+    //     let resultText = `# Mobile Services Applications with Proxy Service\n\n`;
+    //     resultText += `Found ${apps.length} application(s):\n\n`;
+
+    //     for (const app of apps) {
+    //       resultText += `## ${app.displayName || app.name}\n`;
+    //       resultText += `- **Application ID**: ${app.name}\n`;
+
+    //       const proxyService = app.services?.find(s => s.name === "proxy");
+    //       const destinations =
+    //         proxyService?.parameters?.endpointConfigurations || [];
+    //       if (destinations.length > 0) {
+    //         resultText += `- **Configured Destinations** (${destinations.length}):\n`;
+    //         for (const dest of destinations) {
+    //           resultText += `  - ${dest.endPointName}\n`;
+    //         }
+    //       }
+    //       resultText += `\n`;
+    //     }
+
+    //     return {
+    //       content: [
+    //         {
+    //           type: "text",
+    //           text: resultText,
+    //         },
+    //       ],
+    //     };
+    //   } catch (error) {
+    //     console.error("MDK list mobile apps operation failed:", error);
+    //     return {
+    //       content: [
+    //         {
+    //           type: "text",
+    //           text: `Failed to list Mobile Services applications: ${
+    //             error instanceof Error ? error.message : String(error)
+    //           }`,
+    //         },
+    //       ],
+    //     };
+    //   }
+    // }
+
+    // case "mdk-get-mobile-app": {
+    //   try {
+    //     // Check if CF is logged in
+    //     if (!(await isCFLoggedIn())) {
+    //       return {
+    //         content: [
+    //           {
+    //             type: "text",
+    //             text: getCFAuthErrorMessage(),
+    //           },
+    //         ],
+    //       };
+    //     }
+
+    //     // Validate all arguments
+    //     const validatedArgs = validateToolArguments(
+    //       "mdk-get-mobile-app",
+    //       request.params.arguments || {}
+    //     );
+
+    //     const appId = validatedArgs.appId as string;
+    //     const landscapeType =
+    //       (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
+
+    //     // Get CF token and Mobile Services API URL
+    //     const cfToken = await getCFToken();
+    //     if (!cfToken) {
+    //       throw new Error("Failed to get CF token");
+    //     }
+    //     const apiUrl = getMobileServicesAdminAPI(landscapeType);
+    //     if (!apiUrl) {
+    //       throw new Error(
+    //         "Failed to get Mobile Services API URL from CF configuration"
+    //       );
+    //     }
+
+    //     // Create Mobile Services client and get app details
+    //     const client = createMobileServicesClient(apiUrl, cfToken);
+    //     const app = await client.getApplication(appId);
+
+    //     // Format the results
+    //     let resultText = `# Mobile Services Application Details\n\n`;
+    //     resultText += `**Name**: ${app.displayName || app.name}\n`;
+    //     resultText += `**Application ID**: ${app.name}\n\n`;
+
+    //     // Get destinations from proxy service
+    //     const proxyService = app.services?.find(s => s.name === "proxy");
+    //     const destinations =
+    //       proxyService?.parameters?.endpointConfigurations || [];
+
+    //     if (destinations.length > 0) {
+    //       resultText += `## Configured Destinations (${destinations.length})\n\n`;
+    //       for (const dest of destinations) {
+    //         resultText += `### ${dest.endPointName}\n`;
+    //         if (dest.endPointAddress) {
+    //           resultText += `- **Address**: ${dest.endPointAddress}\n`;
+    //         }
+    //         if (dest.cloudDestinationName) {
+    //           resultText += `- **Cloud Destination**: ${dest.cloudDestinationName}\n`;
+    //         }
+    //         resultText += `\n`;
+    //       }
+    //     } else {
+    //       resultText += `**No destinations configured**\n`;
+    //     }
+
+    //     return {
+    //       content: [
+    //         {
+    //           type: "text",
+    //           text: resultText,
+    //         },
+    //       ],
+    //     };
+    //   } catch (error) {
+    //     console.error("MDK get mobile app operation failed:", error);
+    //     return {
+    //       content: [
+    //         {
+    //           type: "text",
+    //           text: `Failed to get Mobile Services application: ${
+    //             error instanceof Error ? error.message : String(error)
+    //           }`,
+    //         },
+    //       ],
+    //     };
+    //   }
+    // }
+
+    case "mdk-fetch-mobile-metadata": {
+      try {
+        // Check if CF is logged in
+        if (!(await isCFLoggedIn())) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
+        // Validate all arguments
+        const validatedArgs = validateToolArguments(
+          "mdk-fetch-mobile-metadata",
+          request.params.arguments || {}
+        );
+
+        const projectPath = validatedArgs.folderRootPath as string;
+        const appId = validatedArgs.appId as string;
+        const destination = validatedArgs.destination as string;
+        const pathSuffix = (validatedArgs.pathSuffix as string) || "";
+        const landscapeType =
+          (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
+
+        // Get CF token and Mobile Services API URL
+        const cfToken = await getCFToken();
+        if (!cfToken) {
+          throw new Error("Failed to get CF token");
+        }
+        const apiUrl = getMobileServicesAdminAPI(landscapeType);
+        if (!apiUrl) {
+          throw new Error(
+            "Failed to get Mobile Services API URL from CF configuration"
+          );
+        }
+
+        // Create Mobile Services client and fetch metadata
+        const client = createMobileServicesClient(apiUrl, cfToken);
+        const metadata = await client.fetchMetadata(
+          appId,
+          destination,
+          pathSuffix
+        );
+
+        // Create the metadata structure following the .service.metadata format
+        const metadataStructure = {
+          mobile: {
+            api: apiUrl,
+            app: appId,
+            destinations: [
+              {
+                name: destination,
+                relativeUrl: pathSuffix,
+                metadata: {
+                  odataContent: metadata,
+                },
+                type: "Mobile",
+              },
+            ],
+          },
+        };
+
+        // Write the metadata to .service.metadata file
+        const metadataFilePath = path.join(projectPath, ".service.metadata");
+        fs.writeFileSync(
+          metadataFilePath,
+          JSON.stringify(metadataStructure, null, 4)
+        );
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `# OData Metadata Retrieved and Saved\n\n**Application**: ${appId}\n**Destination**: ${destination}\n${
+                pathSuffix ? `**Path Suffix**: ${pathSuffix}\n` : ""
+              }**Landscape**: ${landscapeType}\n**Saved to**: ${metadataFilePath}\n\n✓ Successfully created .service.metadata file with OData metadata.`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("MDK fetch mobile metadata operation failed:", error);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Failed to fetch and save Mobile Services metadata: ${
                 error instanceof Error ? error.message : String(error)
               }`,
             },

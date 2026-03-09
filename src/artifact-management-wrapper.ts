@@ -3,7 +3,7 @@
  * Provides simplified API for CAP service metadata operations
  */
 
-import { createMockVSCode, Uri } from './vscode-api-mock.js';
+import { createMockVSCode } from "./vscode-api-mock.js";
 
 // Type definitions for artifact-management
 interface ServiceInfo {
@@ -13,6 +13,7 @@ interface ServiceInfo {
   destination?: string;
   sourcePath?: string;
   entities?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -38,52 +39,57 @@ async function initializeArtifactManagement(
     const mockVSCode = createMockVSCode(workspaceRoot);
 
     // Inject mock VSCode into global scope (required by artifact-management)
-    (global as any).vscode = mockVSCode;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any).vscode = mockVSCode;
 
     // Load artifact-management-base library
-    const artifactMgmtBase = await import('@sap/artifact-management-base');
+    const artifactMgmtBase = await import("@sap/artifact-management-base");
     const { CapApi } = artifactMgmtBase.default;
     const { NodeFileSystem } = artifactMgmtBase;
 
     if (!CapApi || !NodeFileSystem) {
-      throw new Error('CapApi or NodeFileSystem class not found in module');
+      throw new Error("CapApi or NodeFileSystem class not found in module");
     }
 
     // Create filesystem instance for the workspace
     const fs = new NodeFileSystem(workspaceRoot, workspaceRoot);
-    
+
     // Find all .cds files in the project (typically in srv/, db/, app/ directories)
     const cdsPaths: string[] = [];
-    const dirsToCheck = ['srv', 'db', 'app', '.'];
-    
+    const dirsToCheck = ["srv", "db", "app", "."];
+
     for (const dir of dirsToCheck) {
       try {
         // Navigate to the directory
-        const dirFs = dir === '.' ? fs : fs.navigate(dir);
+        const dirFs = dir === "." ? fs : fs.navigate(dir);
         // Read .cds files
-        const files = await dirFs.readFiles({ ext: 'cds' });
-        cdsPaths.push(...files.map((f: string) => dir === '.' ? f : `${dir}/${f}`));
-      } catch (error) {
+        const files = await dirFs.readFiles({ ext: "cds" });
+        cdsPaths.push(
+          ...files.map((f: string) => (dir === "." ? f : `${dir}/${f}`))
+        );
+      } catch {
         // Directory might not exist, continue
       }
     }
-    
+
     if (cdsPaths.length === 0) {
-      throw new Error('No .cds files found in project. This does not appear to be a CAP project.');
+      throw new Error(
+        "No .cds files found in project. This does not appear to be a CAP project."
+      );
     }
-    
+
     // Create CapApi with filesystem and CDS file paths
     const am = new CapApi(fs, cdsPaths);
-    
+
     // Load the CAP model for the project with flavor option
-    await am.load({ flavor: 'inferred' });
+    await am.load({ flavor: "inferred" });
 
     artifactManagement = {
-      async getServicesInfo(projectPath: string): Promise<ServiceInfo[]> {
+      async getServicesInfo(_projectPath: string): Promise<ServiceInfo[]> {
         try {
           // Get services from CAP model (synchronous call)
           const services = am.services();
-          
+
           // Transform to ServiceInfo format
           const serviceInfos: ServiceInfo[] = [];
           for (const service of services) {
@@ -91,37 +97,37 @@ async function initializeArtifactManagement(
             // - name: service name
             // - urlPath: HTTP endpoint path (if available)
             // - $location: file location information
-            const serviceName = service.name || '';
+            const serviceName = service.name || "";
             const urlPath = service.urlPath || `/${serviceName}`;
             const location = service.$location || {};
-            const file = location.file || '';
-            
+            const file = location.file || "";
+
             // Get all entities in this service
             const allEntities = am.entities();
             const serviceEntities: string[] = [];
-            
+
             // Filter entities that belong to this service
             for (const entity of allEntities) {
-              const entityName = entity.name || '';
+              const entityName = entity.name || "";
               // Check if entity belongs to this service (entity name starts with service name)
               if (entityName.startsWith(`${serviceName}.`)) {
                 serviceEntities.push(entityName);
               }
             }
-            
+
             serviceInfos.push({
               name: serviceName,
               path: urlPath,
               entryPath: urlPath,
               destination: `${serviceName}-app-srv`,
               sourcePath: file,
-              entities: serviceEntities
+              entities: serviceEntities,
             });
           }
-          
+
           return serviceInfos;
         } catch (error) {
-          console.error('Error getting services info:', error);
+          console.error("Error getting services info:", error);
           return [];
         }
       },
@@ -133,18 +139,18 @@ async function initializeArtifactManagement(
         try {
           // Get EDMX for the service
           const edmx = await am.edmx(serviceName);
-          return edmx || '';
+          return edmx || "";
         } catch (error) {
-          console.error('Error getting service EDMX:', error);
-          return '';
+          console.error("Error getting service EDMX:", error);
+          return "";
         }
       },
     };
 
     return artifactManagement;
   } catch (error) {
-    console.error('Failed to initialize artifact-management:', error);
-    throw new Error('Artifact management initialization failed');
+    console.error("Failed to initialize artifact-management:", error);
+    throw new Error("Artifact management initialization failed");
   }
 }
 
@@ -158,7 +164,7 @@ export async function getServicesInfo(
     const am = await initializeArtifactManagement(projectPath);
     return await am.getServicesInfo(projectPath);
   } catch (error) {
-    console.error('Error in getServicesInfo wrapper:', error);
+    console.error("Error in getServicesInfo wrapper:", error);
     return [];
   }
 }
@@ -174,8 +180,8 @@ export async function getServiceEdmx(
     const am = await initializeArtifactManagement(projectPath);
     return await am.getServiceEdmx(projectPath, serviceName);
   } catch (error) {
-    console.error('Error in getServiceEdmx wrapper:', error);
-    return '';
+    console.error("Error in getServiceEdmx wrapper:", error);
+    return "";
   }
 }
 
@@ -201,7 +207,7 @@ export function extractEntitySetsFromServicesInfo(
  */
 export async function isArtifactManagementAvailable(): Promise<boolean> {
   try {
-    await import('@sap/artifact-management-base');
+    await import("@sap/artifact-management-base");
     return true;
   } catch {
     return false;

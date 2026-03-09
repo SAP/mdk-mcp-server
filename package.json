@@ -42,6 +42,7 @@
     "@sap/artifact-management-base": "^1.52.0",
     "@sap/generator-mdk": "1.0.0-2",
     "@sap/mdk-tools": "^1.14.0",
+    "axios": "^1.13.6",
     "dotenv": "^17.2.3",
     "i18next": "25.3.0",
     "os-name": "4.0.1",

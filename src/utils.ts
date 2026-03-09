@@ -6,7 +6,6 @@ import { fileURLToPath } from "url";
 import {
   getServicesInfo,
   getServiceEdmx,
-  extractEntitySetsFromServicesInfo,
 } from "./artifact-management-wrapper.js";
 
 // Get the directory where this module is located, then go up to find project root
@@ -361,7 +360,8 @@ export function runCommand(
     }
 
     // For Windows, handle shell selection properly
-    const execOptions: Record<string, unknown> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execOptions: Record<string, any> = {
       cwd: safeCwd,
       env: process.env,
       stdio: "pipe",
@@ -394,7 +394,7 @@ export async function geServiceMetadataJson(
     const content = fs.readFileSync(filePath, "utf-8");
     // Use safe JSON parsing with size and depth limits
     return await safeJsonParse(content);
-  } catch (err) {
+  } catch (err: unknown) {
     console.error(err);
     return null;
   }
@@ -438,7 +438,7 @@ export async function getModulePath(modueName: string): Promise<string> {
 
     // If no local MDK module found, return empty string
     return "";
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Error finding local MDK module path:", err);
     // Return empty string instead of throwing error to allow commands to continue
     return "";
@@ -450,23 +450,24 @@ export async function getModulePath(modueName: string): Promise<string> {
  */
 export function isCapProject(projectPath: string): boolean {
   // Check for .cdsrc.json file (standard CAP config file)
-  const cdsrcPath = path.join(projectPath, '.cdsrc.json');
+  const cdsrcPath = path.join(projectPath, ".cdsrc.json");
   if (fs.existsSync(cdsrcPath)) {
     return true;
   }
 
   // Check for package.json with @sap/cds dependency
-  const packageJsonPath = path.join(projectPath, 'package.json');
+  const packageJsonPath = path.join(projectPath, "package.json");
   if (fs.existsSync(packageJsonPath)) {
     try {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
       const hasCdsDependency =
-        (packageJson.dependencies && packageJson.dependencies['@sap/cds']) ||
-        (packageJson.devDependencies && packageJson.devDependencies['@sap/cds']);
+        (packageJson.dependencies && packageJson.dependencies["@sap/cds"]) ||
+        (packageJson.devDependencies &&
+          packageJson.devDependencies["@sap/cds"]);
       if (hasCdsDependency) {
         return true;
       }
-    } catch (error) {
+    } catch {
       // Ignore parse errors
     }
   }
@@ -505,15 +506,15 @@ export function findCapProjectRoot(projectPath: string): string | null {
  * Get CAP project name from package.json
  */
 export function getCapProjectName(projectPath: string): string | null {
-  const packageJsonPath = path.join(projectPath, 'package.json');
+  const packageJsonPath = path.join(projectPath, "package.json");
   if (!fs.existsSync(packageJsonPath)) {
     return null;
   }
 
   try {
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
     return packageJson.name || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -536,19 +537,27 @@ export async function generateTemplateBasedMetadata(
   const capProjectPath = findCapProjectRoot(projectPath);
   const isCap = capProjectPath !== null;
   if (isCap && capProjectPath) {
-    console.error('[MDK MCP Server] CAP project detected, adjusting configuration...');
+    console.error(
+      "[MDK MCP Server] CAP project detected, adjusting configuration..."
+    );
     const capProjectName = getCapProjectName(capProjectPath);
     if (capProjectName) {
       // MDK project will be created in CAP_PROJECT/app folder with name CAP_NAME_mdk
-      const mdkProjectPath = path.join(capProjectPath, 'app', `${capProjectName}_mdk`);
-      console.error(`[MDK MCP Server] MDK project path for CAP: ${mdkProjectPath}`);
-      
+      const mdkProjectPath = path.join(
+        capProjectPath,
+        "app",
+        `${capProjectName}_mdk`
+      );
+      console.error(
+        `[MDK MCP Server] MDK project path for CAP: ${mdkProjectPath}`
+      );
+
       // Create the app directory if it doesn't exist
-      const appDir = path.join(capProjectPath, 'app');
+      const appDir = path.join(capProjectPath, "app");
       if (!fs.existsSync(appDir)) {
         fs.mkdirSync(appDir, { recursive: true });
       }
-      
+
       // Update projectPath for subsequent operations
       projectPath = mdkProjectPath;
     }
@@ -560,27 +569,31 @@ export async function generateTemplateBasedMetadata(
 
   // CAP fallback: generate .service.metadata from CDS models if not found
   if (!serviceMetadataObj && capProjectPath) {
-    console.error('[MDK MCP Server] No .service.metadata found, generating from CAP CDS models...');
+    console.error(
+      "[MDK MCP Server] No .service.metadata found, generating from CAP CDS models..."
+    );
     try {
       const servicesInfo = await getServicesInfo(capProjectPath);
       if (servicesInfo.length > 0) {
         const service = servicesInfo[0];
         const edmx = await getServiceEdmx(capProjectPath, service.name);
         if (edmx) {
-          const capName = getCapProjectName(capProjectPath) || 'cap-app';
+          const capName = getCapProjectName(capProjectPath) || "cap-app";
           // Build service metadata structure
           serviceMetadataObj = {
             mobile: {
               api: "",
               app: capName,
-              destinations: [{
-                name: service.name.replace(/\./g, '_'),
-                relativeUrl: service.path || "/",
-                metadata: {
-                  odataContent: edmx,
+              destinations: [
+                {
+                  name: service.name.replace(/\./g, "_"),
+                  relativeUrl: service.path || "/",
+                  metadata: {
+                    odataContent: edmx,
+                  },
+                  type: "Mobile",
                 },
-                type: "Mobile",
-              }],
+              ],
             },
           };
 
@@ -592,11 +605,15 @@ export async function generateTemplateBasedMetadata(
             path.join(projectPath, ".service.metadata"),
             JSON.stringify(serviceMetadataObj, null, 2)
           );
-          console.error('[MDK MCP Server] Generated .service.metadata from CAP CDS models');
+          console.error(
+            "[MDK MCP Server] Generated .service.metadata from CAP CDS models"
+          );
         }
       }
-    } catch (capError) {
-      console.error('[MDK MCP Server] Failed to generate service metadata from CAP:', capError);
+    } catch {
+      console.error(
+        "[MDK MCP Server] Failed to generate service metadata from CAP"
+      );
     }
   }
   let destinations: Array<{
@@ -705,15 +722,15 @@ export async function generateTemplateBasedMetadata(
   const paths = projectPath.split(path.sep);
   oConfig.projectName = paths.pop();
   oConfig.target = paths.join(path.sep);
-  
+
   // Set type based on whether this is a CAP project
   if (isCap) {
     oConfig.type = "lcap-headless";
-    console.error('[MDK MCP Server] Using lcap-headless type for CAP project');
+    console.error("[MDK MCP Server] Using lcap-headless type for CAP project");
   } else {
     oConfig.type = "headless";
   }
-  
+
   oConfig.newEntity = entity;
 
   if (serviceMetadataObj || (appId && destinations.length > 0)) {
@@ -856,7 +873,9 @@ export async function getMobileServiceAppNameWithFallback(
     if (capProjectPath) {
       const capName = getCapProjectName(capProjectPath);
       if (capName) {
-        console.error(`[MDK MCP Server] Using CAP project name as app ID: ${capName}`);
+        console.error(
+          `[MDK MCP Server] Using CAP project name as app ID: ${capName}`
+        );
         return capName;
       }
     }
@@ -973,7 +992,9 @@ export async function getServiceDataWithFallback(
     // CAP project fallback: Use artifact-management to get EDMX from CDS models
     const capProjectPath = findCapProjectRoot(projectPath);
     if (capProjectPath) {
-      console.error('[MDK MCP Server] CAP project detected, using artifact-management for service data...');
+      console.error(
+        "[MDK MCP Server] CAP project detected, using artifact-management for service data..."
+      );
       try {
         const servicesInfo = await getServicesInfo(capProjectPath);
         if (servicesInfo.length > 0) {
@@ -982,7 +1003,7 @@ export async function getServiceDataWithFallback(
           const edmx = await getServiceEdmx(capProjectPath, service.name);
           if (edmx) {
             let serviceData = edmx;
-            const serviceName = service.name.replace(/\./g, '_');
+            const serviceName = service.name.replace(/\./g, "_");
 
             // If oDataEntitySets is undefined, set serviceData to empty
             if (oDataEntitySets === undefined) {
@@ -1003,8 +1024,8 @@ export async function getServiceDataWithFallback(
             return { serviceData, servicePath };
           }
         }
-      } catch (capError) {
-        console.error('[MDK MCP Server] CAP fallback failed:', capError);
+      } catch {
+        console.error("[MDK MCP Server] CAP fallback failed");
       }
     }
 
@@ -1156,12 +1177,8 @@ export async function getServerConfig(): Promise<{
     return {
       schemaVersion,
     };
-  } catch (error) {
-    console.error(
-      "Error reading server configuration from package.json:",
-      error
-    );
-    // Return default configuration on error
+  } catch {
+    // Default configuration if package.json cannot be read
     return {
       schemaVersion: "25.9",
     };
