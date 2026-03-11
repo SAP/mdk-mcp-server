@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",
-    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@sap-devx/app-studio-toolkit-types": "^2.11.0",
     "@sap-ux/btp-utils": "1.1.5",
     "@sap-ux/feature-toggle": "0.3.4",
@@ -72,8 +72,8 @@
     "tough-cookie": "^5.0.0",
     "qs": "6.14.1",
     "diff": "^8.0.3",
-    "tar": "^7.5.9",
-    "fast-xml-parser": "^5.3.7",
+    "tar": "^7.5.11",
+    "fast-xml-parser": "^5.3.8",
     "hono": "^4.12.4",
     "@hono/node-server": "^1.19.10"
   },
