@@ -132,14 +132,14 @@ export function getMobileServicesAdminAPI(
 export function refreshCFToken(): boolean {
   try {
     console.error("[MDK MCP Server] Refreshing CF OAuth token...");
-    
+
     // Execute cf oauth-token command
     // This command refreshes the token and updates ~/.cf/config.json
     execSync("cf oauth-token", {
       stdio: "pipe", // Suppress output
       encoding: "utf-8",
     });
-    
+
     console.error("[MDK MCP Server] CF OAuth token refreshed successfully");
     return true;
   } catch (error) {
