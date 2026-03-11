@@ -26,6 +26,7 @@ import {
   getMobileServicesAdminAPI,
   getCFAuthErrorMessage,
   isCFLoggedIn,
+  refreshCFToken,
 } from "./cf-auth.js";
 import { createMobileServicesClient } from "./mobile-services-client.js";
 import path from "path";
@@ -1805,6 +1806,14 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         const pathSuffix = (validatedArgs.pathSuffix as string) || "";
         const landscapeType =
           (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
+
+        // Refresh CF OAuth token before fetching metadata
+        const refreshSuccess = refreshCFToken();
+        if (!refreshSuccess) {
+          console.error(
+            "[MDK MCP Server] Warning: Failed to refresh CF token, continuing with existing token"
+          );
+        }
 
         // Get CF token and Mobile Services API URL
         const cfToken = await getCFToken();

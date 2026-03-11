@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { execSync } from "child_process";
 
 /**
  * Cloud Foundry configuration structure from ~/.cf/config.json
@@ -121,6 +122,34 @@ export function getMobileServicesAdminAPI(
   const spaceGuid = encodeURIComponent(config.SpaceFields.GUID);
 
   return `https://${subdomain}.cfapps.${host}/cockpit/v1/org/${orgGuid}/space/${spaceGuid}`;
+}
+
+/**
+ * Refresh CF token by calling `cf oauth-token`
+ * This updates the token in ~/.cf/config.json
+ * @returns true if token refresh was successful, false otherwise
+ */
+export function refreshCFToken(): boolean {
+  try {
+    console.error("[MDK MCP Server] Refreshing CF OAuth token...");
+    
+    // Execute cf oauth-token command
+    // This command refreshes the token and updates ~/.cf/config.json
+    execSync("cf oauth-token", {
+      stdio: "pipe", // Suppress output
+      encoding: "utf-8",
+    });
+    
+    console.error("[MDK MCP Server] CF OAuth token refreshed successfully");
+    return true;
+  } catch (error) {
+    console.error(
+      `[MDK MCP Server] Failed to refresh CF token: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+    return false;
+  }
 }
 
 /**
