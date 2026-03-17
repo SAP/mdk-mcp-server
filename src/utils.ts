@@ -295,7 +295,7 @@ function validateCommandArgs(command: string, args: string[]): void {
   // Validate each argument
   for (const arg of args) {
     // Check for command injection patterns
-    if (/[;&|`$(){}[\]<>]/.test(arg)) {
+    if (/[;&|`$(){}[\]<>\n]/.test(arg)) {
       throw new Error(
         `Invalid argument: '${arg}' contains potentially dangerous characters`
       );
