@@ -631,7 +631,15 @@ export async function generateTemplateBasedMetadata(
   const mdkToolsPath = await getModulePath("mdk-tools");
   const mdkGeneratorPath = await getModulePath("generator-mdk");
 
-  let script = `yo ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
+  // Find the yo executable - it should be in node_modules/.bin
+  const yoExecutable = path.join(
+    projectRoot,
+    "node_modules",
+    ".bin",
+    process.platform === "win32" ? "yo.cmd" : "yo"
+  );
+
+  let script = `${yoExecutable} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
 
   if (mdkToolsPath) {
     const mdkBinary = path.join(
