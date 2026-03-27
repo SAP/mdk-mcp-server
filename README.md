@@ -31,13 +31,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 1. Install [node.js 22.14.0](https://nodejs.org/dist/v22.14.0/).
 
-2. Install [Yeoman](https://yeoman.io/).
-
-    ```bash
-    npm i -g yo@4.3.1
-    ```
-
-3. For installing the MDK MCP server, we offer two options:
+2. For installing the MDK MCP server, we offer two options:
 
     a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
   
@@ -55,7 +49,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       npm i -g @sap/mdk-mcp-server@. 
       ```
 
-4. Configure your MCP client (AI agent) to connect to the server. Configuration will vary depending on the AI agent used.
+3. Configure your MCP client (AI agent) to connect to the server. Configuration will vary depending on the AI agent used.
 
     **Cline in VS Code:** Example using the [Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev). 
     
@@ -116,7 +110,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
     Once configured, your AI agent will have access to the MDK MCP server. Depending on your IDE settings, you may need to approve initial tool calls.
 
-5. **Create a Rule File**: To ensure your AI coding assistant uses the MCP servers appropriately for your project, define rules and guidelines in a file named [`AGENTS.md`](https://agents.md/). In the Cline extension for VS Code, click the **Manage Cline Rules & Workflows** icon below the prompt box, click **+** to create a new rule file (e.g., `AGENTS.md`) and add the above contents. 
+4. **Create a Rule File**: To ensure your AI coding assistant uses the MCP servers appropriately for your project, define rules and guidelines in a file named [`AGENTS.md`](https://agents.md/). In the Cline extension for VS Code, click the **Manage Cline Rules & Workflows** icon below the prompt box, click **+** to create a new rule file (e.g., `AGENTS.md`) and add the above contents. 
 
     Example rules to guide agent behavior:
 
@@ -126,7 +120,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - Don't change `.project.json` file.
     ```
 
-6. Verify your LLM Provider and AI model.
+5. Verify your LLM Provider and AI model.
  
     When you add Cline to VS Code, it uses Cline as the default API provider. You can choose a different LLM provider, such as SAP AI core.
     To add an SAP AI Core API provider in the Cline extension for VS Code, follow these steps:
@@ -134,7 +128,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       - Choose your API provider (such as SAP AI Core) and enter your details. See the instructions [here](https://docs.cline.bot/provider-config/sap-aicore#sap-ai-core) for detailed setup.
       - Select your preferred AI model.
 
-7. **Integration with SAP Mobile Services:** For creating a new MDK application, the MCP server uses the Cloud Foundry CLI and a `.service.metadata` file containing:
+6. **Integration with SAP Mobile Services:** For creating a new MDK application, the MCP server uses the Cloud Foundry CLI and a `.service.metadata` file containing:
     - The mobile application defined in the SAP Mobile Services instance. 
       - Mobile Services API Endpoint
       - Mobile Services App ID
@@ -156,7 +150,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       7. Select a destination.
       8. Click **Add App to Project**.
 
-8. Your environment is now ready for the MDK development with MCP server. You can now enter a prompt to:
+7. Your environment is now ready for the MDK development with MCP server. You can now enter a prompt to:
 
     - Generate a new MDK project displaying OData entities information.
     - Enhance an existing project adding additional UI controls on a given page.

@@ -43,6 +43,7 @@
     "i18next": "25.3.0",
     "os-name": "4.0.1",
     "xml2js": "^0.6.2",
+    "yo": "^4.3.1",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -68,7 +69,13 @@
     "tough-cookie": "^5.0.0",
     "qs": "6.14.1",
     "diff": "^8.0.3",
-    "tar": "^7.5.3"
+    "tar": "^7.5.11",
+    "fast-xml-parser": "^5.3.8",
+    "hono": "^4.12.4",
+    "@hono/node-server": "^1.19.10",
+    "cacache": "^19.0.1",
+    "@npmcli/map-workspaces": "^4.0.2",
+    "@npmcli/arborist": "^8.0.0"
   },
   "mdkConfig": {
     "schemaVersion": "25.9"
