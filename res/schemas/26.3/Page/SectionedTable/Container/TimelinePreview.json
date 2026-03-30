@@ -1,0 +1,91 @@
+{
+  "$id": "Page/SectionedTable/Container/TimelinePreview",
+  "title": "TimelinePreview",
+  "description": "The timeline preview cell provides the user with a glimpse of upcoming objects, events, or posts using a horizontal timeline sorted by chronological order. The objects in the timeline preview cell are read-only.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/HeaderFooterSeparator/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "Cells": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "Cell": {
+            "$ref": "Page/SectionedTable/Control/TimelinePreviewCell"
+          }
+        },
+        "type": "object"
+      },
+      "description": "Use for static Timeline Preview. Target is ignored."
+    },
+    "Cell": {
+      "$ref": "Page/SectionedTable/Control/TimelinePreviewCell"
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty. This only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Definition of the target binding to dynamically populate the collection. You can also set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items, you can't return Target definition."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "TimestampType": {
+      "description": "The date time format for timestamp in timeline preview cell.",
+      "type": "string",
+      "enum": [
+        {
+          "const": "MonthDayTime",
+          "description": "Month, day and time format in \"MMM dd hh:mm\". Does not support multiple lines."
+        },
+        {
+          "const": "MonthDay",
+          "description": "Month and day format in \"MMM dd\"."
+        },
+        {
+          "const": "Day",
+          "description": "Day format in \"dd\"."
+        },
+        {
+          "const": "Time",
+          "description": "Time format in \"hh:mm\"."
+        },
+        {
+          "const": "DayTime",
+          "description": "Day and time format in \"dd hh:mm\". Does not support multiple lines."
+        }
+      ],
+      "default": "DayTime"
+    },
+    "_Type": {
+      "const": "Section.Type.TimelinePreview"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

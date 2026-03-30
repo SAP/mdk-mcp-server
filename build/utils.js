@@ -492,7 +492,9 @@ export async function generateTemplateBasedMetadata(oDataEntitySetsString, templ
     // Prepare MDK generation command
     const mdkToolsPath = await getModulePath("mdk-tools");
     const mdkGeneratorPath = await getModulePath("generator-mdk");
-    let script = `yo ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
+    // Find the yo executable - it should be in node_modules/.bin
+    const yoExecutable = path.join(projectRoot, "node_modules", ".bin", process.platform === "win32" ? "yo.cmd" : "yo");
+    let script = `${yoExecutable} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
     if (mdkToolsPath) {
         const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js");
         script += ` --tool ${mdkBinary}`;
@@ -713,7 +715,7 @@ export async function getServerConfig() {
         }
         // Validate schema version if provided via command line
         if (schemaVersionFromArgs) {
-            const availableVersions = ["24.7", "24.11", "25.6", "25.9"];
+            const availableVersions = ["24.7", "24.11", "25.6", "25.9", "26.3"];
             if (!availableVersions.includes(schemaVersionFromArgs)) {
                 console.warn(`Warning: Invalid schema version '${schemaVersionFromArgs}' provided via command line. ` +
                     `Available versions: ${availableVersions.join(", ")}. Using default from package.json.`);
@@ -724,7 +726,7 @@ export async function getServerConfig() {
         const packageJsonPath = path.join(projectRoot, "package.json");
         const packageJson = (await safeJsonParse(fs.readFileSync(packageJsonPath, "utf-8"))); // eslint-disable-line @typescript-eslint/no-explicit-any
         // Use command line argument if valid, otherwise use package.json config
-        const schemaVersion = schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "25.9";
+        const schemaVersion = schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "26.3";
         return {
             schemaVersion,
         };
@@ -733,7 +735,7 @@ export async function getServerConfig() {
         console.error("Error reading server configuration from package.json:", error);
         // Return default configuration on error
         return {
-            schemaVersion: "25.9",
+            schemaVersion: "26.3",
         };
     }
 }
@@ -753,11 +755,11 @@ export async function getSchemaVersion(projectPath) {
                 return applicationConfig._SchemaVersion;
             }
         }
-        return "25.9";
+        return "26.3";
     }
     catch (error) {
         console.error("Error reading schema version from Application.app:", error);
         // Return server default value on error
-        return "25.9";
+        return "26.3";
     }
 }

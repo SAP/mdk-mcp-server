@@ -1,0 +1,29 @@
+{
+  "$id": "Action.Type.CrossAppNavigation",
+  "title": "CrossAppNavigation",
+  "description": "Define how to achieve cross application navigation from an MDK web app to a UI5 app or to another MDK web app on the Fiori Launchpad.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "SemanticObject": {
+      "description": "The semantic object declared in the manifest.json of the target application. For MDK web app, it is always `<ProjectName>_<ApplicationName>`.",
+      "type": "string"
+    },
+    "Action": {
+      "description": "The action declared in the manifest.json of the target application. For MDK web app, it is always `display`.",
+      "type": "string"
+    },
+    "Params": {
+      "description": "The additional parameters to be passed to the target application.",
+      "type": "object"
+    },
+    "_Type": {
+      "const": "Action.Type.CrossAppNavigation"
+    }
+  },
+  "required": [
+    "_Type",
+    "SemanticObject",
+    "Action"
+  ],
+  "type": "object"
+}

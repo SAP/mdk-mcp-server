@@ -1,0 +1,12 @@
+{
+  "$id": "definitions/PageOrRule",
+  "title": "PageOrRule",
+  "anyOf": [
+    {
+      "$ref": "definitions/Rule"
+    },
+    {
+      "$ref": "definitions/Page"
+    }
+  ]
+}

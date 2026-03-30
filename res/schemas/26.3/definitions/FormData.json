@@ -1,0 +1,28 @@
+{
+  "$id": "definitions/FormData",
+  "title": "FormData",
+  "properties": {
+    "Key": {
+      "type": "string",
+      "description": "The name of key value pair."
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "The key value"
+        },
+        {
+          "type": "object",
+          "description": "An object definition in accordance with the [IAttachment](../../apidoc/interfaces/iattachment.md) interface. Only the `content`, `contentType` and `urlString` properties are applicable here."
+        }
+      ],
+      "description": "The content of key value pair."
+    }
+  },
+  "required": [
+    "Key",
+    "Value"
+  ],
+  "type": "object"
+}

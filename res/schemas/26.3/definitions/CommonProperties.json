@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/CommonProperties",
+  "title": "CommonProperties",
+  "properties": {
+    "OnFailure": {
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnFailureLog": {
+      "$ref": "definitions/OnActionLog"
+    },
+    "OnInvalid": {
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnInvalidLog": {
+      "$ref": "definitions/OnActionLog"
+    },
+    "OnSuccess": {
+      "$ref": "definitions/ActionOrRule"
+    },
+    "OnSuccessLog": {
+      "$ref": "definitions/OnActionLog"
+    },
+    "ShowActivityIndicator": {
+      "type": "boolean"
+    },
+    "ValidationRule": {
+      "$ref": "definitions/Rule"
+    }
+  }
+}

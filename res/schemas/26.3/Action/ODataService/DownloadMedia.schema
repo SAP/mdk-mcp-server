@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.DownloadMedia",
+  "title": "ODataService DownloadMedia",
+  "description": "Download Media action is used to download the associated media stream of a Media Entity (an OData EntityType with HasStream=\"true\" attribute) to the device.\n\nThis action is not supported in ChangeSet.\n\nNote: This action cannot be used to download data stream of OData property with \"Edm.Stream\" type of an EntityType. Please use Action.Type.ODataService.DownloadStream instead.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "DownloadOptions": {
+      "$ref": "definitions/DownloadOptions",
+      "description": "Options for download media request"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.DownloadMedia"
+    }
+  },
+  "required": [
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,35 @@
+{
+  "$id": "definitions/ObjectCollectionLayout",
+  "title": "Layout",
+  "description": "The layout of ObjectCollection.",
+  "additionalProperties": {
+    "proxy": "ObjectCollectionProxy"
+  },
+  "properties": {
+    "NumberOfColumns": {
+      "type": "integer",
+      "default": 2,
+      "description": "The number of columns to be displayed. It is forced to 1 in compact mode, e.g. mobile portrait mode and certain smaller mobile landscape mode."
+    },
+    "MinimumInteritemSpacing": {
+      "type": "integer",
+      "description": "Minimum spaces between items in the collection."
+    },
+    "LayoutType": {
+      "type": "string",
+      "description": "HorizontalScroll type can be used in ObjectCollection extensions. iOS displays a scroll bar whereas Android has a blur effect to show scrollable collection.",
+      "enum": [
+        {
+          "const": "HorizontalScroll",
+          "description":"Horizontaly scroll"
+        },
+        {
+          "const": "Vertical",
+          "description": "Vertically scoll"
+        }
+      ],
+      "default": "Vertical"
+    }
+  },
+  "type": "object"
+}

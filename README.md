@@ -64,7 +64,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "25.9"]
+          "args": ["--schema-version", "26.3"]
         }
       }
     }
@@ -83,7 +83,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcp": {
         "mdk-mcp": {
           "type": "local",
-          "command": ["mdk-mcp", "--schema-version", "25.9"],
+          "command": ["mdk-mcp", "--schema-version", "26.3"],
           "enabled": true
         }
       }
@@ -101,7 +101,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcpServers": {
         "mdk-mcp": {
           "command": "mdk-mcp",
-          "args": ["--schema-version", "25.9"]
+          "args": ["--schema-version", "26.3"]
         }
       }
     }

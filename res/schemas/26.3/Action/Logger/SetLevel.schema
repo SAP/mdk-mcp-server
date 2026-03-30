@@ -1,0 +1,39 @@
+{
+  "$id": "Action/Logger/SetLevel",
+  "title": "SetLevel",
+  "description": "This action is used to set log level (Trace, Debug, Info, Warn or Error).\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Level": {
+      "enum": [
+        { "const": "Off",
+           "description": "Turn off logging."
+        },
+        { "const": "Error",
+           "description": "Enable Error logs. High level such as fatal errors."
+        },
+        { "const": "Warn",
+           "description": "Enable Warning logs. Medium level such as potential issues or non-fatal errors. It will include Error logs too."
+        },
+        { "const": "Info",
+           "description": "Enable Info logs. Low level such as information of lapsed event. It will include Error and Warning logs too."
+        },
+        { "const": "Debug",
+           "description": "Enable Debug logs. Very low level such as debugging information. It will include Error, Warning and Info logs too."
+        },
+        { "const": "Trace",
+           "description": "Enable Trace logs. Most verbose level such as tracing information. It will include Error, Warning, Info and Debug logs too. To enable logging of traces to the client log file, you must also enable `TracingEnabled` and configure the debug settings via the [BrandedSettings.json](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/custom-client/branding-custom-client.html#debugging-options) or [SetDebugSettings](../SetDebugSettings.schema.md) action. ``Note``: Traces will be tagged as `DEBUG` in the log file."
+        }
+      ],
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Action.Type.Logger.SetLevel"
+    }
+  },
+  "required": [
+    "Level",
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,94 @@
+{
+  "$id": "Page/SectionedTable/Common/Footer",
+  "title": "Footer",
+  "description": "This is a section bar control to add a footer bar to a compound and container control.",
+  "additionalProperties": {
+    "proxy": "SectionFooterProxy"
+  },
+  "properties": {
+    "AccessoryType": {
+      "enum": [
+        {
+          "const": "DisclosureIndicator",
+          "description": "A chevron-shaped control for presenting new content on iOS and web."
+        },
+        {
+          "const": "None",
+          "description": "No accessory view."
+        }
+      ],
+      "type": "string",
+      "description": "Optional accessory icon to be displayed in the cell. Applicable only for iOS and web.",
+      "default": "None"
+    },
+    "AttributeLabel": {
+      "type": "string",
+      "description": "Text label for the attribute content. Not supported in 'Help' and 'Title' style footers."
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Text label for the caption content."
+    },
+    "FooterStyle": {
+      "enum": [
+        {
+          "const": "Attribute",
+          "description": "Displays both the Caption text and Attribute Label of the footer on Android, iOS and Web. The footer is clickable for this style."
+        },
+        {
+          "const": "Help",
+          "description": "Displays only the Caption text of the footer on Android, iOS and Web. The Caption will be centred on the footer. The footer is not clickable for this style."
+        },
+        {
+          "const": "Title",
+          "description": "Displays only the Caption text of the footer on Android, iOS and Web. The footer is clickable for this style."
+        }
+      ],
+      "type": "string",
+      "default": "Title",
+      "description": "A style to be applied on the footer control."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to be performed when the event is triggered. Not supported in 'Help' style footers. The ClientAPI object to be received in rule function is [SectionProxy](../../../../apidoc/classes/sectionproxy.md)."
+    },
+    "UseBottomPadding": {
+      "type": "boolean",
+      "description": "For iOS devices, this property shows or hides the bottom padding of the section footer (gray separator).\n\nFor Android devices, this property is not applicable, as there is no gray separator after the footer.",
+      "default": true
+    },
+    "Visible": {
+      "type": "boolean",
+      "description": "Shows or hides the section footer.",
+      "default": true
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for footer.",
+      "properties": {
+        "Footer": {
+          "type": "string",
+          "$ref": "Styles/HeaderFooterClass",
+          "description": "The string value is a style class name of `Footer`. It is used to set the background color of the Section Footer."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `Caption`. It is used to style the `Caption` text on the Section Footer."
+        },
+        "AttributeLabel": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "The string value is a style class name of `AttributeLabel`. It is used to style the `AttributeLabel` text on the Section Footer."
+        }
+      }
+    },
+    "_Type": {
+      "const": "SectionCommon.Type.Footer"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

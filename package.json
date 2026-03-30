@@ -1,6 +1,6 @@
 {
   "name": "@sap/mdk-mcp-server",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "Apache-2.0",
   "description": "Model Context Protocol (MCP) server for AI-assisted development of MDK applications.",
   "type": "module",
@@ -79,6 +79,6 @@
     "@npmcli/arborist": "^8.0.0"
   },
   "mdkConfig": {
-    "schemaVersion": "25.9"
+    "schemaVersion": "26.3"
   }
 }

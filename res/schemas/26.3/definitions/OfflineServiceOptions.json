@@ -1,0 +1,17 @@
+{
+    "$id": "definitions/OfflineServiceOptions",
+    "title": "OfflineServiceOptions",
+    "type": "object",
+    "properties": {
+        "supportsBind": {
+            "type": "boolean",
+            "description": "Whether or not the service supports bind operations",
+            "default": false
+        },
+        "supportsPatch": {
+            "type": "boolean",
+            "description": "Whether or not the service supports OData PATCH requests (or MERGE for OData versions < 3.0).",
+            "default": true
+        }
+    }
+}

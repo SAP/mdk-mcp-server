@@ -1,0 +1,90 @@
+{
+  "$id": "Page/NavigationDrawer/SideDrawer",
+  "title": "SideDrawer",
+  "description": "A global navigation menu which allows for lateral navigation across various pages in the app. Only one page can contain this control and this page can be added as the 'MainPage' in Application.app file to enable the side drawer. The first item in the first section of this control will define the landing page of the application.",
+  "additionalProperties": {
+    "proxy": "SideDrawerControlProxy"  
+  },
+  "properties": {
+    "_Type": {
+      "const": "Control.Type.SideDrawer"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "DrawerButton": {
+      "description": "The image to be shown for side drawer button on action bar. If not provided, hamburger icon will be showed.",
+      "$ref": "definitions/Image"
+    },
+    "ClearHistory": {
+      "description": "A flag to indicate if the history of navigation within a page should be cleared when another destination on the side drawer is selected.",
+      "type": "boolean",
+      "default": false
+    },
+    "AlwaysShowDrawerButton": {
+      "description": "A flag to indicate if the side drawer button will be shown on every page. If the flag is enabled then in iOS the back navigation button will be shown after the side drawer button, and in Android the back navigation button will not be shown and the system back button has to be used for navigating back.",
+      "type": "boolean",
+      "default": false
+    },
+    "Header": {
+      "type": "object",
+      "properties": {
+        "Headline": {
+          "description": "A headline label in the header view.",
+          "type": "string"
+        },
+        "SubHeadline": {
+          "description": "A sub-headline label in the header view.",
+          "type": "string"
+        },
+        "Icon": {
+          "description": "Image to be displayed in the header view.",
+          "$ref": "definitions/Image"
+        },
+        "Alignment": {
+          "type": "string",
+          "enum": [ "Left", "Right", "Center" ],
+          "default": "Center(iOS), Left(Android)",
+          "description": "Choose one of the options based on how you want to align the header content."
+        },
+        "IconIsCircular": {
+          "description": "If the value is True, the icon is displayed in a circular shape.",
+          "type": "boolean",
+          "default": false
+        },
+        "DisableIconText": {
+          "description": "A flag to indicate if the text-based avatar image should be displayed in the absence of icon. Avatar image displays characters of headline.",
+          "type": "boolean",
+          "default": false
+        },
+        "OnPress": {
+          "description": "Action/Rule to be triggered when the header is pressed.",
+          "$ref": "definitions/ActionOrRule"
+        },
+        "Target": {
+          "$ref": "definitions/Target",
+          "description": "Only the first record of any entity set returned by the target will be used."
+        }
+      }
+    },
+    "Sections": {
+      "type": "array",
+      "description": "Navigation items are logically grouped into sections. Each section contains a list of grouped pages.",
+      "items": {
+        "$ref": "Page/NavigationDrawer/SideDrawerSection"
+      }
+    },
+    "Styles": {
+      "$ref": "definitions/NavigationDrawerStyle"
+    },
+    "DataSubscriptions": {
+      "$ref": "definitions/DataSubscriptions",
+      "description": "Array of data change events to subscribe to."
+    }
+  },
+  "required": [
+    "_Type",
+    "Sections"
+  ],
+  "type": "object"
+}

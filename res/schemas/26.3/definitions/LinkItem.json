@@ -1,0 +1,19 @@
+{
+  "$id": "definitions/LinkItem",
+  "title": "LinkItem",
+  "properties": {
+    "Property": {
+      "type": "string",
+      "description": "The Navigation Property name in the entity to be updated"
+    },
+    "Target": {
+      "$ref": "definitions/Target",
+      "description": "The reference to an entity that will be linked to the navigation property"
+    }
+  },
+  "required": [
+    "Property",
+    "Target"
+  ],
+  "type": "object"
+}

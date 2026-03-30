@@ -1,0 +1,26 @@
+{
+  "$id": "definitions/CallFunctionTarget",
+  "title": "CallFunctionTarget",
+  "anyOf": [
+    {
+      "properties": {
+        "Function": {
+          "$ref": "definitions/CallFunction",
+          "description": "Defintion of the OData function/action imports to be executed"
+        },
+        "Service": {
+          "$ref": "definitions/Service",
+          "description": "The target OData Service"
+        }
+      },
+      "required": [
+        "Function",
+        "Service"
+      ],
+      "type": "object"
+    },
+    {
+      "$ref": "definitions/Bindable"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "$id": "Page/FormCell/Section",
+  "title": "Section",
+  "description": "Section acts as a container for container items. You can add multiple section containers to a page to group different controls.",
+  "additionalProperties": {
+    "proxy": "FormCellContainerProxy"  
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Displays a caption label at the header of the section."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Controls": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "Page/FormCell/Attachment"
+          },
+          {
+            "$ref": "Page/FormCell/Button"
+          },
+          {
+            "$ref": "Page/FormCell/DatePicker"
+          },
+          {
+            "$ref": "Page/FormCell/DurationPicker"
+          },
+          {
+            "$ref": "Page/FormCell/Filter"
+          },
+          {
+            "$ref": "Page/FormCell/ListPicker"
+          },
+          {
+            "$ref": "Page/FormCell/Note"
+          },
+          {
+            "$ref": "Page/FormCell/Segmented"
+          },
+          {
+            "$ref": "Page/FormCell/SignatureCapture"
+          },
+          {
+            "$ref": "Page/FormCell/SimpleProperty"
+          },
+          {
+            "$ref": "Page/FormCell/Sorter"
+          },
+          {
+            "$ref": "Page/FormCell/Switch"
+          },
+          {
+            "$ref": "Page/FormCell/Title"
+          },
+          {
+            "$ref": "Page/FormCell/Extension"
+          }
+        ]
+      },
+      "type": "array",
+      "description": "The controls in the section container."
+    }
+  },
+  "type": "object"
+}
