@@ -1,0 +1,124 @@
+{
+  "$id": "Page/SectionedTable/Container/Image",
+  "title": "Image",
+  "description": "Displays image according to defined configurations, e.g. width, height, alignment, and paddings.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "Image to be displayed within the section. Supports rendering of both locally saved images and images from Web (https only). PDF image is not supported on WebClient."
+    },
+    "Width": {
+      "type": "integer",
+      "description": "The height of the image in Device Independent Pixel. The DIP value will be converted to pixels of the platform (based on scale and density for iOS and Android respectively), while for Web, DIP value is same as pixels. If `Width` is not set, the layout would be adjusted based on the width of the screen."
+    },
+    "Height": {
+      "type": "integer",
+      "description": "The width of the image in Device Independent Pixel. The DIP value will be converted to pixels of the platform (based on scale and density for iOS and Android respectively), while for Web, DIP value is same as pixels.\nIf `Height` is not set and the `ContentMode` is able to scale, the image view size would be adjusted to the `Width` / screen width while preserving the aspect ratio of the image.\nIf `Height` is not set and the `ContentMode` is not able to scale, the image view height would be based on the height of the image."
+    },
+    "Alignment": {
+      "type": "string",
+      "enum": [ "Left", "Right", "Center" ],
+      "default": "Center",
+      "description": "Choose one of the options based on how you want to align the image."
+    },
+    "ContentMode": {
+      "type": "string",
+      "enum": [
+        { "const": "ScaleToFill", "description": "iOS, Android (FIT_XY), and Web (fill)." },
+        { "const": "ScaleAspectFit", "description": "iOS, Android (FIT_CENTER), and Web (contain)." },
+        { "const": "ScaleAspectFill", "description": "iOS, Android (CENTER_CROP), and Web (cover)." },
+        { "const": "Redraw", "description": "iOS only." },
+        { "const": "Center", "description": "iOS, Android (CENTER), and Web (none)." },
+        { "const": "Top", "description": "iOS only." },
+        { "const": "Bottom", "description": "iOS only." },
+        { "const": "Left", "description": "iOS only." },
+        { "const": "Right", "description": "iOS only." },
+        { "const": "TopLeft", "description": "iOS only." },
+        { "const": "TopRight", "description": "iOS only." },
+        { "const": "BottomLeft", "description": "iOS only." },
+        { "const": "BottomRight", "description": "iOS only." },
+        { "const": "CenterInside", "description": "Android (CENTER_INSIDE) and Web (scale-down)." },
+        { "const": "FitEnd", "description": "Android only (FIT_END)." },
+        { "const": "FitStart", "description": "Android only (FIT_START)." },
+        { "const": "Matrix", "description": "Android only (MATRIX)." }
+      ],
+      "default": "ScaleAspectFit",
+      "description": "Content mode or scale type of the image view. Please refer to UIView.ContentMode (iOS), ImageView.ScaleType (Android), and CSS object-fit (Web) for more details. Note: For font-size styling on font-icon image to be applicable, `ContentMode` has to be set as `Center` or undefined."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the image is pressed."
+    },
+    "PaddingTop": {
+      "type": "integer",
+      "description": "Top padding for the section"
+    },
+    "PaddingBottom": {
+      "type": "integer",
+      "description": "Bottom padding for the section"
+    },
+    "PaddingLeft": {
+      "type": "integer",
+      "description": "Left padding for the section"
+    },
+    "PaddingRight": {
+      "type": "integer",
+      "description": "Right padding for the section"
+    },
+    "Styles": {
+      "properties": {
+        "ImageBackgroundColor": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `ImageBackgroundColor`. This property is deprecated. Please use `background-color` in Image style instead."
+        },
+        "BackgroundColor": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `BackgroundColor`."
+        },
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Image`. The CSS property `background-color` is supported for all image types, while `font-size` and `color` are additionally supported for SAP icon and font icon types. Note: For `Image`, if background-color styling is applied, `ImageBackgroundColor` will be ignored."
+        }
+      },
+      "type": "object",
+      "description": "A style to be applied to the Image section."
+    },
+    "_Type": {
+      "const": "Section.Type.Image"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,12 @@
+{
+  "$id": "definitions/LinkQueryTarget",
+  "title": "LinkQueryTarget",
+  "anyOf": [
+    {
+      "$ref": "definitions/QueryTarget"
+    },
+    {
+      "$ref": "definitions/LinkTarget"
+    }
+  ]
+}

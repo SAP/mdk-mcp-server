@@ -1,0 +1,6 @@
+{
+  "$id": "definitions/CSDLOptions",
+  "title": "CSDLOptions",
+  "description": "Options to be passed to the OData CSDL Parser",
+  "type": "array"
+}

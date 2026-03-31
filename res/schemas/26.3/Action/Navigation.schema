@@ -1,0 +1,71 @@
+{
+  "$id": "Action.Type.Navigation",
+  "title": "Navigation",
+  "description": "Define how pages appear and enable a user to navigate through your application. If a modal page is set to full screen, all pages opened from that modal page will also appear in full screen. When you close a full-screen modal page, all full-screen modal pages in the background are closed automatically and the parent page appears.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "ModalPage": {
+      "description": "Indicates if a page is modal.",
+      "type": "boolean",
+      "default": false
+    },
+    "ModalPageFullscreen": {
+      "description": "If true, the modal page appears in full screen. Note: By design, modal pages always appear in full screen on mobile devices.",
+      "type": "boolean",
+      "default": false
+    },
+    "PageToOpen": {
+      "description": "Page/Rule to navigate to, references a .page file.",
+      "$ref": "definitions/PageOrRule"
+    },
+    "PageMetadata": {
+      "description": "You can assign a rule to this property and return a Page definition in JSON format. The definition format is the same as what you will get in a .page file. This allows you to dynamically build a page definition and return it from the rule to this property. It will take precedence over the `PageToOpen`.\n\nThe properties defined in [Page](../Page.schema.md) are also applicable to it.",
+      "type": [
+        "string",
+        "object"
+      ]
+    },
+    "BackStackVisible": {
+      "description": "If set to true, MDK records the user navigation in the backstack, allowing the users to navigate back to a page when they press the back button. If set to false, the user navigation will not be recorded, and the user won’t have an option to navigate back to the previously accessed subpages.",
+      "type": "boolean",
+      "default": true
+    },
+    "ClearHistory": {
+      "description": "If set to true, the navigation backstack will be cleared, and the back button will be disabled.",
+      "type": "boolean",
+      "default": false
+    },
+    "OuterNavigation": {
+      "description": "Deprecated. Use [`NavigationType`](./Navigation.schema.md#navigationtype) instead.\n\nSpecific for navigation triggered from within a tab page, no effect on normal page. If set to true, user would be navigated to the specified page at outer level (parent page with the bottom navigation control). If set to false, user would be navigated to the specified page at tab level / within the tab content.",
+      "type": "boolean",
+      "default": false
+    },
+    "Transition": {
+      "description": "Optional transition effect for custom page navigations. It is only applicable for page-to-page navigation (including within modal dialog). It’s not applicable for opening and closing of the modal dialog and for tab switching in [BottomNavigation](../Page/TabControl/BottomNavigation/BottomNavigation.schema.md).",
+      "$ref": "definitions/Transition"
+    },
+    "NavigationType": {
+      "description": "To trigger navigation based on the defined type.",
+      "default": "Inner",
+      "enum": [ {
+          "const": "Inner",
+          "description": "Navigation to be triggered on the current page level. For FlexibleColumnLayout, it will be triggered on current column. This is default value for all the scenarios except when it is triggered within the FlexibleColumnLayout."
+        }, {
+          "const": "Outer",
+          "description": "Navigation to be triggered on the parent page level. This aspect varies for the pages within BottomNavigation, Tabs and FlexibleColumnLayout."
+        }, {
+          "const": "Cross",
+          "description": "Navigation to be triggered on next column. This aspect varies for the pages within FlexibleColumnLayout. This is the default value if the action is triggered within the FlexibleColumnLayout."
+        }
+      ],
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Action.Type.Navigation"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

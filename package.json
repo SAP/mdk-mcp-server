@@ -79,6 +79,6 @@
     "@npmcli/arborist": "^8.0.0"
   },
   "mdkConfig": {
-    "schemaVersion": "25.9"
+    "schemaVersion": "26.3"
   }
 }

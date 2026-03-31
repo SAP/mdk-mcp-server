@@ -1,0 +1,74 @@
+{
+  "$id": "Page/SectionedTable/Control/SimplePropertyCell",
+  "title": "SimplePropertyCell",
+  "additionalProperties": {
+    "proxy": "SimplePropertyCellProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only valid for static section, will be ignored in dynamic sections."
+    },
+    "AccessoryType": {
+      "enum": [
+        {
+            "const": "Checkmark",
+            "description": "A checkmark icon."
+        },
+        {
+            "const": "DetailButton",
+            "description": "An information icon."
+        },
+        {
+            "const": "DetailDisclosureButton",
+            "description": "An information icon and a disclosure (chevron) control on iOS and web. An information icon only on Android."
+        },
+        {
+            "const": "DisclosureIndicator",
+            "description": "A chevron-shaped control for presenting new content on iOS and web. Display as blank on Android."
+        },
+        {
+            "const": "None",
+            "description": "No accessory view."
+        }
+      ],
+      "type": "string",
+      "description": "Optional accessory icon to be displayed in the cell. If both `AccessoryType` and `ProgressIndicator` are set, only the `ProgressIndicator` is shown."
+    },
+    "KeyName": {
+      "description": "The key name of the cell.",
+      "type": "string"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the cell is pressed."
+    },
+    "Value": {
+      "description": "The value of the cell.",
+      "type": "string"
+    },
+    "Styles": {
+      "properties": {
+        "KeyName": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `KeyName`."
+        },
+        "Value": {
+          "type": "string",
+          "$ref": "Styles/ValueClass",
+          "description": "The string value is a style class name of `Value`."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "SimplePropertyCollection.Type.Cell"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

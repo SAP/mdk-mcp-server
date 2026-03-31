@@ -1,0 +1,55 @@
+{
+  "$id": "Page/SectionedTable/Container/ButtonTable",
+  "title": "ButtonTable",
+  "description": "Button Table is a container that can display one or more buttons on a section page. You can include Button Item controls in a Button Table to fire actions when pressed.",
+  "additionalProperties": {
+    "proxy": "ButtonTableProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "Buttons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "Page/SectionedTable/Control/ButtonItem"
+      }
+    },
+    "Layout": {
+      "$ref": "definitions/ButtonLayout",
+      "description": "The layout of buttons."
+    },
+    "Footer": {
+      "$ref": "../Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Type": {
+      "const": "Section.Type.ButtonTable"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type"
+  ]
+}

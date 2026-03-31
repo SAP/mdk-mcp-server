@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.UpdateEntity",
+  "title": "ODataService UpdateEntity",
+  "description": "UpdateEntity action is used to update an existing entity in the specified OData service. You can also delete or update links to its navigation properties.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "anyOf": [
+    {
+      "required": [
+        "Target",
+        "_Type"
+      ]
+    },
+    {
+      "required": [
+        "Target",
+        "UpdateLinks",
+        "_Type"
+      ]
+    },
+    {
+      "required": [
+        "DeleteLinks",
+        "Target",
+        "_Type"
+      ]
+    }
+  ],
+  "properties": {
+    "DeleteLinks": {
+      "description": "List of navigation properties link to be deleted.",
+      "items": {
+        "$ref": "definitions/LinkItem"
+      },
+      "type": "array"
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "Properties": {
+      "type": "object",
+      "description": "A list of the target entity's property names and values in key/value pairs format. Complex and Binary property types are supported."
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "UpdateLinks": {
+      "description": "List of navigation properties link to be updated.",
+      "items": {
+        "$ref": "definitions/LinkItem"
+      },
+      "type": "array"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.UpdateEntity"
+    }
+  },
+  "type": "object"
+}

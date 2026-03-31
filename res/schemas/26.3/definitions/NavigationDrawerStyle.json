@@ -1,0 +1,59 @@
+{
+  "$id": "definitions/NavigationDrawerStyle",
+  "title": "NavigationDrawerStyle",
+  "properties": {
+    "DrawerBackground": {
+      "type": "string",
+      "description": "Use this to style the background of the whole drawer."
+    },
+    "DrawerButton": {
+      "type": "string",
+      "description": "The string value is a [style class](../Styles/ImageClass.style.md) name for drawer button in side drawer."
+    },
+    "HeaderBackground": {
+      "type": "string",
+      "description": "Use this to style the background of the header view."
+    },
+    "HeaderHeadline": {
+      "type": "string",
+      "description": "Use this to style the text view of headline."
+    },
+    "HeaderSubHeadline": {
+      "type": "string",
+      "description": "Use this to style the text view of subheadline."
+    },
+    "HeaderSeparator": {
+      "type": "string",
+      "description": "Use this to style the separator dividing header and menu area. Can also remove by setting border-bottom-width to 0."
+    },
+    "HeaderIcon": {
+      "type": "string",
+      "description": "The string value is a [style class](../Styles/ImageClass.style.md) name for header icon in side drawer."
+    },
+    "SectionCaption": {
+      "type": "string",
+      "description": "Use this to style the text view of section caption.\n\nThis style can be overridden at section level."
+    },
+    "SectionSeparator": {
+      "type": "string",
+      "description": "Use this to style the separators dividing sections. Can also remove by setting border-bottom-width to 0. \n\nThis style can be overridden at section level."
+    }, 
+    "SectionItemActive": {
+      "type": "string",
+      "description": "Use this to style menu item which is currently selected.\n\nThis style can be overridden at section and item level."
+    },
+    "SectionItemOnPress": {
+      "type": "string",
+      "description": "Use this to style menu item when it is touched upon.\n\nThis style can be overridden at section and item level."
+    },
+    "SectionItemInactive": {
+      "type": "string",
+      "description": "Use this to style all the menu items that are not selected.\n\nThis style can be overridden at section and item level."
+    },
+    "SectionItemImage": {
+      "type": "string",
+      "description": "The string value is a [style class](../Styles/ImageClass.style.md) name in menu item."
+    }
+  },
+  "type": "object"
+}

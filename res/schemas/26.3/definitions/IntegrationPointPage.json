@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointPage",
+  "title": "IntegrationPointPage",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Page"
+    },
+    "Target": {
+      "$ref": "definitions/Page"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

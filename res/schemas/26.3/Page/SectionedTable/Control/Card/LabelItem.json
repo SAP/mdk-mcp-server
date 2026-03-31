@@ -1,0 +1,50 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/LabelItem",
+  "title": "LabelItem",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardHeaderExtendedHeaderLabelProxy"
+  },
+  "properties": {
+    "Text": {
+      "type": "string"
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The image to be displayed along with the title."
+    },
+    "ImagePosition": {
+      "type": "string",
+      "enum": [ "Leading", "Trailing" ],
+      "default": "Trailing",
+      "description": "Position of the image to be displayed along with the title"
+    },
+    "Style": {
+      "type": "string",
+      "$ref": "Styles/TextClass",
+      "description": "The string value is a style class name for `Text`. If font-color is applied to `Text`, the property will also apply to `Image`."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Style to be applied on the LabelItem.",
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `Image`."
+        },
+        "Text": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Text`."
+        }
+      }
+    },
+    "_Type": {
+      "const": "CardHeaderExtendedHeader.Type.Label"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

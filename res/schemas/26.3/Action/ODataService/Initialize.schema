@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.Initialize",
+  "title": "ODataService Initialize",
+  "description": "ODataService Initialize action is used to perform opening and, if needed, the initial creation of offline stores and download of data from the target OData service.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "DefiningRequests": {
+      "items": {
+        "$ref": "definitions/DefiningRequest"
+      },
+      "type": "array",
+      "description": "List of defining requests. A defining request is an OData read request that the Offline OData will use to retrieves data from the target OData Service and populate in the local offline database"
+    },
+    "ProgressText":{
+      "$ref": "definitions/ProgressText",
+      "description": "ProgressText is a set of customizable text for each state to replace the progress indicator text shown during Initialize Offline OData. Specifically for ProgressText.DownloadingFile and ProgressText.DownloadingData properties, user may define dynamic parameter of {0} and/or {1} to display the size and/or size unit. When a state is not specified for customization, default text would be used."
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.Initialize"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

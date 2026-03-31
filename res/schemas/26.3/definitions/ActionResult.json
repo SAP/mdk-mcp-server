@@ -1,0 +1,13 @@
+{
+  "$id": "definitions/ActionResult",
+  "title": "ActionResult",
+  "properties": {
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Name"
+  ],
+  "type": "object"
+}

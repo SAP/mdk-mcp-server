@@ -1,0 +1,20 @@
+{
+  "$id": "Action.Type.Logout",
+  "title": "Logout",
+  "description": "Define an action that allows the user to log out of the application. Once the user is logged out, no other actions are possible in that session and the welcome screen appears on the application. All stored credentials such as passcode or Touch ID, authentication token, Offline Store, and so on are cleared from the device. However, depending on the value of `SkipReset` flag it may either just log out and show the Sign In screen or else clears everything as previously mentioned. Also, success or failure event handlers are not applicable to the this action.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.Logout"
+    },
+    "SkipReset": {
+       "description": "If set to true, it will skip reset of application and nothing is cleared from the device. User is simply logged out in this case and taken to Sign In screen. In case passcode policy is not set(along with `SkipReset` = true) this action will be a no-op.\n\nIf set to false, it will reset the application and clear all the data from the device. User is then taken to welcome screen.",
+       "type": "boolean",
+       "default": false
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+{
+  "$id": "definitions/ServiceOnlyTarget",
+  "title": "ServiceOnlyTarget",
+  "anyOf": [
+    {
+      "properties": {
+        "Service": {
+          "$ref": "definitions/Service",
+          "description": "The reference to the target service"
+        }
+      },
+      "required": [
+        "Service"
+      ],
+      "type": "object"
+    },
+    {
+      "$ref": "definitions/Bindable"
+    }
+  ]
+}
