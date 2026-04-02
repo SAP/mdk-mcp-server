@@ -189,11 +189,13 @@ For more information about how to contribute, the project structure, as well as 
 
 ## Telemetry
 
-You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the MDK MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.
+You can enable or disable the collection of analytics. By default, non-personally identifiable information is collected to help understand how you use the product and improve the MDK MCP Server. If you want to opt-out, there are two ways to disable telemetry:
 
-Method 1: Configuration File
-Create or change the file ~/.fioritools/telemetrysettings.json:
+### Method 1: Configuration File
 
+Create or change the file `~/.fioritools/telemetrysettings.json`:
+
+```json
 {
   "telemetrysettings": {
     "telemetrySetting": {
@@ -201,13 +203,19 @@ Create or change the file ~/.fioritools/telemetrysettings.json:
     }
   }
 }
-Set enableTelemetry to false to disable telemetry collection.
+```
 
-Method 2: Environment Variable
-Set the environment variable SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY to true:
+Set `enableTelemetry` to `false` to disable telemetry collection.
 
+### Method 2: Environment Variable
+
+Set the environment variable `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` to `true`:
+
+```bash
 export SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true
-Setting this environment variable will disable the telemetry client.
+```
+
+Setting this environment variable disables the telemetry client.
 
 ## Security / Disclosure
 
