@@ -1,0 +1,22 @@
+{
+  "$id": "definitions/LinkTarget",
+  "title": "LinkTarget",
+  "allOf": [
+    {
+      "$ref": "definitions/Target"
+    },
+    {
+      "properties": {
+        "ReadLink": {
+          "type": "string",
+          "description": "Use `ReadLink` for all needed OData actions except UndoPendingChanges OData action. Can't use together with `EditLink`."
+        },
+        "EditLink": {
+          "type": "string",
+          "description": "Use `EditLink` for UndoPendingChanges OData action only. Can't use together with `ReadLink`."
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

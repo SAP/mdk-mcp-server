@@ -1,0 +1,26 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/BodyContent",
+  "title": "BodyContent",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardBodyContentProxy"  
+  },
+  "anyOf": [
+    {
+      "$ref": "Page/SectionedTable/Control/Card/Body/Text",
+      "description": "Text to be displayed in `Body`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/Card/Body/LabelBar",
+      "description": "Label bar to be displayed in `Body`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/Card/Body/Space",
+      "description": "Space to be displayed in `Body`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/Card/Body/Separator",
+      "description": "Separator to be displayed in `Body`."
+    }
+  ]
+}

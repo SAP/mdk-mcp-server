@@ -1,0 +1,24 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Body/Separator",
+  "title": "Separator",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardBodyContentSeparatorProxy"  
+  },
+  "properties": {
+    "Style": {
+      "type": "string",
+      "$ref": "Styles/SeparatorClass",
+      "description": "The string value is a style class name for `Separator`."
+    },
+    "_Type": {
+      "const": "CardBodyContent.Type.Separator"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$id": "definitions/ProgressText",
+  "title": "ProgressText",
+  "properties": {
+    "Opening": {
+      "type": "string"
+    },
+    "Initializing": {
+      "type": "string"
+    },
+    "InitialCommunication": {
+      "type": "string"
+    },
+    "StartingDownloadingFile": {
+      "type": "string"
+    },
+    "DownloadingFile": {
+      "type": "string"
+    },
+    "StartingDownloadingData": {
+      "type": "string"
+    },
+    "DownloadingData": {
+      "type": "string"
+    },
+    "Opened": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

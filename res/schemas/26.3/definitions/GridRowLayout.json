@@ -1,0 +1,26 @@
+{
+    "$id": "definitions/GridRowLayout",
+    "title": "GridRowLayout",
+    "description": "The layout of columns in a Grid Table View's Rows or Header.",
+    "type": "object",
+    "properties": {
+      "ColumnWidth": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "description": "Array of column widths. In iOS the units for this value are in logical points.\n\n-1 means auto-size. At most one column can be set to -1.\n\nOnly `ColumnWidth` or `ColumnWidthPercentage` is allowed at a time."
+      },
+      "ColumnWidthPercentage": {
+        "type": "array",
+        "description": "Array of column width percentages as fractions of 1. \n\n-1 means auto-size. At most one column can be set to -1.\n\nOnly `ColumnWidth` or `ColumnWidthPercentage` is allowed at a time.",
+        "items": {
+          "type": "number"
+        }
+      },
+      "Spacing": {
+        "type": "number",
+        "description": "The spacing in between columns. In iOS, the units for this value are in logical points."
+      }
+    }
+  }

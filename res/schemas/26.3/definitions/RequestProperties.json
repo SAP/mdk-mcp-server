@@ -1,0 +1,47 @@
+{
+  "$id": "definitions/RequestProperties",
+  "title": "RequestProperties",
+  "properties": {
+    "Method": {
+      "type": "string",
+      "description": "The HTTP method for the request to REST service. Supported value for methods are: GET, HEAD, POST, PUT, DELETE, PATCH and OPTIONS."
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to REST service."
+    },
+    "Body": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "Request body in text string"
+        },
+        {
+          "type": "string",
+          "contentEncoding": "binary",
+          "description": "Raw binary data of an attachment content"
+        },
+        {
+          "type": "object",
+          "description": "Request body in JSON format"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "definitions/FormData"
+          }
+        }
+      ],
+      "description": "An optional body containing data associated with the request to REST service."
+    },
+    "FetchCSRF": {
+      "type": "boolean",
+      "description": "Determine whether to obtain a CSRF token and add the CSRF Token header before sending an HTTP request if the request method is POST, PUT, PATCH or DELETE.",
+      "default": true
+    }
+  },
+  "required": [
+    "Method"
+  ],
+  "type": "object"
+}

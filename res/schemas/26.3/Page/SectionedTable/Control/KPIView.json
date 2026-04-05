@@ -1,0 +1,59 @@
+{
+  "$id": "Page/SectionedTable/Control/KPIView",
+  "title": "KPIView",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Label": {
+      "type": "string",
+      "description": "This is an optional label, displayed beneath the KPI components."
+    },
+    "RightMetric": {
+      "type": "string",
+      "description": "The KPI metric value displays at the right side."
+    },
+    "RightUnit": {
+      "type": "string",
+      "description": "The KPI unit value displays at the right side."
+    },
+    "LeftMetric": {
+      "type": "string",
+      "description": "The KPI metric value displays at the left side."
+    },
+    "LeftUnit": {
+      "type": "string",
+      "description": "The KPI unit value displays at the left side."
+    },
+    "Styles": {
+      "type": "object",
+      "properties": {
+          "Label": {
+            "type": "string",
+            "$ref": "Styles/TextClass",
+            "description": "The string value is a style class name of `Label`."
+          },
+          "RightMetric": {
+            "type": "string",
+            "$ref": "Styles/TextClass",
+            "description": "The string value is a style class name of `RightMetric`. On the Android platform, the `RightMetric` must be defined for displaying the Metric view."
+          },
+          "RightUnit": {
+            "type": "string",
+            "$ref": "Styles/TextClass",
+            "description": "The string value is a style class name of `RightUnit`."
+          },
+          "LeftMetric": {
+            "type": "string",
+            "$ref": "Styles/TextClass",
+            "description": "The string value is a style class name of `LeftMetric`. On the Android platform, the `LeftMetric` is dependent on the `RightMetric`. If the `RightMetric` is not defined, the `LeftMetric` will not be displayed even if the `LeftMetric` is defined in the KPIView."
+          },
+          "LeftUnit": {
+            "type": "string",
+            "$ref": "Styles/TextClass",
+            "description": "The string value is a style class name of `LeftUnit`."
+          }
+      }
+    }
+  }
+}

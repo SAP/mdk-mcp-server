@@ -41,7 +41,7 @@
     "@sap/artifact-management": "^1.53.1",
     "@sap/artifact-management-base": "^1.53.1",
     "@sap/generator-mdk": "1.0.0-2",
-    "@sap/mdk-tools": "^1.14.0",
+    "@sap/mdk-tools": "^1.15.0",
     "axios": "^1.13.6",
     "dotenv": "^17.2.3",
     "i18next": "25.3.0",
@@ -82,6 +82,6 @@
     "@npmcli/arborist": "^8.0.0"
   },
   "mdkConfig": {
-    "schemaVersion": "25.9"
+    "schemaVersion": "26.3"
   }
 }

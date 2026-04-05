@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/EntitySetTarget",
+  "title": "EntitySetTarget",
+  "description": "This document describes the metadata properties available when mapping an EntitySet to a control. Typically the controls that make use of this definition display some sort of list to the user.",
+  "additionalProperties": {
+    "proxy": ["DataTableListPickerCellProxy", "ListPickerFormCellProxy"]
+  },
+  "properties": {
+    "DisplayValue": {
+      "type": "string",
+      "description": "The property of the value to display to the user. If not specified, the ReturnValue will be used."
+    },
+    "FilterRule": {
+      "$ref": "definitions/Rule"
+    },
+    "ReturnValue": {
+      "type": "string",
+      "description": "The property of the value to return on selection."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "The target entity set to get the values from."
+    }
+  },
+  "required": [    
+    "ReturnValue",
+    "Target"
+  ],
+  "type": "object"
+}

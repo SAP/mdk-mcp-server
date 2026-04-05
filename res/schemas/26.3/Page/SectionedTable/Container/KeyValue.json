@@ -1,0 +1,63 @@
+{
+  "$id": "Page/SectionedTable/Container/KeyValue",
+  "title": "KeyValue",
+  "description": "This is a container that can display one or more key value pair items on a section page. In this container, you can include a Key Value Item, a simple key value cell that displays a label and a text pair.",
+  "additionalProperties": {
+    "proxy": "KeyValueCollectionProxy"
+  },
+  "properties": {
+    "Layout": {
+      "$ref": "definitions/Layout"
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "Set to 1 will always display one row with a collection of Key-Value pairs inside"
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/HeaderFooterSeparator/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "KeyAndValues": {
+      "items": {
+        "$ref": "Page/SectionedTable/Control/KeyValueItem"
+      },
+      "type": "array",
+      "minItems": 1
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "Only the first record of any entity set returned by the target will be used. Its data will be set as the binding context of this control. It allows each Key-Value pairs defined in `KeyAndValues` array to display different OData properties."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Section.Type.KeyValue"
+    }
+  },
+  "required": [
+    "KeyAndValues",
+    "_Type"
+  ]
+}

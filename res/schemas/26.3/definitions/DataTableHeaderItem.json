@@ -1,0 +1,20 @@
+{
+  "$id": "definitions/DataTableHeaderItem",
+  "title": "DataTableHeaderItem",
+  "additionalProperties": {
+    "proxy": "DataTableCellProxy"
+  },
+  "properties": {
+    "NumberOfLines": {
+      "type": "integer",
+      "description": "Either 1 or 2, Data Table supports a maximum of 2 lines."
+    },
+    "Style": {
+      "description": "The string value is a [style class](../Styles/TextClass.style.md) name of `Text`.\nAndroid doesn't support styling."
+    },
+    "Text": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

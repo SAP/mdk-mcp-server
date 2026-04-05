@@ -1,0 +1,112 @@
+{
+  "$id": "Page/FormCell/MultiSorter",
+  "title": "MultiSorter",
+  "description": "This control renders a MultiSorter FormCell to be used in a filter page. It allows user to define sort order on multiple sort items, change the sort sequence of the items by dragging various items, change the sort direction for each sort items (ascending or descending order), and customize the ascending/descending labels. \n\nSupported only on ObjectTable, ObjectCollection, ContactCell, Data Table, Grid Table and ExtensionCollection.\n\nNote: Please avoid to use this control with Sorter control in the same filter page together.",
+  "additionalProperties": {
+    "proxy": "MultiSorterFormCellProxy"  
+  },
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "description": "Disables or enables the selection of empty value set.\nPlease avoid to set this property as false if you intend to use `FilterFeedbackBar` as well.",
+      "default": true
+    },
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "Label": {
+      "type": "string",
+      "description": "Displays label when being displayed as selected item on filter feedback bar."
+    },
+    "FormatRule": {
+      "$ref": "definitions/Rule",
+      "description": "If specified, the given rule executes when a control is initialized or when a value changes.",
+      "default": ""
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Indicates if the cell’s value may be modified.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "definitions/MultiSorterFixedCollection"
+        }
+      ],
+      "description": "The items to sort by."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for components in MultiSorterFormCell control",
+      "properties": {
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/CaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        },
+        "MultiSorter": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a background style class name of `MultiSort`."
+        },
+        "Items": {
+          "type": "object",
+          "description": "Include style class name for `DisplayValue` and `DirectionLabel`.",
+          "properties": {
+            "DisplayValue": {
+              "type": "string",
+              "description": "The string value is a style class name of `DisplayValue`."
+            },
+            "DirectionLabel": {
+              "type": "string",
+              "description": "The string value is a style class name of `DirectionLabel`."
+            }
+          }
+        }
+      }
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "_Name": {
+      "type": "string",
+      "description": "The `_Name` value will also function as `CustomQueryGroup` to match with `FastFilters` in `FilterFeedbackBar`."
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.MultiSorter"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Items"
+  ]
+}

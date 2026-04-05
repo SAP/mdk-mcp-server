@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.Read",
+  "title": "ODataService Read",
+  "description": "Read action is used to send a read request to the target OData Service.\n\nThe result of the action can be accessed in the OnSuccess event and will be available in the ActionResult.data in the format of JSON String.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Properties": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "description": "Names of the properties to be included in the query result. If not set, all properties will be returned. Complex and Binary property type is supported."
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "Target": {
+      "$ref": "definitions/QueryTarget"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.Read"
+    }
+  },
+  "required": [
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

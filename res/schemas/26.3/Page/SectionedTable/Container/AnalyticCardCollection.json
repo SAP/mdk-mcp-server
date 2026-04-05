@@ -1,0 +1,64 @@
+{
+  "$id": "Page/SectionedTable/Container/AnalyticCardCollection",
+  "title": "AnalyticCardCollection",
+  "description": "AnalyticCard Collection is a container that manages and displays a set of ChartCards. ChartCards display a thumbnail view of a chart, with key information shown.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Section.Type.AnalyticCardCollection"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "MaxItemCount": {
+      "type": "integer",
+      "description": "If MaxItemCount is not specified, then all cards are displayed in the section."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "Separators": {
+      "$ref": "Page/SectionedTable/Common/HeaderFooterSeparator/Separators",
+      "description": "To provide more flexibility with rendering of controls and sections, set the visibility of the separator lines."
+    },
+    "AnalyticCard": {
+      "description": "Use for Dynamic Card Collection. This is the template for the analytic card for each entries in result defined from the `Target` property",
+      "$ref": "Page/SectionedTable/Control/ChartCard"
+    },
+    "Target": {
+      "description": "Use only accompanied with `AnalyticCard` property.\n\n * For Dynamic Card Collection, use Target at the section level. More details: Refer to the examples below.\n * For Static Card Collection, use Target at the card level. More details: Refer to the examples below.",
+      "$ref": "definitions/LinkQueryFunctionTarget"
+    },
+    "AnalyticCards": {
+      "description": "Use this for Static Card Collection. Each entries in this array represent an analytic card.",
+      "type": "array",
+      "items": {
+        "$ref": "Page/SectionedTable/Control/ChartCard"
+      }
+    },
+    "Footer": {
+      "$ref": "Page/SectionedTable/Common/Footer",
+      "description": "Footer bar to be displayed below this control's content section."
+    },
+    "Header": {
+      "$ref": "Page/SectionedTable/Common/Header",
+      "description": "Header bar to be displayed above this control's content section."
+    },
+    "EmptySection": {
+      "$ref": "definitions/EmptySection",
+      "description": "A section that will be displayed when the list is empty, this only applies if you are using Target binding. Allows you to show custom label when the list is empty."
+    },
+    "DataSubscriptions": {
+      "$ref": "definitions/DataSubscriptions",
+      "description": "Array of data change events to subscribe to."
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,46 @@
+{
+  "$id": "Page/SectionedTable/FastFilterItem",
+  "title": "FastFilterItem",
+  "description": "FastFilterItem is a control item that can be added to the filter feedback bar.",
+  "additionalProperties": {
+    "proxy": "SectionedTableProxy"
+  },
+  "properties": {
+    "_Type": {
+      "const": "Control.Type.FastFilterItem"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "FilterType": {
+      "enum": [
+        "Filter",
+        "Sorter"        
+      ],
+      "type": "string",
+      "description": "Filter type of the item."
+    },
+    "Label": {
+      "type": "string",
+      "description": "Displays a label text concatenated with colon sign before the `DisplayValue` of the item."
+    },
+    "FilterProperty": {
+      "type": "string",
+      "description": "The name of the property for filter on. This property must not be set if the `ReturnValue` is a custom query."
+    },
+    "CustomQueryGroup": {
+      "type": "string",
+      "description": "A unique name to mark several fast filter items as a query group. The value will also match with filters in standard filter page based on _Name of the filter. This property is to be set only when `ReturnValue` is a custom query."
+    },
+    "DisplayValue": {
+      "type": "string",
+      "description": "The value to display to the user. If not specified, the `ReturnValue` will be used."
+    },
+    "ReturnValue": {
+      "type": "string",
+      "description": "The value to return on selection. The `ReturnValue` can be set as query to execute as filter as well, it supports lambda queries and queries with binding property."
+    }
+  },
+  "type": "object",
+  "required": ["_Name", "FilterType", "ReturnValue"]
+}

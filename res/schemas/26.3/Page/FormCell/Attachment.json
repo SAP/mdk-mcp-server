@@ -1,0 +1,136 @@
+{
+  "$id": "Page/FormCell/Attachment",
+  "title": "Attachment",
+  "description": "This container item allows users to add or take a photo as an attachment.",
+  "additionalProperties": {
+    "proxy": "AttachmentFormCellProxy"  
+  },
+  "properties": {
+    "AttachmentActionType": {
+      "items": {
+        "enum": [
+          {
+            "const": "AddPhoto",
+            "description": "Only supported on iOS and Android"
+          },
+          {
+            "const": "TakePhoto",
+            "description": "Only supported on iOS and Android"
+          },
+          {
+            "const": "SelectFile",
+            "description": "Supported on iOS, Android and Web"
+          } 
+        ],
+        "type": "string"
+      },
+      "type": "array",
+      "description": "List of supported attachment types."
+    },
+    "AttachmentTitle": {
+      "type": "string",
+      "description": "String for the attachment header. Parameterized strings are accepted as well, e.g. 'Photos [%d]', where the parameter is substituted by the number of attachments.",
+      "default": "Attachments (%d)"
+    },
+    "AttachmentAddTitle": {
+      "type": "string",
+      "default": "Add",
+      "description": "Title string for the add attachment popover. Android / web only."
+    },
+    "AttachmentCancelTitle": {
+      "type": "string",
+      "default": "Cancel",
+      "description": "iOS compact mode (phone) only. Title string for the cancel button on the add attachment popover."
+    },
+    "MaxAttachments" : {
+      "type": "integer",
+      "description": "You can now configure **FormCell Attachment** control to restrict how many attachments a user can upload. Once the specified limit is reached, the control disables the **Add** button to prevent further uploads.\n\n- If the property is not configured—or is set to zero or a negative value—no limit is enforced by default.\n- **Platform behavior:**\n\n    - **iOS:** The limit is applied directly to the native file picker, which prevents additional file selection once the maximum is reached.\n   - **Android:** The native file picker does not restrict selection. Users may select more files than allowed, but only the first **N** attachments (where **N** is the configured limit) are retained after confirmation.\n\n<!--  -->"
+    },
+    "MaxFileSize" : {
+      "type": "number",
+      "description": "The maximum file size (in megabytes) allowed for each attachment added to the FormCell Attachment control. If not specified, or set to a value less than or equal to 0, **no file size limit** is enforced."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "MDK now supports restricting attachment management within a FormCell Attachment control. When disabled, the control automatically hides the **Add** button as well as the **Remove (or delete)** option for each attachment. This is applicable to iOS and Android only.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after a new attchment is added or an existing attachment is deleted."
+    },
+    "OnPress": {
+      "description": "Action/Rule to be triggered when the existing attachment is pressed. This event is supported only on mobile platforms.\n\nThe clientAPI in rule function is object with [AttachmentEntryProxy](../../../apidoc/classes/attachmententryproxy.md) definition.\n\nThe action binding information from page proxy is stored pressed attachment object with the interface [IAttachment](../../../apidoc/interfaces/iattachment.md) and index of the pressed attachment item.",
+      "$ref": "definitions/ActionOrRule"
+    },
+    "Value": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array",
+      "description": "List of resources which are to be added by default. Each item is in accordance with the interface [IAttachment](../../../apidoc/interfaces/iattachment.md) definition."
+    },
+    "AllowedFileTypes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "description": "List of file types which can be uploaded. Only applicable when `AttachmentActionType` is SelectFile.\n\nRefer to [Android file types](#android-platforms-file-types-list) and [iOS file types](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1) for details.\n\nIf the customized file types are not supported by Android or iOS, you can assign an empty array, i.e. [], to allow choosing all files.\n\nIn iOS, since odt, docx, xlsx and pptx are all actually contained in a zip file wrapper, they also conform to 'zip' format. So, when you specify 'zip' in the list, it also includes all other types that conform to 'zip' format."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "validationProperties": {
+      "$ref": "definitions/ValidationProperties",
+      "description": "Deprecated. Please use `Validation` property. The validation view properties."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "RequiredIndicator": {
+          "type": "string",
+          "$ref": "Styles/RequiredIndicatorColorClass",
+          "description": "The string value is a style class name of `RequiredIndicator`."
+        }
+      }
+    },
+    "RequiredIndicator": {
+      "$ref": "definitions/BooleanOrString",
+      "default": false,
+      "description": "Specifies whether a field is mandatory by displaying a visual indicator. This property accepts either a Boolean (true / false) or a single character (e.g., '!') as its value.\n\nBy default, the indicator is a red asterisk (*) displayed at the end of the field's caption. You can customize the indicator character by setting this property. Additionally, the appearance (e.g., color or size) can be styled through metadata as well.\n\nNote:\n\n- This indicator is **purely visual**—it does **not** enforce that the user must fill out the field.\n- If more than one character is defined, the system will revert to using the default indicator.\n\n<!--  -->"
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Attachment"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Name",
+    "_Type",
+    "AttachmentActionType"
+  ]
+}

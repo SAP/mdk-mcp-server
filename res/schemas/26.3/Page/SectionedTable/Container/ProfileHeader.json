@@ -1,0 +1,97 @@
+{
+  "$id": "Page/SectionedTable/Container/ProfileHeader",
+  "title": "ProfileHeader",
+  "description": "It is used to give quick information of a contact in the header and access to the various methods of communicating with a contact.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "DataSubscriptions": {
+      "description": "Array of data change events to subscribe to.",
+      "$ref": "definitions/DataSubscriptions"
+    },
+    "ProfileHeader": {
+      "type": "object",
+      "properties": {
+        "Headline": {
+          "type": "string",
+          "description": "Text for headline label."
+        },
+        "Subheadline": {
+          "type": "string",
+          "description": "Text for sub headline label."
+        },
+        "Description": {
+          "type": "string",
+          "description": "Description text displayed on the cell."
+        },
+        "DetailImage": {
+          "$ref": "definitions/Image",
+          "description": "Image to be displayed for the Profile. Supports rendering of both locally saved images and images from Web (https only)."
+        },
+        "DetailImageIsCircular": {
+          "type": "boolean",
+          "description": "If the value is True, the image is displayed in a circular shape.",
+          "default": false
+        },
+        "ActivityItems": {
+          "type": "array",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/ActivityItem"
+          },
+          "description": "Activity items to be displayed in the control.\n\nFor iOS devices, a defined iOS app is used on the client app for video calls when you set the VideoCall parameter.\n\nFor Android devices, there’s no standard app that is used for a video call on the client app when you set the VideoCall parameter."
+        },
+        "Styles": {
+          "properties": {
+            "Description": {
+              "type": "string",
+              "$ref": "Styles/TextPaintClass",
+              "description": "The string value is a style class name of `Description`."
+            },
+            "Headline": {
+              "type": "string",
+              "$ref": "Styles/TextPaintClass",
+              "description": "The string value is a style class name of `Headline`."
+            },
+            "Subheadline": {
+              "type": "string",
+              "$ref": "Styles/TextPaintClass",
+              "description": "The string value is a style class name of `Subheadline`."
+            },
+            "BackgroundColor": {
+              "type": "string",
+              "$ref": "Styles/BackgroundClass",
+              "description": "The string value is a style class name of `BackgroundColor`."
+            },
+            "DetailImage": {
+              "type": "string",
+              "$ref": "Styles/ImageClass",
+              "description": "The string value is a style class name of `Image`. The CSS property `background-color` is supported for all image types, while `font-size` and `color` are additionally supported for SAP icon and font icon types."
+            }
+          },
+          "type": "object",
+          "description": "A style to be applied to the Profile Header."
+        },
+        "Target": {
+          "$ref": "definitions/Target",
+          "description": "Only the first record of any entity set returned by the target will be used."
+        }
+      }
+    },
+    "_Type": {
+      "const": "Section.Type.ProfileHeader"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}
