@@ -36,7 +36,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
   
       ```bash
-      npm install -g @sap/mdk-mcp-server 
+      npm install -g @sap/mdk-mcp-server --loglevel=error
       ``` 
 
     b. Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install.  
@@ -44,7 +44,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       ```bash 
       git clone https://github.com/SAP/mdk-mcp-server.git 
       cd mdk-mcp-server 
-      npm i --include=optional 
+      npm i --loglevel=error
       npm run build
       npm i -g @sap/mdk-mcp-server@. 
       ```

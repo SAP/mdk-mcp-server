@@ -16,8 +16,7 @@
   "files": [
     "build/",
     "res/",
-    "images/",
-    "scripts/"
+    "images/"
   ],
   "scripts": {
     "audit:signatures": "npm audit signatures",
