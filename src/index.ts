@@ -1051,7 +1051,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             const CONFIG = {
               projectPath: projectPath,
               deploymentTarget: "mobile",
-              projectName: mobileServiceAppName,
+              projectName: "RiskManagement",//mobileServiceAppName,
               showQR: true,
             };
 
@@ -1076,6 +1076,8 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 CONFIG.showQR ? "--showqr" : "",
                 `--project "${CONFIG.projectPath}"`,
                 externalsString,
+                `--create`,
+                `--destination RiskService --destinationUrl https://lcap-int-dev-risk-management-srv.cfapps.sap.hana.ondemand.com/odata/v4/risk`
               ]
                 .filter(Boolean)
                 .join(" ");

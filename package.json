@@ -16,7 +16,10 @@
   "files": [
     "build/",
     "res/",
-    "images/"
+    "images/",
+    ".claude-plugin/",
+    ".mcp.json",
+    "manifest.json"
   ],
   "scripts": {
     "audit:signatures": "npm audit signatures",
