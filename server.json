@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.sap/mdk-mcp-server",
+  "name": "io.github.SAP/mdk-mcp-server",
   "description": "Model Context Protocol (MCP) server for AI-assisted development of MDK applications.",
   "repository": {
     "url": "https://github.com/sap/mdk-mcp-server",
@@ -14,7 +14,7 @@
     {
       "registryType": "npm",
       "identifier": "@sap/mdk-mcp-server",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "transport": {
         "type": "stdio"
       }
