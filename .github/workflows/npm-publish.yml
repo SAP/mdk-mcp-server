@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: npmjs:@sap/mdk-mcp-server
     steps:
-      # actions/checkout@v4.2.2
+      # actions/checkout@v5
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      # actions/setup-node@v4.1.0
+      # actions/setup-node@v5
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
           node-version: 20
@@ -37,6 +37,22 @@ jobs:
       - name: get version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@3cf273023a0dda27efcd3164bdfb51908dd46a5b
+      - name: check versions
+        run: |
+          version_in_server_json=$(jq -r '.packages[0].version' server.json)
+          if [ "$version_in_server_json" != "${{ steps.package-version.outputs.current-version }}" ]; then
+            echo "Version in server.json ($version_in_server_json) does not match package.json (${{
+              steps.package-version.outputs.current-version
+            }})"
+            exit 1
+          fi
+          version_in_plugin_json=$(jq -r '.version' .claude-plugin/plugin.json)
+          if [ "$version_in_plugin_json" != "${{ steps.package-version.outputs.current-version }}" ]; then
+            echo "Version in .claude-plugin/plugin.json ($version_in_plugin_json) does not match package.json (${{
+              steps.package-version.outputs.current-version
+            }})"
+            exit 1
+          fi
       # schwma/parse-changelog-action@v1.0.0
       - name: parse changelog
         id: parse-changelog
@@ -50,3 +66,10 @@ jobs:
           tag: 'v${{ steps.package-version.outputs.current-version }}'
           body: '${{ steps.parse-changelog.outputs.body }}'
       - run: npx npm@latest publish --access public
+      - name: Download MCP Publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/download/latest/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+      - name: Publish to MCP Registry
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish

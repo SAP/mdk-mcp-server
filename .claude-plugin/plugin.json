@@ -1,0 +1,12 @@
+{
+  "name": "mdk-mcp",
+  "version": "0.3.5",
+  "description": "Model Context Protocol (MCP) server for AI-assisted development of MDK applications.",
+  "author": {
+    "name": "SAP SE"
+  },
+  "homepage": "https://help.sap.com/docs/MDK",
+  "repository": "https://github.com/SAP/mdk-mcp-server",
+  "license": "Apache-2.0",
+  "keywords": ["sap", "mdk", "mcp"]
+}

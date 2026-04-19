@@ -1,6 +1,7 @@
 {
   "name": "@sap/mdk-mcp-server",
-  "version": "0.3.4",
+  "mcpName": "io.github.sap/mdk-mcp-server",
+  "version": "0.3.5",
   "license": "Apache-2.0",
   "description": "Model Context Protocol (MCP) server for AI-assisted development of MDK applications.",
   "type": "module",
@@ -16,7 +17,10 @@
   "files": [
     "build/",
     "res/",
-    "images/"
+    "images/",
+    ".claude-plugin/",
+    ".mcp.json",
+    "manifest.json"
   ],
   "scripts": {
     "audit:signatures": "npm audit signatures",

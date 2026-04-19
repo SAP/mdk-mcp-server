@@ -16,7 +16,7 @@ let filenameList = [];
 let contentList = [];
 const server = new Server({
     name: "mdk-mcp",
-    version: "0.3.4",
+    version: "0.3.5",
 }, {
     capabilities: {
         tools: {},
