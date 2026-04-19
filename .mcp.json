@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mdk-mcp": {
+      "command": "npx",
+      "args": ["-y", "@sap/mdk-mcp-server"]
+    }
+  }
+}
