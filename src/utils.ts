@@ -8,6 +8,23 @@ import {
   getServiceEdmx,
 } from "./artifact-management-wrapper.js";
 
+/**
+ * Simple logger utility
+ */
+export function getLogger() {
+  return {
+    info: (message: string, ...args: unknown[]) => {
+      console.error(`[INFO] ${message}`, ...args);
+    },
+    warn: (message: string, ...args: unknown[]) => {
+      console.error(`[WARN] ${message}`, ...args);
+    },
+    error: (message: string, ...args: unknown[]) => {
+      console.error(`[ERROR] ${message}`, ...args);
+    },
+  };
+}
+
 // Get the directory where this module is located, then go up to find project root
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -524,7 +541,9 @@ export async function generateTemplateBasedMetadata(
   templateType: string,
   projectPath: string,
   offline: boolean,
-  entity: boolean
+  entity: boolean,
+  cfOrg?: string,
+  cfSpace?: string
 ): Promise<string> {
   const oDataEntitySets = oDataEntitySetsString.split(",");
   const oJson = {
@@ -543,13 +562,12 @@ export async function generateTemplateBasedMetadata(
     const capProjectName = getCapProjectName(capProjectPath);
     if (capProjectName) {
       // MDK project will be created in CAP_PROJECT/app folder with name CAP_NAME_mdk
+      // Replace hyphens with underscores in the project name
+      const normalizedProjectName = capProjectName.replace(/-/g, "_");
       const mdkProjectPath = path.join(
         capProjectPath,
         "app",
-        `${capProjectName}_mdk`
-      );
-      console.error(
-        `[MDK MCP Server] MDK project path for CAP: ${mdkProjectPath}`
+        `${normalizedProjectName}_mdk`
       );
 
       // Create the app directory if it doesn't exist
@@ -579,21 +597,39 @@ export async function generateTemplateBasedMetadata(
         const edmx = await getServiceEdmx(capProjectPath, service.name);
         if (edmx) {
           const capName = getCapProjectName(capProjectPath) || "cap-app";
+          // Replace hyphens with underscores for app name
+          const normalizedCapName = capName.replace(/-/g, ".");
+          
+          // Build destination object
+          const destination: {
+            name: string;
+            relativeUrl: string;
+            metadata: { odataContent: string };
+            type: string;
+            url?: string;
+          } = {
+            name: service.name.replace(/\./g, "_"),  
+            relativeUrl: service.path || "/",
+            metadata: {
+              odataContent: edmx,
+            },
+            type: "Mobile",
+          };
+          
+          // Add URL if cfOrg and cfSpace are provided
+          if (cfOrg && cfSpace) {
+            destination.url = `https://${cfOrg}-${cfSpace}-${capName}-srv.cfapps.sap.hana.ondemand.com/`;
+            console.error(
+              `[MDK MCP Server] Generated destination URL: ${destination.url}`
+            );
+          }
+          
           // Build service metadata structure
           serviceMetadataObj = {
             mobile: {
               api: "",
-              app: capName,
-              destinations: [
-                {
-                  name: service.name.replace(/\./g, "_"),
-                  relativeUrl: service.path || "/",
-                  metadata: {
-                    odataContent: edmx,
-                  },
-                  type: "Mobile",
-                },
-              ],
+              app: normalizedCapName,
+              destinations: [destination],
             },
           };
 
@@ -610,9 +646,10 @@ export async function generateTemplateBasedMetadata(
           );
         }
       }
-    } catch {
+    } catch (error) {
       console.error(
-        "[MDK MCP Server] Failed to generate service metadata from CAP"
+        "[MDK MCP Server] Failed to generate service metadata from CAP:",
+        error
       );
     }
   }
@@ -722,15 +759,7 @@ export async function generateTemplateBasedMetadata(
   const paths = projectPath.split(path.sep);
   oConfig.projectName = paths.pop();
   oConfig.target = paths.join(path.sep);
-
-  // Set type based on whether this is a CAP project
-  if (isCap) {
-    oConfig.type = "lcap-headless";
-    console.error("[MDK MCP Server] Using lcap-headless type for CAP project");
-  } else {
-    oConfig.type = "headless";
-  }
-
+  oConfig.type = "headless";
   oConfig.newEntity = entity;
 
   if (serviceMetadataObj || (appId && destinations.length > 0)) {

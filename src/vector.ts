@@ -230,3 +230,36 @@ export function getDocuments(version: string): [string[], string[]] {
   walkDirectory(path.join(projectRoot, "res/schemas", version));
   return [filenameList, contentList];
 }
+
+/**
+ * VectorDatabase class for storing and querying document embeddings
+ */
+export class VectorDatabase {
+  private dbPath: string;
+
+  constructor(dbPath: string) {
+    this.dbPath = dbPath;
+  }
+
+  /**
+   * Add documents to the vector database
+   */
+  async addDocuments(
+    documents: Array<{ content: string; metadata: Record<string, unknown> }>
+  ): Promise<void> {
+    // Extract text content from documents
+    const texts = documents.map(doc => doc.content);
+
+    // Create embeddings for the documents
+    await createEmbeddings(this.dbPath, texts);
+  }
+
+  /**
+   * Search for similar documents
+   */
+  async search(query: string, topN: number = 5): Promise<SearchResult[]> {
+    const chunks = await loadChunks(this.dbPath);
+    const results = await searchEmbeddings(query, chunks);
+    return results.slice(0, topN);
+  }
+}

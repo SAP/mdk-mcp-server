@@ -13,16 +13,27 @@ import {
 
 /**
  * Check if a directory is a CAP project
+ * If the path is inside an app/ folder, check the parent directory
  */
 export function isCapProject(projectPath: string): boolean {
+  // If the path is inside an app/ folder, check the parent directory
+  const pathParts = projectPath.split(path.sep);
+  const appIndex = pathParts.lastIndexOf("app");
+  
+  let checkPath = projectPath;
+  if (appIndex !== -1 && appIndex > 0) {
+    // Remove app/ and everything after it to get the CAP root
+    checkPath = pathParts.slice(0, appIndex).join(path.sep);
+  }
+
   // Check for .cdsrc.json
-  const cdsrcPath = path.join(projectPath, ".cdsrc.json");
+  const cdsrcPath = path.join(checkPath, ".cdsrc.json");
   if (fs.existsSync(cdsrcPath)) {
     return true;
   }
 
   // Check for @sap/cds dependency
-  const packageJsonPath = path.join(projectPath, "package.json");
+  const packageJsonPath = path.join(checkPath, "package.json");
   if (fs.existsSync(packageJsonPath)) {
     try {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
@@ -262,7 +273,7 @@ export interface CapMdkConfig {
   isCapProject: boolean;
   projectName: string;
   mdkProjectPath: string;
-  projectType: "lcap-headless" | "headless";
+  projectType: "headless";
   services: Array<{
     name: string;
     urlPath?: string;
@@ -290,7 +301,9 @@ export async function getCapMdkConfig(
   }
 
   // For CAP projects, MDK project goes in app/ subfolder
-  const mdkProjectName = `${projectName}_mdk`;
+  // Replace hyphens with underscores in the project name
+  const normalizedProjectName = projectName.replace(/-/g, "_");
+  const mdkProjectName = `${normalizedProjectName}_mdk`;
   const mdkProjectPath = path.join(projectPath, "app", mdkProjectName);
 
   const services = await getCapServicesInfo(projectPath);
@@ -300,7 +313,7 @@ export async function getCapMdkConfig(
     isCapProject: true,
     projectName: mdkProjectName,
     mdkProjectPath,
-    projectType: "lcap-headless",
+    projectType: "headless",
     services,
     entitySets,
   };

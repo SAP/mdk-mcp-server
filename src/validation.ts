@@ -143,7 +143,7 @@ export const ValidationSchemas = {
   ),
 
   documentationOperation: z.enum(
-    ["search", "component", "property", "example"],
+    ["search", "component", "property", "example", "search-samples"],
     {
       message: "Invalid documentation operation type",
     }
@@ -247,6 +247,26 @@ export const ValidationSchemas = {
     .max(500, "Path suffix cannot exceed 500 characters")
     .regex(/^[a-zA-Z0-9._\-/]*$/, "Path suffix contains invalid characters")
     .default(""),
+
+  cfOrg: z
+    .string()
+    .min(1, "CF organization name cannot be empty")
+    .max(200, "CF organization name cannot exceed 200 characters")
+    .regex(
+      /^[a-zA-Z0-9._\-]+$/,
+      "CF organization name contains invalid characters"
+    )
+    .optional(),
+
+  cfSpace: z
+    .string()
+    .min(1, "CF space name cannot be empty")
+    .max(200, "CF space name cannot exceed 200 characters")
+    .regex(
+      /^[a-zA-Z0-9._\-]+$/,
+      "CF space name contains invalid characters"
+    )
+    .optional(),
 };
 
 /**
@@ -348,6 +368,24 @@ export function validateToolArguments(
         args.oDataEntitySets
       );
       validatedArgs.offline = ValidationSchemas.offline.parse(args.offline);
+
+      // Validate optional CF org and space parameters
+      if (args.cfOrg !== undefined) {
+        validatedArgs.cfOrg = ValidationSchemas.cfOrg.parse(args.cfOrg);
+      }
+      if (args.cfSpace !== undefined) {
+        validatedArgs.cfSpace = ValidationSchemas.cfSpace.parse(args.cfSpace);
+      }
+
+      // If one is provided, both must be provided
+      if (
+        (args.cfOrg !== undefined && args.cfSpace === undefined) ||
+        (args.cfOrg === undefined && args.cfSpace !== undefined)
+      ) {
+        throw new ValidationError("cfOrg/cfSpace", args, [
+          "Both cfOrg and cfSpace must be provided together, or neither",
+        ]);
+      }
       break;
     }
 
@@ -468,7 +506,7 @@ export function validateToolArguments(
 
       // Validate operation-specific parameters
       const operation = validatedArgs.operation as string;
-      if (operation === "search") {
+      if (operation === "search" || operation === "search-samples") {
         if (!args.query) {
           throw new ValidationError("query", args.query, [
             "Query is required for search operation",

@@ -14,6 +14,7 @@ import {
   getSchemaVersion,
   getServerConfig,
   safeJsonParse,
+  geServiceMetadataJson,
 } from "./utils.js";
 import {
   isCapProject,
@@ -116,6 +117,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description:
                 "Whether to generate the project in offline mode (only applicable for project scope). Set to false unless offline is explicitly specified.",
               default: false,
+            },
+            cfOrg: {
+              type: "string",
+              description:
+                "Optional: Cloud Foundry organization name. If provided along with cfSpace, will be used to configure the deployment target.",
+            },
+            cfSpace: {
+              type: "string",
+              description:
+                "Optional: Cloud Foundry space name. If provided along with cfOrg, will be used to configure the deployment target.",
             },
           },
           required: [
@@ -321,13 +332,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             operation: {
               type: "string",
-              enum: ["search", "component", "property", "example"],
+              enum: [
+                "search",
+                "component",
+                "property",
+                "example",
+                "search-samples",
+              ],
               description:
                 "The type of documentation operation to perform:\n" +
                 "• search: Returns the top N results from MDK documentation by semantic search, sorted by relevance\n" +
                 "• component: Returns the schema of an MDK component based on the name of the component\n" +
                 "• property: Returns the documentation of a specific property of an MDK component\n" +
-                "• example: Returns an example usage of an MDK component",
+                "• example: Returns an example usage of an MDK component\n" +
+                "• search-samples: Search through MDK tutorial samples and code examples from GitHub",
             },
             folderRootPath: {
               type: "string",
@@ -337,7 +355,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             query: {
               type: "string",
               description:
-                "Search query string (required for 'search' operation).",
+                "Search query string (required for 'search' and 'search-samples' operations).",
             },
             component_name: {
               type: "string",
@@ -508,6 +526,8 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         const templateType = validatedArgs.templateType as string;
         const oDataEntitySetsString = validatedArgs.oDataEntitySets as string;
         const offline = (validatedArgs.offline as boolean) || false;
+        const cfOrg = validatedArgs.cfOrg as string | undefined;
+        const cfSpace = validatedArgs.cfSpace as string | undefined;
 
         // Validate: 'base' template only for project scope
         if (templateType === "base" && scope === "entity") {
@@ -550,7 +570,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           templateType,
           projectPath,
           useOffline,
-          isEntity
+          isEntity,
+          cfOrg,
+          cfSpace
         );
 
         if (!script) {
@@ -1051,9 +1073,54 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             const CONFIG = {
               projectPath: projectPath,
               deploymentTarget: "mobile",
-              projectName: "RiskManagement",//mobileServiceAppName,
+              projectName: mobileServiceAppName,
+              //projectName: "RiskManagement",
               showQR: true,
             };
+
+            // Check if this is a CAP project to determine if we need --create and destination parameters
+            const isCapProjectScenario = isCapProject(
+              path.dirname(projectPath)
+            );
+
+            // Retrieve destination information from service metadata (only for CAP projects)
+            let destinationString = "";
+            if (isCapProjectScenario) {
+              try {
+                const serviceMetadataPath = path.join(
+                  projectPath,
+                  ".service.metadata"
+                );
+                if (fs.existsSync(serviceMetadataPath)) {
+                  const serviceMetadata = (await geServiceMetadataJson(
+                    serviceMetadataPath
+                  )) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+                  if (
+                    serviceMetadata?.mobile?.destinations &&
+                    Array.isArray(serviceMetadata.mobile.destinations) &&
+                    serviceMetadata.mobile.destinations.length > 0
+                  ) {
+                    const destination = serviceMetadata.mobile.destinations[0];
+                    if (destination.name) {
+                      destinationString = `--destination ${destination.name}`;
+                      // Add destinationUrl if available in metadata
+                      if (destination.url) {
+                        destinationString += ` --destinationUrl ${destination.url}`;
+                        if (destination.relativeUrl) {
+                          destinationString += destination.relativeUrl;
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error(
+                  "[MDK MCP Server] Warning: Could not read destination from service metadata:",
+                  error
+                );
+                // Continue without destination parameters
+              }
+            }
 
             // Construct deployment script using mdkToolsPath
             let deploymentScript: string = "";
@@ -1069,26 +1136,33 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                   ? `--externals "${externals.join(",")}"`
                   : "";
 
-              deploymentScript = [
+              // Build deployment command based on project type
+              const deploymentParts = [
                 `${mdkBinary} deploy`,
                 `--target ${CONFIG.deploymentTarget}`,
                 `--name ${CONFIG.projectName}`,
                 CONFIG.showQR ? "--showqr" : "",
                 `--project "${CONFIG.projectPath}"`,
                 externalsString,
-                `--create`,
-                `--destination RiskService --destinationUrl https://lcap-int-dev-risk-management-srv.cfapps.sap.hana.ondemand.com/odata/v4/risk`
-              ]
-                .filter(Boolean)
-                .join(" ");
+              ];
+
+              // Add --create and destination parameters only for CAP projects
+              if (isCapProjectScenario) {
+                deploymentParts.push(`--create`);
+                if (destinationString) {
+                  deploymentParts.push(destinationString);
+                }
+              }
+
+              deploymentScript = deploymentParts.filter(Boolean).join(" ");
             }
 
             // Execute deployment command
             const deployResult = runCommand(deploymentScript);
             // Filter out SAP Mobile Start references from deploy result
             const filteredDeployResult = deployResult
-              .replace(/SAP Mobile Start/gi, "SAP Mobile Services Client app")
-              .replace(/Mobile Start app/gi, "Mobile Services Client app");
+              .replace(/SAP Mobile Start/gi, "SAP Mobile Services Client")
+              .replace(/Mobile Start/gi, "SAP Mobile Services Client");
 
             return {
               content: [
@@ -1516,6 +1590,73 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                 },
               ],
             };
+          }
+
+          case "search-samples": {
+            const query = validatedArgs.query as string;
+            const N = (validatedArgs.N as number) || 5;
+
+            // Import VectorDatabase to search the GitHub knowledge base
+            const { VectorDatabase } = await import("./vector.js");
+            const knowledgeDb = new VectorDatabase("knowledge.db");
+
+            try {
+              const results = await knowledgeDb.search(query, N);
+
+              if (results.length === 0) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `No relevant samples found for query: "${query}". The knowledge base may not be initialized. Run 'npm run ingest' to populate the knowledge base with MDK samples and tutorials.`,
+                    },
+                  ],
+                };
+              }
+
+              // Format the results
+              let resultText = `# MDK Sample Search Results\n\n`;
+              resultText += `**Query**: "${query}"\n`;
+              resultText += `**Found**: ${results.length} result(s)\n\n`;
+
+              for (let i = 0; i < results.length; i++) {
+                const result = results[i];
+                const content = result.content;
+                const similarity = (result.similarity * 100).toFixed(1);
+
+                resultText += `## Result ${
+                  i + 1
+                } (Relevance: ${similarity}%)\n\n`;
+                resultText += `\`\`\`\n${content}\n\`\`\`\n\n`;
+                resultText += `---\n\n`;
+              }
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: resultText,
+                  },
+                ],
+              };
+            } catch (error) {
+              const errorMsg =
+                error instanceof Error ? error.message : String(error);
+              if (
+                errorMsg.includes("ENOENT") ||
+                errorMsg.includes("not found")
+              ) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `Knowledge base not found. Please run 'npm run ingest' to populate the knowledge base with MDK samples and tutorials from GitHub.\n\nError: ${errorMsg}`,
+                    },
+                  ],
+                };
+              }
+              throw error;
+            }
           }
 
           default: {
