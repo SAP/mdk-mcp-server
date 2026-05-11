@@ -599,7 +599,7 @@ export async function generateTemplateBasedMetadata(
           const capName = getCapProjectName(capProjectPath) || "cap-app";
           // Replace hyphens with underscores for app name
           const normalizedCapName = capName.replace(/-/g, ".");
-          
+
           // Build destination object
           const destination: {
             name: string;
@@ -608,14 +608,14 @@ export async function generateTemplateBasedMetadata(
             type: string;
             url?: string;
           } = {
-            name: service.name.replace(/\./g, "_"),  
+            name: service.name.replace(/\./g, "_"),
             relativeUrl: service.path || "/",
             metadata: {
               odataContent: edmx,
             },
             type: "Mobile",
           };
-          
+
           // Add URL if cfOrg and cfSpace are provided
           if (cfOrg && cfSpace) {
             destination.url = `https://${cfOrg}-${cfSpace}-${capName}-srv.cfapps.sap.hana.ondemand.com/`;
@@ -623,7 +623,7 @@ export async function generateTemplateBasedMetadata(
               `[MDK MCP Server] Generated destination URL: ${destination.url}`
             );
           }
-          
+
           // Build service metadata structure
           serviceMetadataObj = {
             mobile: {

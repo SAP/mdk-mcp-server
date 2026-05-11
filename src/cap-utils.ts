@@ -19,7 +19,7 @@ export function isCapProject(projectPath: string): boolean {
   // If the path is inside an app/ folder, check the parent directory
   const pathParts = projectPath.split(path.sep);
   const appIndex = pathParts.lastIndexOf("app");
-  
+
   let checkPath = projectPath;
   if (appIndex !== -1 && appIndex > 0) {
     // Remove app/ and everything after it to get the CAP root

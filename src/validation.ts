@@ -253,7 +253,7 @@ export const ValidationSchemas = {
     .min(1, "CF organization name cannot be empty")
     .max(200, "CF organization name cannot exceed 200 characters")
     .regex(
-      /^[a-zA-Z0-9._\-]+$/,
+      /^[a-zA-Z0-9._-]+$/,
       "CF organization name contains invalid characters"
     )
     .optional(),
@@ -262,10 +262,7 @@ export const ValidationSchemas = {
     .string()
     .min(1, "CF space name cannot be empty")
     .max(200, "CF space name cannot exceed 200 characters")
-    .regex(
-      /^[a-zA-Z0-9._\-]+$/,
-      "CF space name contains invalid characters"
-    )
+    .regex(/^[a-zA-Z0-9._-]+$/, "CF space name contains invalid characters")
     .optional(),
 };
 
