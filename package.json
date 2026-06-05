@@ -18,6 +18,7 @@
     "build/",
     "res/",
     "images/",
+    "scripts/cleanup-onnx-binaries.js",
     ".claude-plugin/",
     ".mcp.json",
     "manifest.json"
@@ -26,6 +27,7 @@
     "audit:signatures": "npm audit signatures",
     "build": "npm run audit:signatures && tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
     "build:no-audit": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"require('fs').cpSync('src/lib', 'build/lib', {recursive: true})\" && node -e \"require('fs').cpSync('src/start.js', 'build/start.js')\"",
+    "postinstall": "node scripts/cleanup-onnx-binaries.js",
     "test": "node --test --test-concurrency=1 src/tests/*.test.js",
     "lint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\" --fix",
