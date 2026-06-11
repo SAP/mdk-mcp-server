@@ -827,15 +827,40 @@ export async function generateTemplateBasedMetadata(
   const mdkToolsPath = await getModulePath("mdk-tools");
   const mdkGeneratorPath = await getModulePath("generator-mdk");
 
-  // Find the yo executable - it should be in node_modules/.bin
-  const yoExecutable = path.join(
-    projectRoot,
-    "node_modules",
-    ".bin",
-    process.platform === "win32" ? "yo.cmd" : "yo"
-  );
+  // Resolve yo executable
+  // For npm/yarn: use node_modules/.bin/yo (faster, more reliable)
+  // For Bun: use bunx yo (Bun doesn't create .bin directory)
+  let yoCommand: string;
 
-  let script = `${yoExecutable} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
+  // Check if Bun is being used
+  const isBun = process.env.npm_config_user_agent?.includes("bun");
+
+  if (isBun) {
+    // Bun doesn't create node_modules/.bin, so use bunx
+    yoCommand = "bunx yo";
+    console.error("[MDK MCP Server] Using bunx to execute yo generator");
+  } else {
+    // npm/yarn/pnpm: use node_modules/.bin
+    const yoExecutable = path.join(
+      projectRoot,
+      "node_modules",
+      ".bin",
+      process.platform === "win32" ? "yo.cmd" : "yo"
+    );
+
+    if (!fs.existsSync(yoExecutable)) {
+      throw new Error(
+        `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`
+      );
+    }
+
+    yoCommand = yoExecutable;
+    console.error(
+      "[MDK MCP Server] Using node_modules/.bin/yo to execute yo generator"
+    );
+  }
+
+  let script = `${yoCommand} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
 
   if (mdkToolsPath) {
     const mdkBinary = path.join(
