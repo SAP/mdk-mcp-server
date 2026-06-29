@@ -36,7 +36,7 @@
     "start": "npx -y supergateway --port 9881 --stdio \"node ./build/start.js\""
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.7.6",
+    "@huggingface/transformers": "^4.0.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@sap-ux/btp-utils": "1.2.1",
     "@sap-ux/feature-toggle": "0.3.4",
