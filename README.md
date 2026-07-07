@@ -9,7 +9,7 @@
 This open-source server provides AI agents with comprehensive MDK knowledge and tools. By combining best practice guidelines, project-aware context information, templates for creating new projects, and access to the MDK CLI tools, the MDK MCP server transforms AI agents into MDK development experts.
 
 ## What is mobile development kit?
-The SAP Mobile Development Kit (MDK) is a powerful framework that enables developers to build cross-platform mobile applications using a metadata-driven approach. It is part of SAP Business Technology Platform and integrates tightly with SAP Mobile Services. 
+The Mobile Development Kit (MDK) is a powerful framework that enables developers to build cross-platform mobile applications using a metadata-driven approach. It is part of SAP Business Technology Platform and integrates tightly with SAP Mobile Services. 
 Some of SAP’s larger and complex mobile apps are built using MDK. An example is [SAP Service and Asset Manager](https://www.sap.com/sea/products/scm/asset-manager.html).
 
 > [!NOTE]
@@ -29,7 +29,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 ## Setup
 
-1. Install [node.js 22.14.0](https://nodejs.org/dist/v22.14.0/).
+1. Install [node.js 24.11.1](https://nodejs.org/dist/v24.11.1/).
 
 2. For installing the MDK MCP server, we offer two options:
 
@@ -56,7 +56,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
-    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.3(default), 25.9, 25.6, 24.11, and 24.7.
+    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.6(default),26.3, 25.9, 25.6, 24.11, and 24.7.
 
     ```
     {
@@ -64,7 +64,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.3"]
+          "args": ["--schema-version", "26.6"]
         }
       }
     }
@@ -83,7 +83,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcp": {
         "mdk-mcp": {
           "type": "local",
-          "command": ["mdk-mcp", "--schema-version", "26.3"],
+          "command": ["mdk-mcp", "--schema-version", "26.6"],
           "enabled": true
         }
       }
@@ -101,7 +101,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcpServers": {
         "mdk-mcp": {
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.3"]
+          "args": ["--schema-version", "26.6"]
         }
       }
     }
