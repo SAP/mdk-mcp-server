@@ -29,6 +29,18 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 ## Setup
 
+### Installation Size Optimization
+
+The MDK MCP server uses ONNX Runtime for AI embeddings. By default, `onnxruntime-node` includes binaries for all platforms (~200MB), but the postinstall script automatically removes unused platform binaries during installation, saving ~140-180MB of disk space.
+
+- **macOS users**: Keeps only macOS binaries (~30MB)
+- **Windows users**: Keeps only Windows binaries (~30-50MB)  
+- **Linux users**: Keeps only Linux binaries (~40-50MB)
+
+This optimization happens automatically during `npm install`. No action required.
+
+### Installation Steps
+
 1. Install [node.js 22.14.0](https://nodejs.org/dist/v22.14.0/).
 
 2. For installing the MDK MCP server, we offer two options:
@@ -36,7 +48,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
   
       ```bash
-      npm install -g @sap/mdk-mcp-server --loglevel=error
+      npm install -g @sap/mdk-mcp-server
       ``` 
 
     b. Clone the open-source code repository at https://github.com/SAP/mdk-mcp-server, and use `npm` to install.  
@@ -44,7 +56,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       ```bash 
       git clone https://github.com/SAP/mdk-mcp-server.git 
       cd mdk-mcp-server 
-      npm i --loglevel=error
+      npm i
       npm run build
       npm i -g @sap/mdk-mcp-server@. 
       ```
@@ -56,7 +68,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
-    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.3(default), 25.9, 25.6, 24.11, and 24.7.
+    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.6(default), 26.3, 25.9, 25.6, 24.11, and 24.7.
 
     ```
     {
@@ -64,7 +76,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.3"]
+          "args": ["--schema-version", "26.6"]
         }
       }
     }
@@ -83,7 +95,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcp": {
         "mdk-mcp": {
           "type": "local",
-          "command": ["mdk-mcp", "--schema-version", "26.3"],
+          "command": ["mdk-mcp", "--schema-version", "26.6"],
           "enabled": true
         }
       }
@@ -101,7 +113,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       "mcpServers": {
         "mdk-mcp": {
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.3"]
+          "args": ["--schema-version", "26.6"]
         }
       }
     }
@@ -109,6 +121,33 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     </details>
 
     Once configured, your AI agent will have access to the MDK MCP server. Depending on your IDE settings, you may need to approve initial tool calls.
+
+    <details>
+    Use an absolute path to Node.js in your Claude Desktop configuration file.
+
+    1. Find your Node.js installation path by running in terminal:
+       ```bash
+       which node
+       ```
+       This might output something like `/usr/local/bin/node` or `/opt/homebrew/bin/node`.
+
+    2. Edit `~/Library/Application Support/Claude/claude_desktop_config.json` and update the `command` field to use the absolute path:
+       ```json
+       {
+         "mcpServers": {
+           "mdk-mcp": {
+             "command": "/usr/local/bin/node",
+             "args": ["/usr/local/lib/node_modules/@sap/mdk-mcp-server/build/index.js", "--schema-version", "26.6"]
+           }
+         }
+       }
+       ```
+
+    3. Restart Claude Desktop.
+
+    **Note:** Adjust the paths based on your actual Node.js and MDK MCP server installation locations.
+
+    </details>
 
 4. **Create a Rule File**: To ensure your AI coding assistant uses the MCP servers appropriately for your project, define rules and guidelines in a file named [`AGENTS.md`](https://agents.md/). In the Cline extension for VS Code, click the **Manage Cline Rules & Workflows** icon below the prompt box, click **+** to create a new rule file (e.g., `AGENTS.md`) and add the above contents. 
 
@@ -158,7 +197,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - Migrate old MDK projects to latest schema.
     - Deploy your MDK project.
     - Generate onboarding QR code.
-    - Explain specific properties. 
+    - Explain specific properties.
     - Find information about control properties or any aspect of the documentation.
 
 ## Available Tools
@@ -173,8 +212,167 @@ This release of the MDK MCP server includes the following tools, which can be ac
 | `mdk-create`    | Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects.  | - `folderRootPath:` The path of the current project root folder. <br> - `scope:` The scope of creation:<br>• `project`: Initialize a new MDK project with full structure<br>• `entity`: Add entity metadata to an existing project<br> - `templateType:` The type of template to use (crud, list detail, base). Note: 'base' template is only valid for project scope.<br> - `oDataEntitySets:` The OData entity sets relevant to the user prompt, separated by commas.<br> - `offline:` Whether to generate the project in offline mode (only applicable for project scope). Set to false unless offline is explicitly specified. |
 | `mdk-gen`    | Generates MDK artifacts including pages, actions, i18n files, and rule references. Returns prompts for LLM processing (pages, actions, i18n) or searches for rule examples.  | - `artifactType:` The type of artifact to generate:<br>• `page`: Generate MDK page files (.page) with databinding or layout<br>• `action`: Generate MDK action files (.action)<br>• `i18n`: Generate internationalization files (.properties)<br>• `rule`: Search for and return relevant JavaScript rule examples<br> - `folderRootPath:` The path of the current project root folder (not required for rule artifact type).<br><br>**For page artifacts:**<br> - `pageType:` Type of page (required when artifactType is 'page'):<br>• `databinding`: Data-driven pages with controls bound to OData<br>• `layout`: Structure-focused pages with specific layouts<br> - `controlType:` The control type for databinding pages (required when pageType is 'databinding'). Available types: ObjectTable, FormCell, KeyValue, ObjectHeader, ContactTable, SimplePropertyCollection, ObjectCard, DataTable, KPIHeader, ProfileHeader, ObjectCollection, Timeline, TimelinePreview, Calendar.<br> - `oDataEntitySets:` Optional: The OData entity sets to use for page generation, separated by commas (required only when pageType is 'databinding').<br> - `layoutType:` The layout type for layout pages (required when pageType is 'layout'). Available types: Section, BottomNavigation, FlexibleColumnLayout, SideDrawerNavigation, Tabs, Extension.<br><br>**For action artifacts:**<br> - `actionType:` The type of action (required when artifactType is 'action'). Available types: CreateODataEntity, UpdateODataEntity, DeleteODataEntity, CreateODataMedia, InitializeOfflineOData, DownloadOfflineOData, UploadOfflineOData, CancelDownloadOfflineOData, CancelUploadOfflineOData, ClearOfflineOData, CloseOfflineOData, CreateODataRelatedEntity, CreateODataRelatedMedia, CreateODataService, DeleteODataMedia, DownloadMediaOData, LogMessage, Message, Navigation, OpenODataService, ProgressBanner, PushNotificationRegister, PushNotificationUnregister, ReadODataService, RemoveDefiningRequest, SendRequest, SetLevel, SetState, ToastMessage, UndoPendingChanges, UploadLog, UploadODataMedia, UploadStreamOData, ChatCompletion, PopoverMenu, CheckRequiredFields, ChangeSet, OpenDocument, Banner, Filter.<br> - `oDataEntitySets:` Optional: The OData entity sets to use for action generation, separated by commas (required only when artifactType is 'action').<br><br>**For i18n artifacts:**<br> - No additional parameters required beyond folderRootPath.<br><br>**For rule artifacts:**<br> - `query:` Search query for rule reference (required when artifactType is 'rule'). Examples: 'get app name', 'handle form validation', 'navigate to page', etc. |
 | `mdk-manage`    | Comprehensive MDK project management tool that handles build, deploy, validate, migrate, show QR code, and mobile app editor operations.  | - `folderRootPath:` The path of the current project root folder. <br> - `operation:` The operation to perform on the MDK project. Available operations:<br>• `build`: Build an MDK project<br>• `deploy`: Deploy an MDK project to the Mobile Services<br>• `validate`: Validate an MDK project<br>• `migrate`: Migrate an MDK project to the latest MDK version<br>• `show-qrcode`: Show QR code for an MDK project<br>• `open-mobile-app-editor`: Instruct how to open the Mobile App Editor to create .service.metadata file<br> - `externals:` Optional: Array of external package names to include in the deployment (e.g., ['@nativescript/geolocation']). If not specified, will automatically read from `mdk.bundlerExternals` in `.vscode/settings.json` of the project. Defaults to empty array if neither is provided. |
-| `mdk-docs`    | Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.  | - `operation:` The type of documentation operation to perform:<br>• `search`: Returns the top N results from MDK documentation by semantic search, sorted by relevance<br>• `component`: Returns the schema of an MDK component based on the name of the component<br>• `property`: Returns the documentation of a specific property of an MDK component<br>• `example`: Returns an example usage of an MDK component <br> - `folderRootPath:` The path of the current project root folder. Used to determine the appropriate MDK schema version. <br> - `query:` Search query string (required for 'search' operation). <br> - `component_name:` Name of the component (required for 'component', 'property', and 'example' operations). <br> - `property_name:` Name of the property (required for 'property' operation). <br> - `N:` Number of results to return for search operation (default: 5). |
+| `mdk-docs`    | Unified tool for accessing MDK documentation including search, component schemas, property details, and examples.  | - `operation:` The type of documentation operation to perform:<br>• `search`: Returns the top N results from MDK documentation by semantic search, sorted by relevance<br>• `component`: Returns the schema of an MDK component based on the name of the component<br>• `property`: Returns the documentation of a specific property of an MDK component<br>• `example`: Returns an example usage of an MDK component<br>• `search-samples`: Search through MDK tutorial samples and code examples from GitHub<br> - `folderRootPath:` The path of the current project root folder. Used to determine the appropriate MDK schema version. <br> - `query:` Search query string (required for 'search' and 'search-samples' operations). <br> - `component_name:` Name of the component (required for 'component', 'property', and 'example' operations). <br> - `property_name:` Name of the property (required for 'property' operation). <br> - `N:` Number of results to return for search operation (default: 5). |
 | `mdk-fetch-mobile-metadata`    | Fetches OData metadata from a Mobile Services destination and automatically saves it to .service.metadata file in the project. This retrieves the $metadata document from a configured destination and creates the service metadata configuration file. Requires CF CLI authentication (cf login).  | - `folderRootPath:` The path of the MDK project root folder where .service.metadata will be saved.<br> - `appId:` The Mobile Services application ID (e.g., 'com.sap.mdk.demo').<br> - `destination:` The destination name configured in Mobile Services (e.g., 'com.sap.edm.sampleservice.v4').<br> - `pathSuffix:` Optional path suffix to append before /$metadata (e.g., '/api/v1'). Leave empty if not needed.<br> - `landscapeType:` The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments. |
+
+## Ingesting GitHub Knowledge (Advanced)
+
+The MDK MCP server can ingest additional knowledge from GitHub repositories to enhance the `search-samples` operation. This allows the AI agent to search through MDK tutorial samples and code examples.
+
+### What Gets Ingested
+
+By default, the server ingests knowledge from:
+- **MDK Tutorial Samples**: https://github.com/SAP-samples/cloud-mdk-tutorial-samples
+- **MDK Samples**: https://github.com/SAP-samples/cloud-mdk-samples
+
+### When to Run Ingestion
+
+You typically only need to run ingestion in these scenarios:
+- **First-time setup** (if you want to use `search-samples` operation)
+- **Updating knowledge base** (when new samples are added to GitHub repositories)
+- **After cloning the repository** (ingested data is not included in the repo)
+
+> **Note:** The ingestion process is optional. The server will work without it, but the `search-samples` operation won't return results until ingestion is completed.
+
+### How to Ingest
+
+**Basic ingestion** (uses cached data if available):
+```bash
+npm run ingest
+```
+
+**Fresh ingestion** (ignores cache, re-downloads everything):
+```bash
+npm run ingest:fresh
+```
+
+**With GitHub token** (recommended for better rate limits):
+```bash
+export GITHUB_TOKEN="your_github_token_here"
+npm run ingest
+```
+
+**Custom options**:
+```bash
+npm run build
+node build/ingest-github-knowledge.js --no-cache --github-token "your_token" --chunk-size 800
+```
+
+### Command Line Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--no-cache` | Force re-download of all content, ignoring cache | Uses cache |
+| `--github-token <token>` | GitHub personal access token for API requests | `$GITHUB_TOKEN` env var |
+| `--vector-db <path>` | Path to store the vector database | `./knowledge.db` |
+| `--chunk-size <number>` | Size of text chunks for embedding | `1000` |
+| `--chunk-overlap <number>` | Overlap between chunks | `200` |
+
+### GitHub Token Setup
+
+To avoid GitHub API rate limits, create a personal access token:
+
+1. Go to https://github.com/settings/tokens
+2. Click **Generate new token** (classic)
+3. Select scopes: `public_repo` (read access to public repositories)
+4. Copy the token and set it as an environment variable:
+   ```bash
+   export GITHUB_TOKEN="ghp_your_token_here"
+   ```
+
+### Ingestion Output
+
+The ingestion process will:
+1. Fetch content from configured GitHub repositories
+2. Chunk the content into manageable pieces
+3. Generate embeddings using the AI model
+4. Store embeddings in a vector database
+5. Enable semantic search via the `search-samples` operation
+
+**Example output:**
+```
+Fetching from MDK Tutorial Samples...
+Chunking content: 150 chunks created
+Generating embeddings: 150/150 (100%)
+✓ Ingestion complete!
+```
+
+### Troubleshooting
+
+**Issue: GitHub API rate limit exceeded**
+- **Solution**: Set up a GitHub token (see above)
+
+**Issue: "Hugging Face model download failed"**
+- **Solution**: See the [Troubleshooting section](#expand-troubleshooting---nodejs-not-found-macos) for model authentication
+
+**Issue: Ingestion takes too long**
+- **Solution**: Use `--no-cache` only when necessary; cached runs are much faster
+
+**Issue: Out of memory**
+- **Solution**: Reduce `--chunk-size` or process fewer repositories
+
+## Offline OData Querying (Advanced)
+
+The MDK MCP server can help you query offline OData stores using the `ilodata` command-line tool. This is useful for debugging offline applications or inspecting data stored locally on devices during development.
+
+### Prerequisites
+
+1. **MDK SDK**
+2. **ilodata Tool**: Extract from `SAPOfflineOData-xx.xx.xx-Tools.zip` in the MDK SDK
+3. **Offline Store Files**: A pair of `.udb` and `.rq.udb` files from your offline application
+
+### Setup Steps
+
+1. **Extract the ilodata tool**:
+   ```bash
+   # Download MDK SDK and locate the tools zip file
+   unzip SAPOfflineOData-*.zip -d ~/ilodata-tools
+   ```
+
+2. **Prepare your offline store files**:
+   ```bash
+   # Copy your offline store files to the ilodata folder
+   cp /path/to/your/app/*.udb ~/ilodata-tools/
+   cp /path/to/your/app/*.rq.udb ~/ilodata-tools/
+   ```
+
+### Querying Offline Stores
+
+Once set up, you can use natural language prompts with the MDK MCP server to query offline stores:
+
+#### Example Prompts:
+
+**Basic query**:
+```
+Open and query the CustomerStore offline store located at ~/ilodata-tools/CustomerStore.udb 
+and retrieve the top 5 entities from the Customers entity set
+```
+
+**Filtered query**:
+```
+Query the SalesOrders offline store at ~/ilodata-tools/SalesOrders.udb 
+and get all orders where CustomerID equals 'ALFKI'
+```
+
+**Specific fields**:
+```
+Open the Products offline store at ~/ilodata-tools/Products.udb 
+and retrieve ProductID, ProductName, and UnitPrice from the Products entity set
+```
+
+**Count entities**:
+```
+Query the Employees offline store at ~/ilodata-tools/Employees.udb 
+and count the total number of records in the Employees entity set
+```
+
+### How It Works
+
+The AI agent will:
+1. Understand your natural language query
+2. Construct the appropriate `ilodata` command
+3. Execute the command against your offline store
+4. Return the results in a readable format
 
 ## Support, Feedback, Contributing
 

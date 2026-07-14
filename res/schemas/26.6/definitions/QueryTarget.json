@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/QueryTarget",
+  "title": "QueryTarget",
+  "allOf": [
+    {
+      "$ref": "definitions/Target"
+    },
+    {
+      "properties": {
+        "QueryOptions": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

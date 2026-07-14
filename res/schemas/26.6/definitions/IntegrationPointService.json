@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointService",
+  "title": "IntegrationPointService",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Service"
+    },
+    "Target": {
+      "$ref": "definitions/Service"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

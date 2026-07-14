@@ -1,0 +1,170 @@
+{
+  "$id": "definitions/OnlineServiceOptions",
+  "title": "OnlineServiceOptions",
+  "type": "object",
+  "properties": {
+    "avoidInPaths": {
+      "type": "string",
+      "description": "Characters that must be avoided in the path component of URLs"
+    },
+    "cacheMetadata": {
+      "type": "boolean",
+      "description": "Should load the service metadata, cached in a local file? If `metadataFile` is non-null, then the cache file name will be `metadataFile` with \".cache\" appended. If `metadataFile` is null, then the cache file name will be the service name with \".csdl.cache\" appended.",
+      "default": false
+    },
+    "checkQueries": {
+      "type": "boolean",
+      "description": "Check data queries before sending them to the server.",
+      "default": true
+    },
+    "checkResults": {
+      "type": "boolean",
+      "description": "Check query results after receiving them from the server.",
+      "default": true
+    },
+    "checkVersion": {
+      "type": "boolean",
+      "description": "Check version header in OData responses.",
+      "default": false
+    },
+    "createReturnsContent": {
+      "type": "boolean",
+      "description": "Does createEntity return the resulting entity state in response payload?",
+      "default": true
+    },
+    "dataFormat": {
+      "enum": [
+        { "const": 1, "description": "ATOM" },
+        { "const": 2, "description": "JSON" }
+      ],
+      "type": "integer",
+      "description": "Format to be used for data interchange.",
+      "default": 2
+    },
+    "dataVersion": {
+      "enum": [
+        { "const": 100, "description": "OData v1" },
+        { "const": 200, "description": "OData v2" },
+        { "const": 300, "description": "OData v3" },
+        { "const": 400, "description": "OData v4" }
+      ],
+      "type": "integer",
+      "description": "OData version to be used for data interchange."
+    },
+    "databaseOnly": {
+      "type": "boolean",
+      "description": "Is this service only to be used with a local database? By default, a service can be used both online (remote service) and offline (local database).",
+      "default": true
+    },
+    "fixMissingEmptyLists": {
+      "type": "boolean",
+      "description": "If set to true and the server returns no value for a collection-typed property of an entity then parser will return an empty collection and validation will not fail.",
+      "default": false
+    },
+    "fixMissingNullValues": {
+      "type": "boolean",
+      "description": "If set to true and the server returns no value for a non collection-typed property of an entity then parser will return a null value and validation will not fail.",
+      "default": false
+    },
+    "ieee754Compatible": {
+      "type": "boolean",
+      "description": "Should format parameter IEEE754Compatible enabled",
+      "default": false
+    },
+    "logErrors": {
+      "type": "boolean",
+      "description": "Whether data service error messages are logged.",
+      "default": true
+    },
+    "logWarnings": {
+      "type": "boolean",
+      "description": "Whether data service warning messages are logged.",
+      "default": true
+    },
+    "metadataFile": {
+      "type": "string",
+      "description": "Name of local file containing OData CSDL service metadata for the data service.",
+      "default": ""
+    },
+    "metadataText": {
+      "type": "string",
+      "description": "Text of the service metadata, provider by the caller so it does not need to be loaded.",
+      "default": ""
+    },
+    "metadataURL": {
+      "type": "string",
+      "description": "Alternative location of OData CSDL service metadata.",
+      "default": ""
+    },
+    "pingAccept": {
+      "type": "string",
+      "description": "Response type accepted by DataService.pingServer.",
+      "default": "application/json, application/xml, application/atomsvc+xml"
+    },
+    "pingMethod": {
+      "type": "string",
+      "description": "HTTP method used by DataService.pingServer.",
+      "default": "GET"
+    },
+    "pingResource": {
+      "type": "string",
+      "description": "Resource path used by DataService.pingServer.",
+      "default": "/"
+    },
+    "requiresToken": {
+      "type": "string",
+      "description": "Service security token for change requests?",
+      "default": "X-CSRF-Token"
+    },
+    "requiresType": {
+      "type": "boolean",
+      "description": "Service always requires type metadata in client-sent complex/entity values.",
+      "default": false
+    },
+    "statefulService": {
+      "type": "boolean",
+      "description": "Indicate the service is a stateful service that will return a session information in OData FunctionImports or ActionImports calls. If set to true, the session information returned from the CallFunction API will be automatically stored in #Application/#ClientData/#Property:Session/#Property:[SessionPropertyName] for subsequent use in actions or rules. e.g. `#Application/#ClientData/#Property:Session/#Property:SessionID`",
+      "default": false
+    },
+    "supportsAlias": {
+      "type": "boolean",
+      "description": "Support parameter aliases?",
+      "default": true
+    },
+    "supportsBatch": {
+      "type": "boolean",
+      "description": "Support OData batch requests?",
+      "default": true
+    },
+    "supportsBind": {
+      "type": "boolean",
+      "description": "Service support bind operations",
+      "default": true
+    },
+    "supportsDelta": {
+      "type": "boolean",
+      "description": "Service support server-side change tracking",
+      "default": true
+    },
+    "supportsNext": {
+      "type": "boolean",
+      "description": "Service support the following of next-links using the $skiptoken system query option.",
+      "default": true
+    },
+    "supportsPatch": {
+      "type": "boolean",
+      "description": "Service support OData PATCH requests (or MERGE for OData versions < 3.0).",
+      "default": true
+    },
+    "supportsUnbind": {
+      "type": "boolean",
+      "description": "Service support unbind operations (unbind navigation property from an existing entity in delete)?",
+      "default": true
+    },
+    "updateReturnsContent": {
+      "type": "boolean",
+      "description": "Do updateEntity calls return resulting entity state in response payload? ",
+      "default": true
+    }
+  }
+}

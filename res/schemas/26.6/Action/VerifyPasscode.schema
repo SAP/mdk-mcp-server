@@ -1,0 +1,20 @@
+{
+  "$id": "Action.Type.VerifyPasscode",
+  "title": "VerifyPasscode",
+  "description": "Define an action that trigger the passcode or biometric verification to verify user access right. It uses the same passcode verification that is set using the passcode policy for this app in the SAP Mobile Services. The passcode verification will only show up if passcode policy has been enabled for the app.\n* If user entered the correct passcode, `OnSuccess` event will be triggered.\n* If passcode policy has not been enabled for the app, `OnSuccess` event will be triggered.\n* If user cancel the verification, `OnFailure` event will be triggered.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.VerifyPasscode"
+    },
+    "AllowCancel": {
+      "description": "If set to true, it will allow the passcode verification to be cancelled.",
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

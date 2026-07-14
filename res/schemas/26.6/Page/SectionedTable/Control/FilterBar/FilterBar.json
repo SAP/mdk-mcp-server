@@ -1,0 +1,45 @@
+{
+    "$id": "Page/SectionedTable/Control/FilterBar/FilterBar",
+    "title": "FilterBar",
+    "description": "A horizontal bar that appears above a list of content and below the section header, containing filter and sorter controls. It renders each control as an interactive chip (also referred to as a button), which communicates the currently applied filters and allows users to quickly apply frequently-used filters. Chips with a downward chevron icon indicate that selecting them opens a bottom sheet or popover dialog for more complex selection, where users can interact with and apply filters accordingly. Users can scroll the bar horizontally to see any additional chips that may be off-screen. `FilterFeedbackBar` defined on `SectionedTable` would not be displayed if section level `FilterBar` is defined.",
+    "additionalProperties": {
+        "proxy": "FilterBarProxy"  
+    },
+    "properties": {
+        "Filters": {
+            "description": "The filters to be applied on the filter bar, this property can only be set with a rule. It accepts only an array of FilterSelection objects that must be returned from the assigned rule. The FilterSelection object could be created through createFilterSelection and createSorterSelection client APIs by providing the name of the control and the value(s) to be selected. The FilterSelection object would override the value defined in the control definition under the same name (`_Name`).",
+            "$ref": "definitions/Rule"
+        },
+        "Sections": {
+            "items": {
+                "$ref": "Page/SectionedTable/Control/FilterBar/Section"
+            },
+            "type": "array",
+            "description": "List of sections defined for the filter controls."
+        },
+        "Styles": {
+            "type": "object",
+            "properties": {
+                "Bar": {
+                    "$ref": "Styles/FilterBarClass",
+                    "description": "The style to be applied for `FilterBar`."
+                },
+                "Active": {
+                    "$ref": "Styles/FilterBarItemClass",
+                    "description": "The style to be applied when the filter item is in active state. filter control would also be considered as active if an initial value is set."
+                },
+                "InActive": {
+                    "$ref": "Styles/FilterBarItemClass",
+                    "description": "The style to be applied when the filter item is in inactive state."
+                }
+            }
+        },
+        "_Name": {
+            "type": "string"
+        },
+        "_Type": {
+            "const": "Control.Type.FilterBar"
+        }
+    },
+    "type": "object"
+}

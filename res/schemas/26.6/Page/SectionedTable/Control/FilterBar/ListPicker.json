@@ -1,0 +1,71 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/ListPicker",
+  "title": "ListPicker",
+  "additionalProperties": {
+    "proxy": "FilterBarListPickerControlProxy"  
+  },
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allows the user to close the picker without selecting a value or to clear all existing selections.\nOn Android, this property is ignored and empty selection is always allowed."
+    },
+    "AllowMultipleSelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allows user to select more than one value from the list."
+    },
+    "DisplayOnBar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicate whether the control should always be displayed on the FilterBar even when not selected."
+    },
+    "Label": {
+      "type": "string",
+      "description": "The label displayed for the control on the FilterBar and within the FilterBar dialog."
+    },
+    "PickerItems": {
+      "description": "An array of items for this picker.",
+      "anyOf": [
+        {
+          "$ref": "definitions/EntitySetTarget"
+        },
+        {
+          "$ref": "definitions/FixedCollection"
+        }
+      ]
+    },
+    "Search": {
+      "$ref": "Page/SectionedTable/Control/FilterBar/ListPickerSearch"
+    },
+    "SimpleQuery": {
+      "$ref": "Page/SectionedTable/Control/FilterBar/SimpleQuery"
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "When not specified or not found in the `PickerItems` no selection is made. An array of the above values can be used to specify multiple selection."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.ListPicker"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ],
+  "description": "A list picker allows the selection of one or more options among values within a defined category."
+}

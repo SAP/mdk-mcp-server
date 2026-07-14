@@ -43,6 +43,10 @@ const ALLOWED_COMMANDS = {
     executable: "yo",
     allowedArgs: ["--dataFile", "--force", "--tool"],
   },
+  bunx: {
+    executable: "bunx",
+    allowedArgs: ["--dataFile", "--force", "--tool"],
+  },
   mdkcli: {
     executable: "mdkcli.js",
     allowedArgs: [
@@ -372,7 +376,11 @@ export function runCommand(
     }
 
     // Increase timeout for yo (yeoman) commands which can take a while
-    if (command.includes("yo ") || baseCommand === "yo") {
+    if (
+      command.includes("yo ") ||
+      baseCommand === "yo" ||
+      command.includes("bunx yo")
+    ) {
       commandTimeout = options.timeout || 300000; // 5 minutes for yeoman generation
     }
 
@@ -833,7 +841,11 @@ export async function generateTemplateBasedMetadata(
   let yoCommand: string;
 
   // Check if Bun is being used
-  const isBun = process.env.npm_config_user_agent?.includes("bun");
+  const isBun =
+    process.env.npm_config_user_agent?.includes("bun") ||
+    typeof (globalThis as Record<string, unknown>).Bun !== "undefined" ||
+    process.versions?.bun !== undefined ||
+    process.execPath?.includes("bun");
 
   if (isBun) {
     // Bun doesn't create node_modules/.bin, so use bunx
@@ -847,17 +859,27 @@ export async function generateTemplateBasedMetadata(
       ".bin",
       process.platform === "win32" ? "yo.cmd" : "yo"
     );
-
-    if (!fs.existsSync(yoExecutable)) {
+    // Fallback: check global bun node_modules/.bin (bun global installs go here)
+    const yoExecutableGlobal = path.join(
+      path.dirname(projectRoot),
+      ".bin",
+      process.platform === "win32" ? "yo.cmd" : "yo"
+    );
+    if (fs.existsSync(yoExecutable)) {
+      yoCommand = yoExecutable;
+      console.error(
+        "[MDK MCP Server] Using node_modules/.bin/yo to execute yo generator"
+      );
+    } else if (fs.existsSync(yoExecutableGlobal)) {
+      yoCommand = yoExecutableGlobal;
+      console.error(
+        "[MDK MCP Server] Using global node_modules/.bin/yo to execute yo generator"
+      );
+    } else {
       throw new Error(
         `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`
       );
     }
-
-    yoCommand = yoExecutable;
-    console.error(
-      "[MDK MCP Server] Using node_modules/.bin/yo to execute yo generator"
-    );
   }
 
   let script = `${yoCommand} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
@@ -1214,7 +1236,14 @@ export async function getServerConfig(): Promise<{
 
     // Validate schema version if provided via command line
     if (schemaVersionFromArgs) {
-      const availableVersions = ["24.7", "24.11", "25.6", "25.9", "26.3"];
+      const availableVersions = [
+        "24.7",
+        "24.11",
+        "25.6",
+        "25.9",
+        "26.3",
+        "26.6",
+      ];
       if (!availableVersions.includes(schemaVersionFromArgs)) {
         console.warn(
           `Warning: Invalid schema version '${schemaVersionFromArgs}' provided via command line. ` +
@@ -1234,7 +1263,7 @@ export async function getServerConfig(): Promise<{
 
     // Use command line argument if valid, otherwise use package.json config
     const schemaVersion =
-      schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "26.3";
+      schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "26.6";
 
     return {
       schemaVersion,
@@ -1242,7 +1271,7 @@ export async function getServerConfig(): Promise<{
   } catch {
     // Default configuration if package.json cannot be read
     return {
-      schemaVersion: "26.3",
+      schemaVersion: "26.6",
     };
   }
 }
@@ -1268,10 +1297,10 @@ export async function getSchemaVersion(projectPath: string): Promise<string> {
       }
     }
 
-    return "26.3";
+    return "26.6";
   } catch (error) {
     console.error("Error reading schema version from Application.app:", error);
     // Return server default value on error
-    return "26.3";
+    return "26.6";
   }
 }

@@ -1,0 +1,30 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/Section",
+  "title": "Section",
+  "description": "Section acts as a container for container items. You can add multiple section containers within a `FilterBar` to group different controls. `Section` is currently only visible visually when filter dialog is displayed, and only applicable to iOS.",
+  "properties": {
+    "Controls": {
+      "description": "Contains controls to be displayed within the section.",
+      "anyOf": [
+        {
+          "type": "array",
+          "description": "Array of controls.",
+          "items": {
+            "$ref": "Page/SectionedTable/Control/FilterBar/FilterBarControl"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `FilterBarControl` in array format."
+        }
+      ]
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.Section"
+    }
+  },
+  "type": "object"
+}

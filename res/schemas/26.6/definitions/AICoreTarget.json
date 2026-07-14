@@ -1,0 +1,19 @@
+{
+  "$id": "definitions/AICoreTarget",
+  "title": "AICoreTarget",
+  "properties": {
+    "Path": {
+      "type": "string",
+      "description": "Specify the path. It will be appended to the destination URL and the full endpoint should end with \"/chats/completions\".",
+      "default": ""
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target AICore Service."
+    }
+  },
+  "required": [
+    "Service"
+  ],
+  "type": "object"
+}

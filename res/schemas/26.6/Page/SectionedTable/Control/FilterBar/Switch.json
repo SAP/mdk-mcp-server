@@ -1,0 +1,42 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/Switch",
+  "title": "Switch",
+  "additionalProperties": {
+    "proxy": "FilterBarSwitchControlProxy"  
+  },
+  "properties": {
+    "DisplayOnBar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicate whether the control should always be displayed on the FilterBar even when not selected."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Android only. Helper text to be displayed."
+    },
+    "Label": {
+      "type": "string",
+      "description": "The label displayed for the control on the FilterBar and within the FilterBar dialog."
+    },
+    "SimpleQuery": {
+      "$ref": "Page/SectionedTable/Control/FilterBar/SimpleQuery"
+    },
+    "Value": {
+      "type": "boolean",
+      "description": "The current value of the switch. When true, the switch is On and the filter is applied. Otherwise (false or omitted), the value is treated as undefined, the switch is Off, and the filter is removed from querying."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.Switch"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "SimpleQuery"
+  ],
+  "description": "A switch control allows the user to toggle between two mutually states, On (true) and Off (undefined). When toggled to Off, the value would be set to undefined, effectively removing the filter from querying."
+}

@@ -1,0 +1,9 @@
+{
+  "$id": "definitions/DataSubscriptions",
+  "title": "DataSubscriptions",
+  "type": "array",
+  "items": {
+    "type": "string"
+  },
+  "description": "Data subscriptions are a way to specify data changes that cause a UI element to redraw. Currently they are specifically related to OData actions. Data events are subscribed to by entity set name or ReadLink except for download and initialize actions.\n\nEvents:\n  1. Create, Create Media, Delete, Update OData Actions: Data subscriptions are handled by entity set names and ReadLinks, e.g. `[ \"Products\", \"SalesOrderItems\" ]`.\n\n  2. Download or Initialize offline store: Subscription needs to be based on the service being used, e.g. `[ \"/MDKApp/Services/AssetManager.service\" ]`. Specifying entity set or ReadLink for these action types will not work.\n\n  3. Upload action: Data subscriptions do not apply to upload actions.\n\n  4. Changesets: If the OData action is part of a changeset, it will not be published immediately. Instead, it will be published when the change set is complete.\n\nIf your control or section is bound to OData entities via Target binding, then it will be automatically subscribe to the data change events of the bound entity set or read link. Note that the UI element will redraw even when no target is defined."
+}

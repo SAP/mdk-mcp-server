@@ -1,0 +1,20 @@
+{
+  "$id": "definitions/QuerySpecifier",
+  "title": "QuerySpecifier",
+  "description": "This document describes the metadata properties available when a filter query is specified directly from the metadata.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "DisplayValue": {
+        "type": "string",
+        "description": "The value to display to the user."
+      },
+      "ReturnValue": {
+        "type": "string",
+        "description": "The query to execute on selection. Supports lambda queries and queries with binding property as well."
+      }
+    },
+    "required": ["DisplayValue","ReturnValue"]
+  }
+}

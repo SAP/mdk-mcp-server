@@ -1,0 +1,10 @@
+{
+  "$id": "definitions/Page",
+  "title": "Page",
+  "pattern": "(^\/.+\/Pages\/).*(.+\\.page)$|(^Pages\/).*(.+\\.page)$",
+  "type": "string",
+  "description": "Any file underneath the project `Pages` folder that has a _.page_ extension",
+  "examples": [
+    "/MyApp/Pages/Overview.page"
+  ]
+}

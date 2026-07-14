@@ -1,0 +1,41 @@
+{
+  "$id": "definitions/OnActionLog",
+  "description": "Note: If the `SetLevel` property in Action.Type.Logger.SetLevel holds a higher severity value, then Level priority is overridden and no message is logged.",
+  "title": "OnActionLog",
+  "properties": {
+    "Level": {
+      "description": "Define level of the log.",
+      "enum": [
+        {
+          "const": "Error",
+          "description": "High level log such as information on fatal errors."
+        },
+        {
+          "const": "Warn",
+          "description": "Medium level log such as potential issues or non-fatal errors."
+        },
+        {
+          "const": "Info",
+          "description": "Low level log such as information of lapsed event."
+        },
+        {
+          "const": "Debug",
+          "description": "Very low level log such as tracing information."
+        },
+        {
+          "const": "Trace",
+          "description": "To enable logging of traces to the client log file, you must also enable `TracingEnabled` and configure the debug settings via the [BrandedSettings.json](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/guides/getting-started/mdk/custom-client/branding-custom-client.html#debugging-options) or [SetDebugSettings](../Action/SetDebugSettings.schema.md) action. ``Note``: Traces will be tagged as `DEBUG` in the log file."
+        }
+      ],
+      "type": "string"
+    },
+    "Message": {
+      "description": "Message to be logged.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "Message"
+  ],
+  "type": "object"
+}
