@@ -397,12 +397,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             appId: {
               type: "string",
               description:
-                "The Mobile Services application ID (e.g., 'com.sap.mdk.demo').",
+                "The Mobile Services application ID (e.g., 'myapp.mdk.demo').",
             },
             destination: {
               type: "string",
               description:
-                "The destination name configured in Mobile Services (e.g., 'com.sap.edm.sampleservice.v4').",
+                "The destination name configured in Mobile Services (e.g., 'IncidentManagement').",
             },
             pathSuffix: {
               type: "string",
