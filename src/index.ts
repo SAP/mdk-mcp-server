@@ -1209,25 +1209,14 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               };
             }
 
-            // Use platform-specific command to open the QR code image
-            let openCommand: string;
-            if (process.platform === "win32") {
-              // Windows: use 'start' command with empty title to avoid prompting
-              // The empty string "" before the path is the window title parameter
-              openCommand = `start "" "${qrCodePath}"`;
-            } else if (process.platform === "darwin") {
-              // macOS: use 'open' command
-              openCommand = `open "${qrCodePath}"`;
-            } else {
-              // Linux/Unix: use 'xdg-open' command
-              openCommand = `xdg-open "${qrCodePath}"`;
-            }
+            // Get relative path for better display
+            const relativePath = path.join(".build", "qrcode.png");
 
             return {
               content: [
                 {
                   type: "text",
-                  text: `Execute this command to display the QR code:\n\n${openCommand}\n\nThe QR code can be scanned with the SAP Mobile Services Client app to onboard the MDK application.`,
+                  text: `You can find the **qrcode.png** file in the **\`${relativePath}\`** folder in your VS Code Explorer sidebar and click on it to view it.\n\nScan the QR code with the **SAP Mobile Services Client** app to onboard the MDK application.`,
                 },
               ],
             };
