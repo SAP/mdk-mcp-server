@@ -12,17 +12,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Version 0.3.6 - 2026-04-19
 
 ### Changed
-- Publish to Github MCP Registry
+- Publish to GitHub MCP Registry
 
 ## Version 0.3.5 - 2026-04-19
 
 ### Changed
-- Add the server to Claude Code and Github MCP Registry
+- Add the server to Claude Code and GitHub MCP Registry
 
 ## Version 0.3.4 - 2026-03-31
 
 ### Changed
-- Fix yo depenency issue
+- Fix yo dependency issue
 - Support 26.3 schema version
 
 ## Version 0.3.3 - 2026-01-23
@@ -47,7 +47,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
-- Support telementry and rule generation
+- Support telemetry and rule generation
 
 ## Version 0.2.1 - 2025-11-06
 
