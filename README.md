@@ -295,6 +295,7 @@ npm run build
 node build/ingest-github-knowledge.js --no-cache --github-token "your_token" --chunk-size 800
 ```
 
+
 ### Command Line Options
 
 | Option | Description | Default |
