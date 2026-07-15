@@ -376,59 +376,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
-      // {
-      //   name: "mdk-list-mobile-apps",
-      //   description:
-      //     "Lists all Mobile Services applications in the current CF space that have OData destinations configured. Requires CF CLI authentication (cf login). Returns application details including names, IDs, and configured destinations.",
-      //   annotations: {
-      //     title: "List Mobile Services Apps",
-      //     readOnlyHint: true,
-      //     idempotentHint: true,
-      //     openWorldHint: true,
-      //   },
-      //   inputSchema: {
-      //     type: "object",
-      //     properties: {
-      //       landscapeType: {
-      //         type: "string",
-      //         enum: ["Standard", "Preview"],
-      //         description:
-      //           "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
-      //         default: "Standard",
-      //       },
-      //     },
-      //     required: [],
-      //   },
-      // },
-      // {
-      //   name: "mdk-get-mobile-app",
-      //   description:
-      //     "Gets detailed information about a specific Mobile Services application, including its configured destinations. Requires CF CLI authentication (cf login).",
-      //   annotations: {
-      //     title: "Get Mobile Services App Details",
-      //     readOnlyHint: true,
-      //     idempotentHint: true,
-      //     openWorldHint: true,
-      //   },
-      //   inputSchema: {
-      //     type: "object",
-      //     properties: {
-      //       appId: {
-      //         type: "string",
-      //         description:
-      //           "The Mobile Services application ID (e.g., 'com.sap.mdk.demo').",
-      //       },
-      //       landscapeType: {
-      //         type: "string",
-      //         enum: ["Standard", "Preview"],
-      //         description:
-      //           "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
-      //         default: "Standard",
-      //       },
-      //     },
-      //     required: ["appId"],
-      //   },
-      // },
       {
         name: "mdk-fetch-mobile-metadata",
         description:
@@ -490,7 +437,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
     "mdk-gen",
     "mdk-manage",
     "mdk-docs",
-    "mdk-save-metadata",
+    "mdk-fetch-mobile-metadata",
   ];
 
   const isValidTool = validTools.includes(request.params.name);
@@ -1015,6 +962,18 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "deploy": {
+            // Check if CF is logged in before attempting deployment
+            if (!isCFLoggedIn()) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: getCFAuthErrorMessage(),
+                  },
+                ],
+              };
+            }
+
             // Get the externals parameter (defaults to empty array if not provided)
             let externals = (validatedArgs.externals as string[]) || [];
 
@@ -1300,13 +1259,31 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         // Handle errors gracefully
         console.error("MDK project manager operation failed:", error);
 
+        // Check if this is a CF authentication error
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.toLowerCase().includes("cloud foundry token") ||
+          errorMessage.toLowerCase().includes("please login cf") ||
+          errorMessage.toLowerCase().includes("cf login") ||
+          errorMessage.toLowerCase().includes("not logged in")
+        ) {
+          // This is a CF auth error - return the enhanced auth message
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
         return {
           content: [
             {
               type: "text",
-              text: `Operation failed: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: `Operation failed: ${errorMessage}`,
             },
           ],
         };
@@ -1683,250 +1660,10 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
       }
     }
 
-    case "mdk-save-metadata": {
-      try {
-        // Validate all arguments using comprehensive validation
-        const validatedArgs = validateToolArguments(
-          "mdk-save-metadata",
-          request.params.arguments || {}
-        );
-
-        const projectPath = validatedArgs.folderRootPath as string;
-        const applicationId = validatedArgs.applicationId as string;
-        const destinationName = validatedArgs.destinationName as string;
-        const odataContent = validatedArgs.odataContent as string;
-
-        // Create the metadata structure following the .service.metadata format
-        const metadata = {
-          mobile: {
-            api: "https://mobile-service-cockpit-api.cfapps.sap.hana.ondemand.com/cockpit/v1/org/a5eea9ac-e946-4f67-bcca-b8309caf24c2/space/5c2afc4c-3bad-4e11-84c6-5ebdbeb662ec",
-            app: applicationId,
-            destinations: [
-              {
-                name: destinationName,
-                relativeUrl: "",
-                metadata: {
-                  odataContent: odataContent,
-                },
-                type: "Mobile",
-              },
-            ],
-          },
-        };
-
-        // Write the metadata to .service.metadata file
-        const metadataFilePath = path.join(projectPath, ".service.metadata");
-        fs.writeFileSync(metadataFilePath, JSON.stringify(metadata, null, 4));
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Successfully saved service metadata to ${metadataFilePath}\n\nConfiguration:\n- Application ID: ${applicationId}\n- Destination: ${destinationName}\n- Metadata file: .service.metadata`,
-            },
-          ],
-        };
-      } catch (error) {
-        console.error("MDK save metadata operation failed:", error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Failed to save metadata: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
-            },
-          ],
-        };
-      }
-    }
-
-    // case "mdk-list-mobile-apps": {
-    //   try {
-    //     // Check if CF is logged in
-    //     if (!(await isCFLoggedIn())) {
-    //       return {
-    //         content: [
-    //           {
-    //             type: "text",
-    //             text: getCFAuthErrorMessage(),
-    //           },
-    //         ],
-    //       };
-    //     }
-
-    //     // Validate all arguments
-    //     const validatedArgs = validateToolArguments(
-    //       "mdk-list-mobile-apps",
-    //       request.params.arguments || {}
-    //     );
-
-    //     const landscapeType =
-    //       (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
-
-    //     // Get CF token and Mobile Services API URL
-    //     const cfToken = await getCFToken();
-    //     if (!cfToken) {
-    //       throw new Error("Failed to get CF token");
-    //     }
-    //     const apiUrl = getMobileServicesAdminAPI(landscapeType);
-    //     if (!apiUrl) {
-    //       throw new Error(
-    //         "Failed to get Mobile Services API URL from CF configuration"
-    //       );
-    //     }
-
-    //     // Create Mobile Services client and list apps
-    //     const client = createMobileServicesClient(apiUrl, cfToken);
-    //     const apps = await client.listApplications();
-
-    //     if (apps.length === 0) {
-    //       return {
-    //         content: [
-    //           {
-    //             type: "text",
-    //             text: "No Mobile Services applications with proxy service found in the current CF space.",
-    //           },
-    //         ],
-    //       };
-    //     }
-
-    //     // Format the results
-    //     let resultText = `# Mobile Services Applications with Proxy Service\n\n`;
-    //     resultText += `Found ${apps.length} application(s):\n\n`;
-
-    //     for (const app of apps) {
-    //       resultText += `## ${app.displayName || app.name}\n`;
-    //       resultText += `- **Application ID**: ${app.name}\n`;
-
-    //       const proxyService = app.services?.find(s => s.name === "proxy");
-    //       const destinations =
-    //         proxyService?.parameters?.endpointConfigurations || [];
-    //       if (destinations.length > 0) {
-    //         resultText += `- **Configured Destinations** (${destinations.length}):\n`;
-    //         for (const dest of destinations) {
-    //           resultText += `  - ${dest.endPointName}\n`;
-    //         }
-    //       }
-    //       resultText += `\n`;
-    //     }
-
-    //     return {
-    //       content: [
-    //         {
-    //           type: "text",
-    //           text: resultText,
-    //         },
-    //       ],
-    //     };
-    //   } catch (error) {
-    //     console.error("MDK list mobile apps operation failed:", error);
-    //     return {
-    //       content: [
-    //         {
-    //           type: "text",
-    //           text: `Failed to list Mobile Services applications: ${
-    //             error instanceof Error ? error.message : String(error)
-    //           }`,
-    //         },
-    //       ],
-    //     };
-    //   }
-    // }
-
-    // case "mdk-get-mobile-app": {
-    //   try {
-    //     // Check if CF is logged in
-    //     if (!(await isCFLoggedIn())) {
-    //       return {
-    //         content: [
-    //           {
-    //             type: "text",
-    //             text: getCFAuthErrorMessage(),
-    //           },
-    //         ],
-    //       };
-    //     }
-
-    //     // Validate all arguments
-    //     const validatedArgs = validateToolArguments(
-    //       "mdk-get-mobile-app",
-    //       request.params.arguments || {}
-    //     );
-
-    //     const appId = validatedArgs.appId as string;
-    //     const landscapeType =
-    //       (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
-
-    //     // Get CF token and Mobile Services API URL
-    //     const cfToken = await getCFToken();
-    //     if (!cfToken) {
-    //       throw new Error("Failed to get CF token");
-    //     }
-    //     const apiUrl = getMobileServicesAdminAPI(landscapeType);
-    //     if (!apiUrl) {
-    //       throw new Error(
-    //         "Failed to get Mobile Services API URL from CF configuration"
-    //       );
-    //     }
-
-    //     // Create Mobile Services client and get app details
-    //     const client = createMobileServicesClient(apiUrl, cfToken);
-    //     const app = await client.getApplication(appId);
-
-    //     // Format the results
-    //     let resultText = `# Mobile Services Application Details\n\n`;
-    //     resultText += `**Name**: ${app.displayName || app.name}\n`;
-    //     resultText += `**Application ID**: ${app.name}\n\n`;
-
-    //     // Get destinations from proxy service
-    //     const proxyService = app.services?.find(s => s.name === "proxy");
-    //     const destinations =
-    //       proxyService?.parameters?.endpointConfigurations || [];
-
-    //     if (destinations.length > 0) {
-    //       resultText += `## Configured Destinations (${destinations.length})\n\n`;
-    //       for (const dest of destinations) {
-    //         resultText += `### ${dest.endPointName}\n`;
-    //         if (dest.endPointAddress) {
-    //           resultText += `- **Address**: ${dest.endPointAddress}\n`;
-    //         }
-    //         if (dest.cloudDestinationName) {
-    //           resultText += `- **Cloud Destination**: ${dest.cloudDestinationName}\n`;
-    //         }
-    //         resultText += `\n`;
-    //       }
-    //     } else {
-    //       resultText += `**No destinations configured**\n`;
-    //     }
-
-    //     return {
-    //       content: [
-    //         {
-    //           type: "text",
-    //           text: resultText,
-    //         },
-    //       ],
-    //     };
-    //   } catch (error) {
-    //     console.error("MDK get mobile app operation failed:", error);
-    //     return {
-    //       content: [
-    //         {
-    //           type: "text",
-    //           text: `Failed to get Mobile Services application: ${
-    //             error instanceof Error ? error.message : String(error)
-    //           }`,
-    //         },
-    //       ],
-    //     };
-    //   }
-    // }
-
     case "mdk-fetch-mobile-metadata": {
       try {
         // Check if CF is logged in
-        if (!(await isCFLoggedIn())) {
+        if (!isCFLoggedIn()) {
           return {
             content: [
               {
@@ -2015,13 +1752,34 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         };
       } catch (error) {
         console.error("MDK fetch mobile metadata operation failed:", error);
+
+        // Check if this is a CF authentication error
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.toLowerCase().includes("cloud foundry token") ||
+          errorMessage.toLowerCase().includes("please login cf") ||
+          errorMessage.toLowerCase().includes("cf login") ||
+          errorMessage.toLowerCase().includes("not logged in") ||
+          errorMessage.toLowerCase().includes("unauthorized") ||
+          errorMessage.toLowerCase().includes("401")
+        ) {
+          // This is a CF auth error - return the enhanced auth message
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
         return {
           content: [
             {
               type: "text",
-              text: `Failed to fetch and save Mobile Services metadata: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: `Failed to fetch and save Mobile Services metadata: ${errorMessage}`,
             },
           ],
         };

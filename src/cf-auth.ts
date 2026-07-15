@@ -65,11 +65,22 @@ export function getCFConfig(): CFConfig | null {
 }
 
 /**
- * Check if user is logged into CF CLI
+ * Check if user is logged into CF CLI with a valid token
  * @returns true if valid CF session exists
  */
 export function isCFLoggedIn(): boolean {
-  return getCFToken() !== null;
+  try {
+    // Try to execute a simple CF command to verify the token is valid
+    // Using 'cf target' is fast and will fail if token is expired
+    execSync("cf target", {
+      stdio: "pipe",
+      encoding: "utf-8",
+    });
+    return true;
+  } catch {
+    // Token is missing, expired, or CF CLI is not working
+    return false;
+  }
 }
 
 /**
@@ -153,16 +164,31 @@ export function refreshCFToken(): boolean {
 }
 
 /**
- * Get formatted error message for CF authentication issues
- * @returns User-friendly error message with setup instructions
+ * Get formatted error message for CF authentication issues with VS Code command
+ * @returns User-friendly error message with Command Palette instructions and terminal option
  */
 export function getCFAuthErrorMessage(): string {
-  return `Cloud Foundry CLI authentication required.
+  return `# Cloud Foundry Authentication Required
 
-Please follow these steps:
-1. Install CF CLI: https://docs.cloudfoundry.org/cf-cli/install-go-cli.html
-2. Login: cf login --sso
-3. Target your org/space: cf target -o <org> -s <space>
+You have **two options** to authenticate:
 
-Then try the operation again.`;
+## Option 1: Use VS Code Command Palette (Recommended)
+1. Press **\`Cmd+Shift+P\`** (Mac) or **\`Ctrl+Shift+P\`** (Windows/Linux)
+2. Type: **\`CF: Login to Cloud Foundry\`**
+3. Press **Enter**
+4. Follow the prompts in the Cloud Foundry Tools extension
+
+## Option 2: Use Terminal
+Run this command in your terminal:
+\`\`\`bash
+cf login --sso
+\`\`\`
+
+Then:
+1. Visit the passcode URL shown
+2. Copy the passcode from your browser
+3. Paste it into the terminal
+4. Select your organization and space
+
+After completing authentication with either option, retry the deployment.`;
 }
