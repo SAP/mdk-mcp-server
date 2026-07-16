@@ -41,7 +41,7 @@
     "@sap-ux/btp-utils": "1.2.1",
     "@sap-ux/feature-toggle": "0.4.0",
     "@sap-ux/telemetry": "0.7.5",
-    "@sap/generator-mdk": "1.0.0-2",
+    "@sap/generator-mdk": "1.1.1",
     "@sap/mdk-tools": "^1.15.0",
     "axios": "^1.13.6",
     "dotenv": "^17.2.3",
