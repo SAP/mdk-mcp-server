@@ -1033,7 +1033,6 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               projectPath: projectPath,
               deploymentTarget: "mobile",
               projectName: mobileServiceAppName,
-              //projectName: "RiskManagement",
               showQR: true,
             };
 
