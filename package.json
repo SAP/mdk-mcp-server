@@ -52,7 +52,7 @@
     "@sap/artifact-management-base": "^1.53.1",
     "@sap/generator-mdk": "1.1.1",
     "@sap/mdk-tools": "^1.16.0",
-    "axios": "^1.13.6",
+    "axios": "^1.18.1",
     "dotenv": "^17.2.3",
     "i18next": "25.3.0",
     "os-name": "4.0.1",
@@ -109,7 +109,20 @@
     "@babel/plugin-proposal-class-properties": "npm:@babel/plugin-transform-class-properties@^7.24.7",
     "@babel/plugin-proposal-optional-chaining": "npm:@babel/plugin-transform-optional-chaining@^7.24.7",
     "@babel/plugin-proposal-async-generator-functions": "npm:@babel/plugin-transform-async-generator-functions@^7.24.7",
-    "@babel/plugin-proposal-object-rest-spread": "npm:@babel/plugin-transform-object-rest-spread@^7.24.7"
+    "@babel/plugin-proposal-object-rest-spread": "npm:@babel/plugin-transform-object-rest-spread@^7.24.7",
+    "@opentelemetry/core": "^2.8.0",
+    "axios": "^1.18.1",
+    "lodash": "^4.17.24",
+    "minimatch": "^10.2.5",
+    "semver-regex": "^3.1.4",
+    "serialize-javascript": "^7.0.5",
+    "http-cache-semantics": "^4.1.1",
+    "trim-newlines": "^3.0.1",
+    "yargs-parser": "^20.2.9",
+    "adm-zip": "^0.6.0",
+    "@sigstore/core": "^4.0.1",
+    "sigstore": "^5.0.0",
+    "got": "^11.8.6"
   },
   "mdkConfig": {
     "schemaVersion": "26.6"
