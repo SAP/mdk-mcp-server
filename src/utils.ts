@@ -427,15 +427,15 @@ export async function geServiceMetadataJson(
 
 export async function getModulePath(modueName: string): Promise<string> {
   try {
-    // Only check local node_modules for @sap/mdk-tools or @sap/generator-mdk in this server
-    const localModulePath = path.join(
-      projectRoot,
-      "node_modules",
-      "@sap",
-      modueName
-    );
+    // Check local node_modules first, then fall back to the flat (Bun global) node_modules one level up
+    const candidatePaths = [
+      path.join(projectRoot, "node_modules", "@sap", modueName),
+      path.join(path.dirname(projectRoot), modueName),
+    ];
 
-    if (fs.existsSync(localModulePath)) {
+    const localModulePath = candidatePaths.find(p => fs.existsSync(p)) || "";
+
+    if (localModulePath) {
       // Look for the mdk binary in the package
       const binPath = path.join(localModulePath, "lib");
       const binPathCmd = path.join(localModulePath, "bin");
@@ -888,9 +888,7 @@ export async function generateTemplateBasedMetadata(
       }
       if (yoInPath && fs.existsSync(yoInPath)) {
         yoCommand = yoInPath;
-        console.error(
-          `[MDK MCP Server] Using system PATH yo at ${yoInPath}`
-        );
+        console.error(`[MDK MCP Server] Using system PATH yo at ${yoInPath}`);
       } else {
         throw new Error(
           `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`
