@@ -1,0 +1,26 @@
+{
+  "$id": "Page/Extension",
+  "title": "Extension",
+  "additionalProperties": {
+    "proxy": "PageProxy"  
+  },
+  "allOf": [
+    {
+      "$ref": "Page/Common/Extension"
+    },
+    {
+      "properties": {
+        "_Type": {
+          "const": "Control.Type.Extension"
+        },
+        "_Name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "_Type"
+      ],
+      "type": "object"
+    }
+  ]
+}

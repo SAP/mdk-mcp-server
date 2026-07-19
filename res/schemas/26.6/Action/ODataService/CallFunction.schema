@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.CallFunction",
+  "title": "ODataService CallFunction",
+  "description": "CallFunction action is used to execute OData FunctionImport or ActionImport.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Target": {
+      "$ref": "definitions/CallFunctionTarget"
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.CallFunction"
+    }
+  },
+  "required": [
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

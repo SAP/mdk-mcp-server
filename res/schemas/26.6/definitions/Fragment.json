@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/Fragment",
+  "title": "Fragment",
+  "pattern": "(^\/.+\/Fragments\/).*(.+\\.fragment)$|(^Fragments\/).*(.+\\.fragment)$",
+  "description": "Reference to a fragment in metadata `Fragments` folder that has a _.fragment_ extension",
+  "type": "string"
+}

@@ -1,0 +1,40 @@
+{
+    "$id": "Page/SectionedTable/Control/FilterBar/SimpleQuery",
+    "title": "SimpleQuery",
+    "description": "To define properties related to generating simple query for filter query options. `Property` is needed to enable the simple query generation, and it should be the name of the property in the entity that is used for filtering. If `Property` is not provided, the control will not generate simple query for filter options, in such case, application developer should provide the filter query in the `ReturnValue` of `Items` or `PickerItems`. Example of query format: `Property` `Operator` `Value` e.g. Price eq 10. The `Operator` property is optional, and the default operator is 'eq' (equal to).",
+    "properties": {
+      "Operator": {
+        "description": "Comparison operator to be used for the simple query. If not provided, a default operator will be used.",
+        "default": "eq",
+        "enum": [ {
+            "const": "eq",
+            "description": "Equal to."
+          }, {
+            "const": "ne",
+            "description": "Not equal to."
+          }, {
+            "const": "gt",
+            "description": "Greater than."
+          }, {
+            "const": "ge",
+            "description": "Greater than or equal to."
+          }, {
+            "const": "lt",
+            "description": "Less than."
+          }, {
+            "const": "le",
+            "description": "Less than or equal to."
+          }
+        ],
+        "type": "string"
+      },
+      "Property": {
+        "type": "string",
+        "description": "Name of the property in the entity to generate simple query for filter options. If not provided, simple query will not be generated for the filter options of the control."
+      }
+    },
+    "type": "object",
+    "required": [
+      "Property"
+    ]
+  }

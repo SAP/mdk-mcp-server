@@ -1,0 +1,38 @@
+{
+  "$id": "definitions/MultiSorterFixedCollection",
+  "title": "MultiSorterFixedCollection",
+  "description": "This document describes the metadata properties available when mapping a fixed collection to MultiSorter control. Typically the controls that make use of this definition display some sort of list to the user.",
+  "type": "array",
+  "additionalProperties": {
+    "proxy": "MultiSorterFormCellProxy"
+  },
+  "items": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "DisplayValue": {
+            "type": "string",
+            "description": "The value to display to the user. If not specified, the ReturnValue will be used."
+          },
+          "ReturnValue": {
+            "type": "string",
+            "description": "The value to return on selection."
+          },
+          "AscendingLabel": {
+            "type": "string",
+            "description": "The value to display ascending label. If not specified, default value is `Ascending`."
+          },
+          "DescendingLabel": {
+            "type": "string",
+            "description": "The value to display descending label label. If not specified, default value is `Descending`."
+          }
+        },
+        "required": ["ReturnValue"]
+      }, 
+      {
+        "type": "string"
+      }
+    ]
+  }
+}

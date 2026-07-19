@@ -1,0 +1,12 @@
+{
+  "$id": "definitions/BooleanOrString",
+  "title": "BooleanOrString",
+  "anyOf": [
+    {
+      "type": "string"
+    },
+    {
+      "type": "boolean"
+    }
+  ]
+}

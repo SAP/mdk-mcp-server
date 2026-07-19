@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.CreateRelatedEntity",
+  "title": "ODataService CreateRelatedEntity",
+  "description": "CreateRelatedEntity action is used to create an entity in the target system, related to a parent entity via a parent navigation property.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "ParentLink": {
+      "$ref": "definitions/LinkItem",
+      "description": "Parent navigation property to be linked."
+    },
+    "Properties": {
+      "type": "object",
+      "description": "A list of the target entity's property names and values in key/value pairs format. Complex property type is supported."
+    },
+    "Target": {
+      "$ref": "definitions/Target"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.CreateRelatedEntity"
+    }
+  },
+  "required": [
+    "ParentLink",
+    "Target",
+    "_Type"
+  ],
+  "type": "object"
+}

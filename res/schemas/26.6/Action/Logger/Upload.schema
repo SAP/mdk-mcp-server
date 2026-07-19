@@ -1,0 +1,15 @@
+{
+  "$id": "Action/Logger/Upload",
+  "title": "Upload",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "The `Log Upload` action uploads the client logs from the app to SAP Mobile Services.\n\nIf you are connecting to SAP Mobile Services Cloud Foundry environment, you must enable the `Log Upload` policy under **Mobile Client Log Upload** > **Configuration** in your Mobile Services App configuration.  The uploaded file can be found in SAP Mobile Services under **Analytics** > **Logs** > **Technical Logs**. The uploaded file is of type: Client Log, and it can be selected and downloaded for viewing.\n\nIf you are connecting to SAP Mobile Services Neo environment, you must enable the `Client Log Upload` in your Mobile Services App Configuration's Client Policies. The uploaded file can be found in SAP Mobile Services **App Configuration** > **Mobile Client Log Upload** > **Log Files**. The uploaded file(s) can be selected and downloaded for viewing.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.Logger.Upload"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

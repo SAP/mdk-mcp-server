@@ -1,0 +1,32 @@
+{
+  "$id": "Page/Common/ObjectCellEntitySetTarget",
+  "title": "ObjectCellEntitySetTarget",
+  "description": "This document describes the metadata properties available when mapping an ObjectCell EntitySet to a control. Typically the controls that make use of this definition display some sort of list to the user.",
+  "properties": {
+    "ObjectCell": {
+      "description": "The property of the value to display to the user.",
+      "anyOf": [
+        {
+          "$ref": "Page/SectionedTable/Control/ObjectCell"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "ReturnValue": {
+      "type": "string",
+      "description": "The property of the value to return on selection."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryFunctionTarget",
+      "description": "The target entity set to get the values from."
+    }
+  },
+  "required": [
+    "ObjectCell",
+    "ReturnValue",
+    "Target"
+  ],
+  "type": "object"
+}

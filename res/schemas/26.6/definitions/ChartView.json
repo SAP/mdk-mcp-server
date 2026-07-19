@@ -1,0 +1,85 @@
+{
+  "$id": "definitions/ChartView",
+  "title": "ChartView",
+  "description": "Chart view used in ChartContent and ObjectHeaderChart.",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "ChartType": {
+      "desciption": "The type of chart.",
+      "default": "Line",
+      "enum": [
+        "Line",
+        "Column",
+        "Bar",
+        "Donut"
+      ],
+      "type": "string"
+    },
+    "ChartHeight": {
+      "description": "Provide chart height in dp. Only for android.",
+      "default": 650,
+      "type": "integer"
+    },
+    "SeriesTitles": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "SeriesColor": {
+      "description": "Each string must represent hex-code of color. iOS only, it is not configurable in Android.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "Data": {
+      "description": "Data contains the values for each series. It expect an array that contains integer arrays. Each array element represents data for a series.",
+      "items": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "type": "array"
+    },
+    "CategoryTitles": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "NoDataText": {
+      "description": "Placeholder text when chart data is not available. If this is absent, no text will be displayed when chart data is empty.",
+      "type": "string"
+    },
+    "CategoryAxisTitle": {
+      "description": "The title for X-Axis",
+      "type": "string"
+    },
+    "ValueAxisTitle": {
+      "description": "The title for Y-Axis",
+      "type": "string"
+    },
+    "TrendItems": {
+      "description": "Can be used to display trends of data. This is only for iOS and only when the chart content is interactive.",
+      "items":{
+        "properties": {
+          "TrendTitle": {
+            "description": "This is only for iOS, not supported in Android.",
+            "type": "string"
+          },
+          "TrendImage": {
+            "description": "This is only for iOS, not supported in Android.",
+            "$ref": "definitions/Image"
+          }
+        },
+        "type": "object"
+      },
+      "type":"array"
+    }
+  },
+  "type": "object"
+}

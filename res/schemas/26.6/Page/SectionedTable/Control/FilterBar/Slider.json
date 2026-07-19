@@ -1,0 +1,57 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/Slider",
+  "title": "Slider",
+  "additionalProperties": {
+    "proxy": "FilterBarSliderControlProxy"  
+  },
+  "properties": {
+    "DecimalPlaces": {
+      "type": "number",
+      "description": "The number of decimal places to be displayed for the slider value.",
+      "default": 0
+    },
+    "DisplayOnBar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicate whether the control should always be displayed on the FilterBar even when not selected."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed."
+    },
+    "Label": {
+      "type": "string",
+      "description": "The label displayed for the control on the FilterBar and within the FilterBar dialog."
+    },
+    "MaxValue": {
+      "type": "number",
+      "description": "The maximum value of the slider.",
+      "default": 100
+    },
+    "MinValue": {
+      "type": "number",
+      "description": "The minimum value of the slider.",
+      "default": 0
+    },
+    "SimpleQuery": {
+      "$ref": "Page/SectionedTable/Control/FilterBar/SimpleQuery"
+    },
+    "Value": {
+      "type": "number",
+      "description": "The current value of the slider."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.Slider"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "SimpleQuery"
+  ],
+  "description": "A slider control allows the user to select a value from a range by moving a slider thumb along a track. Currently it is not possible to reset the value to empty once the control is applied either through definition or filters or user interaction."
+}

@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "name": "MDK Tutorial Samples",
+      "url": "https://github.com/SAP-samples/cloud-mdk-tutorial-samples",
+      "type": "tutorials",
+      "description": "Step-by-step tutorial samples for MDK",
+      "enabled": true
+    },
+    {
+      "name": "MDK Samples",
+      "url": "https://github.com/SAP-samples/cloud-mdk-samples",
+      "type": "samples",
+      "description": "Sample MDK applications and code examples",
+      "enabled": true
+    }
+  ],
+  "ingestion": {
+    "chunkSize": 1000,
+    "chunkOverlap": 200,
+    "fileExtensions": [".md", ".json", ".ts", ".js", ".html", ".xml"],
+    "vectorDbPath": "./knowledge.db",
+    "cacheEnabled": true,
+    "cachePath": "./cache/github"
+  },
+  "search": {
+    "defaultTopK": 5,
+    "similarityThreshold": 0.7
+  }
+}

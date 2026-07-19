@@ -1,0 +1,30 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/FilterBarControl",
+  "title": "FilterBarControl",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "FilterBarControlProxy"
+  },
+  "anyOf": [
+    {
+      "$ref": "Page/SectionedTable/Control/FilterBar/Segmented",
+      "description": "Segmented control to be displayed in `FilterBar`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/FilterBar/ListPicker",
+      "description": "ListPicker control to be displayed in `FilterBar`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/FilterBar/MultiSorter",
+      "description": "MultiSorter control to be displayed in `FilterBar`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/FilterBar/Switch",
+      "description": "Switch control to be displayed in `FilterBar`."
+    },
+    {
+      "$ref": "Page/SectionedTable/Control/FilterBar/Slider",
+      "description": "Slider control to be displayed in `FilterBar`."
+    }
+  ]
+}

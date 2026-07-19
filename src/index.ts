@@ -14,8 +14,22 @@ import {
   getSchemaVersion,
   getServerConfig,
   safeJsonParse,
+  geServiceMetadataJson,
 } from "./utils.js";
+import {
+  isCapProject,
+  getCapMdkConfig,
+  resolveMdkProjectPath,
+} from "./cap-utils.js";
 import { validateToolArguments } from "./validation.js";
+import {
+  getCFToken,
+  getMobileServicesAdminAPI,
+  getCFAuthErrorMessage,
+  isCFLoggedIn,
+  refreshCFToken,
+} from "./cf-auth.js";
+import { createMobileServicesClient } from "./mobile-services-client.js";
 import path from "path";
 import fs from "fs";
 import {
@@ -64,7 +78,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "mdk-create",
         description:
-          "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects.",
+          "Creates MDK projects or entity metadata using templates (CRUD, List Detail, Base). Use this for initializing new projects or adding entity metadata to existing projects. Supports CAP projects - automatically creates MDK apps in the app/ folder with proper naming and configuration.",
         annotations: {
           title: "Create MDK Project",
           destructiveHint: true,
@@ -76,7 +90,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             folderRootPath: {
               type: "string",
-              description: "The path of the current project root folder.",
+              description:
+                "The path of the current project root folder. For CAP projects, provide the CAP project root - the MDK app will be created in app/<projectname>_mdk/.",
             },
             scope: {
               type: "string",
@@ -103,6 +118,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 "Whether to generate the project in offline mode (only applicable for project scope). Set to false unless offline is explicitly specified.",
               default: false,
             },
+            cfOrg: {
+              type: "string",
+              description:
+                "Optional: Cloud Foundry organization name. If provided along with cfSpace, will be used to configure the deployment target.",
+            },
+            cfSpace: {
+              type: "string",
+              description:
+                "Optional: Cloud Foundry space name. If provided along with cfOrg, will be used to configure the deployment target.",
+            },
           },
           required: [
             "folderRootPath",
@@ -118,7 +143,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           "Generates MDK artifacts including pages, actions, i18n files, and rule references. Returns prompts for LLM processing (pages, actions, i18n) or searches for rule examples.",
         annotations: {
           title: "Generate MDK Artifacts",
-          readOnlyHint: true,
+          destructiveHint: true,
           idempotentHint: true,
           openWorldHint: false,
         },
@@ -307,13 +332,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             operation: {
               type: "string",
-              enum: ["search", "component", "property", "example"],
+              enum: [
+                "search",
+                "component",
+                "property",
+                "example",
+                "search-samples",
+              ],
               description:
                 "The type of documentation operation to perform:\n" +
                 "• search: Returns the top N results from MDK documentation by semantic search, sorted by relevance\n" +
                 "• component: Returns the schema of an MDK component based on the name of the component\n" +
                 "• property: Returns the documentation of a specific property of an MDK component\n" +
-                "• example: Returns an example usage of an MDK component",
+                "• example: Returns an example usage of an MDK component\n" +
+                "• search-samples: Search through MDK tutorial samples and code examples from GitHub",
             },
             folderRootPath: {
               type: "string",
@@ -323,7 +355,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             query: {
               type: "string",
               description:
-                "Search query string (required for 'search' operation).",
+                "Search query string (required for 'search' and 'search-samples' operations).",
             },
             component_name: {
               type: "string",
@@ -344,6 +376,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["operation", "folderRootPath"],
         },
       },
+      {
+        name: "mdk-fetch-mobile-metadata",
+        description:
+          "Fetches OData metadata from a Mobile Services destination and automatically saves it to .service.metadata file in the project. This retrieves the $metadata document from a configured destination in a Mobile Services application and creates the service metadata configuration file. Requires CF CLI authentication (cf login).",
+        annotations: {
+          title: "Fetch and Save Mobile Services Metadata",
+          destructiveHint: true,
+          idempotentHint: false,
+          openWorldHint: true,
+        },
+        inputSchema: {
+          type: "object",
+          properties: {
+            folderRootPath: {
+              type: "string",
+              description:
+                "The path of the MDK project root folder where .service.metadata will be saved.",
+            },
+            appId: {
+              type: "string",
+              description:
+                "The Mobile Services application ID (e.g., 'myapp.mdk.demo').",
+            },
+            destination: {
+              type: "string",
+              description:
+                "The destination name configured in Mobile Services (e.g., 'IncidentManagement').",
+            },
+            pathSuffix: {
+              type: "string",
+              description:
+                "Optional path suffix to append before /$metadata (e.g., '/api/v1'). Leave empty if not needed.",
+              default: "",
+            },
+            landscapeType: {
+              type: "string",
+              enum: ["Standard", "Preview"],
+              description:
+                "The Mobile Services landscape type. Use 'Standard' for production environments (default) or 'Preview' for preview/test environments.",
+              default: "Standard",
+            },
+          },
+          required: ["folderRootPath", "appId", "destination"],
+        },
+      },
     ],
   };
 });
@@ -355,7 +432,13 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
   TelemetryHelper.markToolStartTime();
 
   // List of valid tool names
-  const validTools = ["mdk-create", "mdk-gen", "mdk-manage", "mdk-docs"];
+  const validTools = [
+    "mdk-create",
+    "mdk-gen",
+    "mdk-manage",
+    "mdk-docs",
+    "mdk-fetch-mobile-metadata",
+  ];
 
   const isValidTool = validTools.includes(request.params.name);
 
@@ -385,11 +468,13 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           request.params.arguments || {}
         );
 
-        const projectPath = validatedArgs.folderRootPath as string;
+        let projectPath = validatedArgs.folderRootPath as string;
         const scope = validatedArgs.scope as string;
         const templateType = validatedArgs.templateType as string;
         const oDataEntitySetsString = validatedArgs.oDataEntitySets as string;
         const offline = (validatedArgs.offline as boolean) || false;
+        const cfOrg = validatedArgs.cfOrg as string | undefined;
+        const cfSpace = validatedArgs.cfSpace as string | undefined;
 
         // Validate: 'base' template only for project scope
         if (templateType === "base" && scope === "entity") {
@@ -404,6 +489,27 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         }
 
         const isEntity = scope === "entity";
+
+        // Check if this is a CAP project and handle accordingly
+        if (scope === "project" && isCapProject(projectPath)) {
+          const capConfig = await getCapMdkConfig(projectPath);
+
+          // Create app directory if needed
+          const appDir = path.join(projectPath, "app");
+          if (!fs.existsSync(appDir)) {
+            fs.mkdirSync(appDir, { recursive: true });
+          }
+
+          // Use the MDK project path from CAP config and create if needed
+          projectPath = capConfig.mdkProjectPath;
+          if (!fs.existsSync(projectPath)) {
+            fs.mkdirSync(projectPath, { recursive: true });
+          }
+        } else if (isEntity) {
+          // For entity scope, resolve to the MDK app folder if in CAP project
+          projectPath = resolveMdkProjectPath(projectPath);
+        }
+
         const useOffline = scope === "project" ? offline : false;
 
         const script = await generateTemplateBasedMetadata(
@@ -411,7 +517,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           templateType,
           projectPath,
           useOffline,
-          isEntity
+          isEntity,
+          cfOrg,
+          cfSpace
         );
 
         if (!script) {
@@ -854,6 +962,18 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "deploy": {
+            // Check if CF is logged in before attempting deployment
+            if (!isCFLoggedIn()) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: getCFAuthErrorMessage(),
+                  },
+                ],
+              };
+            }
+
             // Get the externals parameter (defaults to empty array if not provided)
             let externals = (validatedArgs.externals as string[]) || [];
 
@@ -916,6 +1036,50 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               showQR: true,
             };
 
+            // Check if this is a CAP project to determine if we need --create and destination parameters
+            const isCapProjectScenario = isCapProject(
+              path.dirname(projectPath)
+            );
+
+            // Retrieve destination information from service metadata (only for CAP projects)
+            let destinationString = "";
+            if (isCapProjectScenario) {
+              try {
+                const serviceMetadataPath = path.join(
+                  projectPath,
+                  ".service.metadata"
+                );
+                if (fs.existsSync(serviceMetadataPath)) {
+                  const serviceMetadata = (await geServiceMetadataJson(
+                    serviceMetadataPath
+                  )) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+                  if (
+                    serviceMetadata?.mobile?.destinations &&
+                    Array.isArray(serviceMetadata.mobile.destinations) &&
+                    serviceMetadata.mobile.destinations.length > 0
+                  ) {
+                    const destination = serviceMetadata.mobile.destinations[0];
+                    if (destination.name) {
+                      destinationString = `--destination ${destination.name}`;
+                      // Add destinationUrl if available in metadata
+                      if (destination.url) {
+                        destinationString += ` --destinationUrl ${destination.url}`;
+                        if (destination.relativeUrl) {
+                          destinationString += destination.relativeUrl;
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error(
+                  "[MDK MCP Server] Warning: Could not read destination from service metadata:",
+                  error
+                );
+                // Continue without destination parameters
+              }
+            }
+
             // Construct deployment script using mdkToolsPath
             let deploymentScript: string = "";
             if (mdkToolsPath) {
@@ -930,24 +1094,33 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                   ? `--externals "${externals.join(",")}"`
                   : "";
 
-              deploymentScript = [
+              // Build deployment command based on project type
+              const deploymentParts = [
                 `${mdkBinary} deploy`,
                 `--target ${CONFIG.deploymentTarget}`,
                 `--name ${CONFIG.projectName}`,
                 CONFIG.showQR ? "--showqr" : "",
                 `--project "${CONFIG.projectPath}"`,
                 externalsString,
-              ]
-                .filter(Boolean)
-                .join(" ");
+              ];
+
+              // Add --create and destination parameters only for CAP projects
+              if (isCapProjectScenario) {
+                deploymentParts.push(`--create`);
+                if (destinationString) {
+                  deploymentParts.push(destinationString);
+                }
+              }
+
+              deploymentScript = deploymentParts.filter(Boolean).join(" ");
             }
 
             // Execute deployment command
             const deployResult = runCommand(deploymentScript);
             // Filter out SAP Mobile Start references from deploy result
             const filteredDeployResult = deployResult
-              .replace(/SAP Mobile Start/gi, "SAP Mobile Services Client app")
-              .replace(/Mobile Start app/gi, "Mobile Services Client app");
+              .replace(/SAP Mobile Start/gi, "SAP Mobile Services Client")
+              .replace(/Mobile Start/gi, "SAP Mobile Services Client");
 
             return {
               content: [
@@ -1035,24 +1208,14 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               };
             }
 
-            // Use platform-specific command to open the QR code image
-            let openCommand: string;
-            if (process.platform === "win32") {
-              // Windows: use 'start' command
-              openCommand = `start "${qrCodePath}"`;
-            } else if (process.platform === "darwin") {
-              // macOS: use 'open' command
-              openCommand = `open "${qrCodePath}"`;
-            } else {
-              // Linux/Unix: use 'xdg-open' command
-              openCommand = `xdg-open "${qrCodePath}"`;
-            }
+            // Get relative path for better display
+            const relativePath = path.join(".build", "qrcode.png");
 
             return {
               content: [
                 {
                   type: "text",
-                  text: `Execute this command to display the QR code:\n\n${openCommand}\n\nThe QR code can be scanned with the SAP Mobile Services Client app to onboard the MDK application.`,
+                  text: `You can find the **qrcode.png** file in the **\`${relativePath}\`** folder in your VS Code Explorer sidebar and click on it to view it.\n\nScan the QR code with the **SAP Mobile Services Client** app to onboard the MDK application.`,
                 },
               ],
             };
@@ -1084,13 +1247,31 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
         // Handle errors gracefully
         console.error("MDK project manager operation failed:", error);
 
+        // Check if this is a CF authentication error
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.toLowerCase().includes("cloud foundry token") ||
+          errorMessage.toLowerCase().includes("please login cf") ||
+          errorMessage.toLowerCase().includes("cf login") ||
+          errorMessage.toLowerCase().includes("not logged in")
+        ) {
+          // This is a CF auth error - return the enhanced auth message
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
         return {
           content: [
             {
               type: "text",
-              text: `Operation failed: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: `Operation failed: ${errorMessage}`,
             },
           ],
         };
@@ -1376,6 +1557,73 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             };
           }
 
+          case "search-samples": {
+            const query = validatedArgs.query as string;
+            const N = (validatedArgs.N as number) || 5;
+
+            // Import VectorDatabase to search the GitHub knowledge base
+            const { VectorDatabase } = await import("./vector.js");
+            const knowledgeDb = new VectorDatabase("knowledge.db");
+
+            try {
+              const results = await knowledgeDb.search(query, N);
+
+              if (results.length === 0) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `No relevant samples found for query: "${query}". The knowledge base may not be initialized. Run 'npm run ingest' to populate the knowledge base with MDK samples and tutorials.`,
+                    },
+                  ],
+                };
+              }
+
+              // Format the results
+              let resultText = `# MDK Sample Search Results\n\n`;
+              resultText += `**Query**: "${query}"\n`;
+              resultText += `**Found**: ${results.length} result(s)\n\n`;
+
+              for (let i = 0; i < results.length; i++) {
+                const result = results[i];
+                const content = result.content;
+                const similarity = (result.similarity * 100).toFixed(1);
+
+                resultText += `## Result ${
+                  i + 1
+                } (Relevance: ${similarity}%)\n\n`;
+                resultText += `\`\`\`\n${content}\n\`\`\`\n\n`;
+                resultText += `---\n\n`;
+              }
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: resultText,
+                  },
+                ],
+              };
+            } catch (error) {
+              const errorMsg =
+                error instanceof Error ? error.message : String(error);
+              if (
+                errorMsg.includes("ENOENT") ||
+                errorMsg.includes("not found")
+              ) {
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `Knowledge base not found. Please run 'npm run ingest' to populate the knowledge base with MDK samples and tutorials from GitHub.\n\nError: ${errorMsg}`,
+                    },
+                  ],
+                };
+              }
+              throw error;
+            }
+          }
+
           default: {
             return {
               content: [
@@ -1394,6 +1642,132 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             {
               type: "text",
               text: error instanceof Error ? error.toString() : String(error),
+            },
+          ],
+        };
+      }
+    }
+
+    case "mdk-fetch-mobile-metadata": {
+      try {
+        // Check if CF is logged in
+        if (!isCFLoggedIn()) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
+        // Validate all arguments
+        const validatedArgs = validateToolArguments(
+          "mdk-fetch-mobile-metadata",
+          request.params.arguments || {}
+        );
+
+        const projectPath = validatedArgs.folderRootPath as string;
+        const appId = validatedArgs.appId as string;
+        const destination = validatedArgs.destination as string;
+        const pathSuffix = (validatedArgs.pathSuffix as string) || "";
+        const landscapeType =
+          (validatedArgs.landscapeType as "Standard" | "Preview") || "Standard";
+
+        // Refresh CF OAuth token before fetching metadata
+        const refreshSuccess = refreshCFToken();
+        if (!refreshSuccess) {
+          console.error(
+            "[MDK MCP Server] Warning: Failed to refresh CF token, continuing with existing token"
+          );
+        }
+
+        // Get CF token and Mobile Services API URL
+        const cfToken = await getCFToken();
+        if (!cfToken) {
+          throw new Error("Failed to get CF token");
+        }
+        const apiUrl = getMobileServicesAdminAPI(landscapeType);
+        if (!apiUrl) {
+          throw new Error(
+            "Failed to get Mobile Services API URL from CF configuration"
+          );
+        }
+
+        // Create Mobile Services client and fetch metadata
+        const client = createMobileServicesClient(apiUrl, cfToken);
+        const metadata = await client.fetchMetadata(
+          appId,
+          destination,
+          pathSuffix
+        );
+
+        // Create the metadata structure following the .service.metadata format
+        const metadataStructure = {
+          mobile: {
+            api: apiUrl,
+            app: appId,
+            destinations: [
+              {
+                name: destination,
+                relativeUrl: pathSuffix,
+                metadata: {
+                  odataContent: metadata,
+                },
+                type: "Mobile",
+              },
+            ],
+          },
+        };
+
+        // Write the metadata to .service.metadata file
+        const metadataFilePath = path.join(projectPath, ".service.metadata");
+        fs.writeFileSync(
+          metadataFilePath,
+          JSON.stringify(metadataStructure, null, 4)
+        );
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `# OData Metadata Retrieved and Saved\n\n**Application**: ${appId}\n**Destination**: ${destination}\n${
+                pathSuffix ? `**Path Suffix**: ${pathSuffix}\n` : ""
+              }**Landscape**: ${landscapeType}\n**Saved to**: ${metadataFilePath}\n\n✓ Successfully created .service.metadata file with OData metadata.`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("MDK fetch mobile metadata operation failed:", error);
+
+        // Check if this is a CF authentication error
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.toLowerCase().includes("cloud foundry token") ||
+          errorMessage.toLowerCase().includes("please login cf") ||
+          errorMessage.toLowerCase().includes("cf login") ||
+          errorMessage.toLowerCase().includes("not logged in") ||
+          errorMessage.toLowerCase().includes("unauthorized") ||
+          errorMessage.toLowerCase().includes("401")
+        ) {
+          // This is a CF auth error - return the enhanced auth message
+          return {
+            content: [
+              {
+                type: "text",
+                text: getCFAuthErrorMessage(),
+              },
+            ],
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Failed to fetch and save Mobile Services metadata: ${errorMessage}`,
             },
           ],
         };

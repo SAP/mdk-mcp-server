@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointStyle",
+  "title": "IntegrationPointStyle",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/AllStyle"
+    },
+    "Target": {
+      "$ref": "definitions/AllStyle"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

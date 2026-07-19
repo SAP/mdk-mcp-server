@@ -52,7 +52,7 @@ jobs:
               steps.package-version.outputs.current-version
             }})"
             exit 1
-          fi  
+          fi
       # schwma/parse-changelog-action@v1.0.0
       - name: parse changelog
         id: parse-changelog

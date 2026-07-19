@@ -1,0 +1,21 @@
+{
+  "$id": "Page/SectionedTable/Control/CalendarDateRange",
+  "title": "CalendarDateRange",
+  "additionalProperties": {
+      "proxy": "CalendarProxy"
+  },
+  "properties": {
+    "StartDate": {
+      "type": "string",
+      "description": "Selected start date of the calendar date range. To form a valid date range, start date needs to be earlier or equal to `EndDate`. If the value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf not set, today's date will be selected by default.\n\nWhen the calendar is redrawn, the selected date is retained."
+    },
+    "EndDate": {
+      "type": "string",
+      "description": "Selected end date of the calendar date range. To form a valid date range, start date needs to be later or equal to `StartDate`. If the value set falls outside the range specified by `StartDate` and `EndDate`, it will be adjusted to the nearest date within that range. Specify the value in yyyy-MM-dd or yyyy-MM-ddThh:mm:ss format for date. For example, 2016-01-01 or 2016-01-01T00:00:00Z. Supports JavaScript Date Object as well. Value given will be set based on the local time zone of the device.\n\nIf not set, today's date will be selected by default.\n\nWhen the calendar is redrawn, the selected date is retained."
+    },
+    "_Type": {
+      "const": "Calendar.Type.DateRange"
+    }
+  },
+  "type": "object"
+}
