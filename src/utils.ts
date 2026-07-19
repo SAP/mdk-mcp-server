@@ -883,7 +883,7 @@ export async function generateTemplateBasedMetadata(
           "which yo 2>/dev/null || command -v yo 2>/dev/null",
           { encoding: "utf8" }
         ).trim();
-      } catch (e) {
+      } catch {
         yoInPath = "";
       }
       if (yoInPath && fs.existsSync(yoInPath)) {
