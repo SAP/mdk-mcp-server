@@ -22,10 +22,19 @@ const currentArch = process.arch; // 'x64', 'arm64', etc.
 console.log(`\n🔍 Detecting platform: ${currentPlatform} ${currentArch}`);
 
 // Path to onnxruntime-node binaries
-const onnxRuntimePath = join(__dirname, '..', 'node_modules', 'onnxruntime-node', 'bin', 'napi-v3');
+// Try both napi-v6 (newer versions) and napi-v3 (older versions)
+const onnxRuntimePathV6 = join(__dirname, '..', 'node_modules', 'onnxruntime-node', 'bin', 'napi-v6');
+const onnxRuntimePathV3 = join(__dirname, '..', 'node_modules', 'onnxruntime-node', 'bin', 'napi-v3');
 
-if (!existsSync(onnxRuntimePath)) {
-  console.log('ℹ️  onnxruntime-node not found, skipping cleanup');
+let onnxRuntimePath;
+if (existsSync(onnxRuntimePathV6)) {
+  onnxRuntimePath = onnxRuntimePathV6;
+  console.log('ℹ️  Using ONNX Runtime napi-v6 binaries');
+} else if (existsSync(onnxRuntimePathV3)) {
+  onnxRuntimePath = onnxRuntimePathV3;
+  console.log('ℹ️  Using ONNX Runtime napi-v3 binaries');
+} else {
+  console.log('ℹ️  onnxruntime-node binaries not found, skipping cleanup');
   process.exit(0);
 }
 
