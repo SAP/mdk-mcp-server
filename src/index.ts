@@ -143,7 +143,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           "Generates MDK artifacts including pages, actions, i18n files, and rule references. Returns prompts for LLM processing (pages, actions, i18n) or searches for rule examples.",
         annotations: {
           title: "Generate MDK Artifacts",
-          readOnlyHint: true,
+          destructiveHint: true,
           idempotentHint: true,
           openWorldHint: false,
         },
