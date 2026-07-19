@@ -876,9 +876,26 @@ export async function generateTemplateBasedMetadata(
         "[MDK MCP Server] Using global node_modules/.bin/yo to execute yo generator"
       );
     } else {
-      throw new Error(
-        `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`
-      );
+      // Fallback: check system PATH for yo (e.g. /extbin/globals/bun/bin/yo)
+      let yoInPath: string;
+      try {
+        yoInPath = execSync(
+          "which yo 2>/dev/null || command -v yo 2>/dev/null",
+          { encoding: "utf8" }
+        ).trim();
+      } catch (e) {
+        yoInPath = "";
+      }
+      if (yoInPath && fs.existsSync(yoInPath)) {
+        yoCommand = yoInPath;
+        console.error(
+          `[MDK MCP Server] Using system PATH yo at ${yoInPath}`
+        );
+      } else {
+        throw new Error(
+          `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`
+        );
+      }
     }
   }
 
