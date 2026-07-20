@@ -32,7 +32,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 1. Install [node.js 24.11.1](https://nodejs.org/dist/v24.11.1/).
 
-2. For installing the MDK MCP server, we offer two options:
+2. To install the MDK MCP server, you have two options:
 
     a. Use npm to install it from the public npmjs registry at [@sap/mdk-mcp-server](https://www.npmjs.com/package/@sap/mdk-mcp-server). 
   
@@ -50,7 +50,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
       npm i -g @sap/mdk-mcp-server@. 
       ```
 
-3. Configure your MCP client (AI agent) to connect to the server. Configuration will vary depending on the AI agent used.
+3. Configure your MCP client (AI agent) to connect to the server. Note that configuration will vary depending on the AI agent used.
 
     **Cline in VS Code:** Example using the [Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev). 
     
@@ -122,7 +122,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     <details>
       <summary><b>Expand:</b> Usage in OpenCode</summary>
 
-    Example using [OpenCode](https://github.com/sst/opencode):
+    An example using [OpenCode](https://github.com/sst/opencode):
 
     ```
     {
@@ -158,9 +158,9 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
     <details>
       <summary><b>Expand:</b> Usage in Claude Desktop</summary>    
-    Use an absolute path to Node.js in your Claude Desktop configuration file.
+    Use the absolute path to Node.js in your Claude Desktop configuration file.
 
-    1. Find your Node.js installation path by running in terminal:
+    1. Find your Node.js installation path by running the terminal command:
        ```bash
        which node
        ```
@@ -198,13 +198,13 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 5. Verify your LLM Provider and AI model.
  
-    When you add Cline to VS Code, it uses Cline as the default API provider. You can choose a different LLM provider, such as SAP AI Core.
+    When you add Cline to VS Code, it serves as the default API provider. You can choose a different LLM provider, such as SAP AI Core.
     To add an SAP AI Core API provider in the Cline extension for VS Code, follow these steps:
       - With Cline open, look below the prompt box and click **Select Model / API Providers**.
-      - Choose your API provider (such as SAP AI Core) and enter your details. See the instructions [here](https://docs.cline.bot/provider-config/sap-aicore#sap-ai-core) for detailed setup.
+      - Choose your API provider (such as SAP AI Core) and enter your details. See the instructions [here](https://docs.cline.bot/provider-config/sap-aicore#sap-ai-core) for a detailed setup.
       - Select your preferred AI model.
 
-6. **Integration with SAP Mobile Services:** For creating a new MDK application, the MCP server uses the Cloud Foundry CLI and a `.service.metadata` file containing:
+6. **Integration with SAP Mobile Services:** To create a new MDK application, the MCP server uses the Cloud Foundry CLI and a `.service.metadata` file containing:
     - The mobile application defined in the SAP Mobile Services instance. 
       - Mobile Services API Endpoint
       - Mobile Services App ID
@@ -229,7 +229,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 7. Your environment is now ready for the MDK development with MCP server. You can now enter a prompt to:
 
     - Generate a new MDK project displaying OData entities information.
-    - Enhance an existing project adding additional UI controls on a given page.
+    - Enhance an existing project by adding additional UI controls on a given page.
     - Validate your current MDK project schema.
     - Migrate old MDK projects to latest schema.
     - Deploy your MDK project.
@@ -455,13 +455,13 @@ Setting this environment variable disables the telemetry client.
 
 ## Security / Disclosure
 
-If you find any bug that may be a security problem, please follow our instructions in our [security policy](https://github.com/sap/mdk-mcp-server/security/policy) on how to report it. Please do not create GitHub issues for security-related doubts or problems.
+If you find a bug that may pose a security problem, please follow our instructions in our [security policy](https://github.com/sap/mdk-mcp-server/security/policy) on how to report it. Please do not create GitHub issues for security-related doubts or problems.
 
 
 
 ## Code of Conduct
 
-We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone. By participating in this project, you agree to abide by its [Code of Conduct](https://github.com/cap-js/.github/blob/main/CODE_OF_CONDUCT.md) at all times.
+As members, contributors, and leaders, we pledge to make participation in our community a harassment-free experience for everyone. By participating in this project, you agree to abide by its [Code of Conduct](https://github.com/cap-js/.github/blob/main/CODE_OF_CONDUCT.md) at all times.
 
 
 
