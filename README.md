@@ -340,9 +340,6 @@ Generating embeddings: 150/150 (100%)
 **Issue: GitHub API rate limit exceeded**
 - **Solution**: Set up a GitHub token (see above)
 
-**Issue: "Hugging Face model download failed"**
-- **Solution**: See the [Troubleshooting section](#expand-troubleshooting---nodejs-not-found-macos) for model authentication
-
 **Issue: Ingestion takes too long**
 - **Solution**: Use `--no-cache` only when necessary; cached runs are much faster
 
