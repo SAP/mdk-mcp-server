@@ -23,7 +23,8 @@
     ".claude-plugin/",
     ".mcp.json",
     "manifest.json",
-    ".npmrc"
+    ".npmrc",
+    ".env.example"
   ],
   "scripts": {
     "audit:signatures": "npm audit signatures",
