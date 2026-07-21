@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+// Load .env file to access GITHUB_TOKEN for authenticated API requests (5000/hour vs 60/hour)
+import { config } from "dotenv";
+config();
+
 import { fetchGitHubKnowledge } from "./github-fetcher.js";
 import { chunkText } from "./chunker.js";
 import { VectorDatabase } from "./vector.js";
