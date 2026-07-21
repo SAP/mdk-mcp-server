@@ -124,7 +124,7 @@
     "@sigstore/core": "^4.0.1",
     "sigstore": "^5.0.0",
     "got": "^11.8.6",
-    "js-yaml": "^5.2.1"
+    "js-yaml": "^4.1.0"
   },
   "mdkConfig": {
     "schemaVersion": "26.6"
