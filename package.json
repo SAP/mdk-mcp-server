@@ -22,7 +22,9 @@
     "config/",
     ".claude-plugin/",
     ".mcp.json",
-    "manifest.json"
+    "manifest.json",
+    ".npmrc",
+    ".env.example"
   ],
   "scripts": {
     "audit:signatures": "npm audit signatures",
@@ -38,7 +40,9 @@
     "fix:all": "npm run lint:fix && npm run format",
     "start": "npx -y supergateway --port 9881 --stdio \"node ./build/start.js\"",
     "ingest": "npm run build && node build/ingest-github-knowledge.js",
-    "ingest:fresh": "npm run build && node build/ingest-github-knowledge.js --no-cache"
+    "ingest:fresh": "npm run build && node build/ingest-github-knowledge.js --no-cache",
+    "ingest:no-build": "node build/ingest-github-knowledge.js",
+    "ingest:no-build:fresh": "node build/ingest-github-knowledge.js --no-cache"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
