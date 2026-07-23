@@ -50,7 +50,7 @@
     "@octokit/rest": "^21.0.2",
     "@sap-devx/app-studio-toolkit-types": "^2.11.0",
     "@sap-ux/btp-utils": "1.1.5",
-    "@sap-ux/feature-toggle": "0.3.4",
+    "@sap-ux/feature-toggle": "0.4.0",
     "@sap-ux/telemetry": "^1.0.18",
     "@sap/artifact-management": "^1.53.1",
     "@sap/artifact-management-base": "^1.53.1",
