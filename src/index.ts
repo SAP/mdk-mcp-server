@@ -1133,31 +1133,58 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           }
 
           case "validate": {
-            // For large projects, validation can take a long time and may exceed MCP timeout limits
-            // Provide instructions to run validation directly in terminal
             if (mdkToolsPath) {
               const mdkBinary = path.join(
                 mdkToolsPath,
                 process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
               );
 
+              // Use absolute path in command, similar to build operation
               const validationCommand = `${mdkBinary} validate --project "${projectPath}"`;
 
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text:
-                      `# MDK Project Validation\n\n` +
-                      `For large projects, validation may take several minutes and can exceed the MCP timeout limit.\n\n` +
-                      `**Please run the following command directly in your terminal:**\n\n` +
-                      `\`\`\`bash\n${validationCommand}\n\`\`\`\n\n` +
-                      `**Or navigate to your project and run:**\n\n` +
-                      `\`\`\`bash\ncd "${projectPath}"\n${mdkBinary} validate --project .\n\`\`\`\n\n` +
-                      `This will validate your MDK project and display any errors or warnings.`,
-                  },
-                ],
-              };
+              try {
+                // Try to run validation with a 2-minute timeout
+                const output = runCommand(validationCommand, {
+                  timeout: 120000, // 2 minutes
+                });
+
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: `# MDK Project Validation Results\n\n${output}`,
+                    },
+                  ],
+                };
+              } catch (error: unknown) {
+                // If validation times out or fails, provide manual instructions
+                const errorMessage =
+                  error instanceof Error ? error.message : String(error);
+                const isTimeout =
+                  errorMessage.includes("timeout") ||
+                  (typeof error === "object" &&
+                    error !== null &&
+                    "killed" in error &&
+                    error.killed === true);
+
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text:
+                        `# MDK Project Validation\n\n` +
+                        (isTimeout
+                          ? `Validation timed out after 2 minutes. For large projects, validation may take longer.\n\n`
+                          : `Validation command failed: ${errorMessage}\n\n`) +
+                        `**Please run the following command directly in your terminal:**\n\n` +
+                        `\`\`\`bash\n${validationCommand}\n\`\`\`\n\n` +
+                        `**Or navigate to your project and run:**\n\n` +
+                        `\`\`\`bash\ncd "${projectPath}"\n${mdkBinary} validate --project .\n\`\`\`\n\n` +
+                        `This will validate your MDK project and display any errors or warnings.`,
+                    },
+                  ],
+                };
+              }
             }
 
             return {
@@ -1208,14 +1235,11 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               };
             }
 
-            // Get relative path for better display
-            const relativePath = path.join(".build", "qrcode.png");
-
             return {
               content: [
                 {
                   type: "text",
-                  text: `You can find the **qrcode.png** file in the **\`${relativePath}\`** folder in your VS Code Explorer sidebar and click on it to view it.\n\nScan the QR code with the **SAP Mobile Services Client** app to onboard the MDK application.`,
+                  text: `Your QR code has been generated in the .build folder as qrcode.png.\n\nScan the QR code with the **SAP Mobile Services Client** app to onboard the MDK application.`,
                 },
               ],
             };
