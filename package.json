@@ -108,7 +108,7 @@
     "pacote": "^20.0.1",
     "tmp": "^0.2.7",
     "ws": "^8.21.0",
-    "metro-react-native-babel-preset": "npm:@react-native/babel-preset@^0.85.3",
+    "metro-react-native-babel-preset": "npm:@react-native/babel-preset@^0.86.0",
     "@babel/plugin-proposal-optional-catch-binding": "npm:@babel/plugin-transform-optional-catch-binding@^7.24.7",
     "@babel/plugin-proposal-nullish-coalescing-operator": "npm:@babel/plugin-transform-nullish-coalescing-operator@^7.24.7",
     "@babel/plugin-proposal-class-properties": "npm:@babel/plugin-transform-class-properties@^7.24.7",
