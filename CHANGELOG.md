@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-# Version 0.4.0 - 2026-07-24
+# Version 0.4.0 - 2026-07-29
 
 ### Added
 - Add new tool `mdk-fetch-mobile-metadata`
@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Improve `validate` operation in `mdk-manage` tool to automatically run validation with 2-minute timeout and fallback to manual instructions
-- Update `show-qrcode` operation message to prevent file path from being rendered as clickable link 
+- Improve `show-qrcode` operation message to show instructions of how to open the QR Code image
 
 ## Version 0.3.7 - 2026-04-19
 
