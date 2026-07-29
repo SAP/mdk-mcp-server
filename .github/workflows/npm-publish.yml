@@ -32,7 +32,8 @@ jobs:
           replace: ${{ secrets.INSTRUMENTATION_KEY }}
           regex: false
       - name: run tests
-        run: npm ci
+        run: |
+          npm ci || npm ci || npm ci
       # martinbeentjes/npm-get-version-action@v1.3.1
       - name: get version
         id: package-version
