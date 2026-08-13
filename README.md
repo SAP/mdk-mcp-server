@@ -59,7 +59,7 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
     - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.6 (default), 26.3, 25.9, 25.6, 24.11, and 24.7.
 
-    ```
+    ```json
     {
       "mcpServers": {
         "mdk-mcp": {
@@ -87,23 +87,19 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
     2. Add the following MCP server configuration:
 
-      ```json
-      {
-        "mcp": {
-          "mdk-mcp": {
-            "type": "local",
-            "command": [
-              "mdk-mcp",
-              "--schema-version",
-              "26.6"
-            ],
-            "enabled": true
-          }
+    ```json
+    {
+      "mcpServers": {
+        "mdk-mcp": {
+          "type": "stdio",
+          "command": "mdk-mcp",
+          "args": ["--schema-version", "26.6"]
         }
       }
-      ```
+    }
+    ```
 
-   > **Note:** If `~/.claude.json` already exists, merge the `mdk-mcp` entry into the existing `mcp` section rather than replacing the entire file.
+   > **Note:** If `~/.claude.json` already exists, merge the `mdk-mcp` entry into the existing `mcpServers` section rather than replacing the entire file.
 
     3. Reload the VS Code window (or restart VS Code).
 
@@ -143,10 +139,11 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
     Edit the file `~/.cursor/mcp.json`:
 
-    ```
+    ```json
     {
       "mcpServers": {
         "mdk-mcp": {
+          "type": "stdio",
           "command": "mdk-mcp",
           "args": ["--schema-version", "26.6"]
         }
