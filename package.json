@@ -93,7 +93,7 @@
     "fast-xml-parser": "^5.3.8",
     "hono": "^4.12.4",
     "@hono/node-server": "^2.0.0",
-    "cacache": "^19.0.1",
+    "cacache": "^21.0.0",
     "@npmcli/map-workspaces": "^6.0.0",
     "@npmcli/arborist": "^10.0.0",
     "handlebars": "^4.7.9",
