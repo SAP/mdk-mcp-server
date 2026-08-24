@@ -675,9 +675,8 @@ export async function generateTemplateBasedMetadata(
       // Fallback: Get data from .project.json and Services folder
       try {
         // Get appId from MobileService.AppId in .project.json
-        const fallbackAppId = await getMobileServiceAppNameWithFallback(
-          projectPath
-        );
+        const fallbackAppId =
+          await getMobileServiceAppNameWithFallback(projectPath);
         if (fallbackAppId) {
           appId = fallbackAppId;
         }

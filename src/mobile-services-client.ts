@@ -42,7 +42,10 @@ export interface MobileServicesDestination {
 export class MobileServicesClient {
   private axios: AxiosInstance;
 
-  constructor(private adminAPI: string, private cfToken: string) {
+  constructor(
+    private adminAPI: string,
+    private cfToken: string
+  ) {
     this.axios = axios.create({
       baseURL: adminAPI,
       headers: {
