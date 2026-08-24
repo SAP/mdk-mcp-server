@@ -28,6 +28,19 @@ Some of SAP’s larger and complex mobile apps are built using MDK. An example i
 
 ## Setup
 
+### Platform Support
+
+The MDK MCP server supports the following platforms:
+
+- **macOS**: Apple Silicon (ARM64) only
+  - ⚠️ **Note**: Intel Mac (x64) is **not supported** in v0.4.0+ due to onnxruntime-node ≥1.24 dropping darwin/x64 binaries
+- **Linux**: x64, ARM64, and other architectures
+- **Windows**: x64, ARM64
+
+If you're on an Intel Mac, you may need to:
+- Use Rosetta 2 to run the ARM64 version (performance may vary)
+- Or stay on an earlier version that uses onnxruntime-node <1.24
+
 ### Installation Steps
 
 1. Install [node.js 24.11.1](https://nodejs.org/dist/v24.11.1/).

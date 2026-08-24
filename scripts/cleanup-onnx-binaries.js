@@ -4,8 +4,20 @@
  * Post-install script to remove unused platform-specific ONNX binaries
  * This can save ~120-140MB by removing binaries for platforms you're not using
  *
+ * IMPORTANT: This cleanup is SKIPPED during CI/packaging to ensure redistributable
+ * bundles contain binaries for ALL platforms. Without all binaries, the server fails
+ * at startup on non-matching platforms with MODULE_NOT_FOUND errors.
+ *
+ * PLATFORM SUPPORT NOTE: onnxruntime-node ≥1.24 (resolved via @huggingface/transformers)
+ * dropped darwin/x64 (Intel Mac) binaries. Available platforms are:
+ * - darwin/arm64 (Apple Silicon)
+ * - linux/x64, linux/arm64
+ * - win32/x64, win32/arm64
+ *
  * Run with: node scripts/cleanup-onnx-binaries.js
  * Or automatically via npm postinstall hook
+ *
+ * To force skip cleanup: set SKIP_ONNX_CLEANUP=1 or CI=true
  */
 
 import { existsSync, rmSync, readdirSync, statSync } from 'fs';
@@ -14,6 +26,20 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Skip cleanup in CI/packaging environments to preserve cross-platform compatibility
+const isCI = process.env.CI === 'true' || process.env.CI === '1';
+const skipCleanup = process.env.SKIP_ONNX_CLEANUP === '1' || process.env.SKIP_ONNX_CLEANUP === 'true';
+const isPackaging = process.env.npm_command === 'pack' || process.env.npm_lifecycle_event === 'pack';
+
+if (isCI || skipCleanup || isPackaging) {
+  console.log('\n⏭️  Skipping ONNX cleanup:');
+  if (isCI) console.log('   CI environment detected');
+  if (skipCleanup) console.log('   SKIP_ONNX_CLEANUP flag set');
+  if (isPackaging) console.log('   npm pack detected');
+  console.log('   All platform binaries will be preserved for cross-platform compatibility\n');
+  process.exit(0);
+}
 
 // Detect current platform
 const currentPlatform = process.platform; // 'darwin', 'win32', 'linux'
