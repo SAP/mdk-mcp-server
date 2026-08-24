@@ -73,7 +73,8 @@ export class MobileServicesClient {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          `Failed to list Mobile Services applications: ${error.message}`
+          `Failed to list Mobile Services applications: ${error.message}`,
+          { cause: error }
         );
       }
       throw error;
@@ -90,9 +91,13 @@ export class MobileServicesClient {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 404) {
-          throw new Error(`Mobile Services application '${appId}' not found`);
+          throw new Error(`Mobile Services application '${appId}' not found`, {
+            cause: error,
+          });
         }
-        throw new Error(`Failed to get application details: ${error.message}`);
+        throw new Error(`Failed to get application details: ${error.message}`, {
+          cause: error,
+        });
       }
       throw error;
     }
@@ -166,10 +171,13 @@ export class MobileServicesClient {
         if (error.response?.status === 404) {
           throw new Error(
             `Destination '${destination}' not found in Mobile Services app '${appId}'. ` +
-              `Please check the destination name and ensure it's configured in Mobile Services.`
+              `Please check the destination name and ensure it's configured in Mobile Services.`,
+            { cause: error }
           );
         }
-        throw new Error(`Failed to fetch metadata: ${error.message}`);
+        throw new Error(`Failed to fetch metadata: ${error.message}`, {
+          cause: error,
+        });
       }
       throw error;
     }

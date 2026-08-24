@@ -150,7 +150,9 @@ async function initializeArtifactManagement(
     return artifactManagement;
   } catch (error) {
     console.error("Failed to initialize artifact-management:", error);
-    throw new Error("Artifact management initialization failed");
+    throw new Error("Artifact management initialization failed", {
+      cause: error,
+    });
   }
 }
 
