@@ -105,7 +105,7 @@
     "@xmldom/xmldom": "^0.9.5",
     "consolidate": "^1.0.4",
     "comment-json": "^5.0.0",
-    "pacote": "^20.0.1",
+    "pacote": "^22.0.0",
     "tmp": "^0.2.7",
     "ws": "^8.21.0",
     "metro-react-native-babel-preset": "npm:@react-native/babel-preset@^0.87.0",
