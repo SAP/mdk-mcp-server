@@ -644,8 +644,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             if (pageType === "databinding") {
               const controlType = validatedArgs.controlType as string;
               const oDataEntitySets = validatedArgs.oDataEntitySets as
-                | string
-                | undefined;
+                string | undefined;
 
               // Configuration constants
               const CONFIG = {
@@ -765,8 +764,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             const projectPath = validatedArgs.folderRootPath as string;
             const actionType = validatedArgs.actionType as string;
             const oDataEntitySets = validatedArgs.oDataEntitySets as
-              | string
-              | undefined;
+              string | undefined;
 
             // Configuration constants
             const CONFIG = {

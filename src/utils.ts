@@ -408,7 +408,9 @@ export function runCommand(
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     console.error(`[MDK MCP Server] Command failed: ${errorMessage}`);
-    throw new Error(`Command failed: ${command}\n${errorMessage}`);
+    throw new Error(`Command failed: ${command}\n${errorMessage}`, {
+      cause: err,
+    });
   }
 }
 
@@ -668,16 +670,15 @@ export async function generateTemplateBasedMetadata(
     type: string;
   }> = [];
   let appId = "";
-  let edmxPath = "";
+  let edmxPath;
 
   if (!serviceMetadataObj) {
     if (entity) {
       // Fallback: Get data from .project.json and Services folder
       try {
         // Get appId from MobileService.AppId in .project.json
-        const fallbackAppId = await getMobileServiceAppNameWithFallback(
-          projectPath
-        );
+        const fallbackAppId =
+          await getMobileServiceAppNameWithFallback(projectPath);
         if (fallbackAppId) {
           appId = fallbackAppId;
         }
@@ -775,16 +776,14 @@ export async function generateTemplateBasedMetadata(
     oConfig.appId = appId;
 
     // Process destinations and entity sets
-    let entitySets: string[] = [];
-    let entitySetsService: string[] = [];
     const entitySetsServices: string[] = [];
 
     // Iterate through destinations to build services
     for (let i = 0; i < destinations.length; i++) {
-      entitySetsService = [];
+      const entitySetsService: string[] = [];
 
       // Get entity sets from OData metadata
-      entitySets = await getEntitySetsFromODataString(
+      const entitySets = await getEntitySetsFromODataString(
         destinations[i]["metadata"]["odataContent"]
       );
 
