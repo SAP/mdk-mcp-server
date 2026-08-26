@@ -122,7 +122,7 @@
     "semver-regex": "^3.1.4",
     "serialize-javascript": "^7.0.5",
     "http-cache-semantics": "^4.1.1",
-    "trim-newlines": "^3.0.1",
+    "trim-newlines": "^5.0.0",
     "yargs-parser": "^20.2.9",
     "adm-zip": "^0.6.0",
     "@sigstore/core": "^4.0.1",
