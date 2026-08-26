@@ -101,7 +101,7 @@
     "locutus": "^3.0.34",
     "protobufjs": "^8.2.0",
     "rimraf": "^6.0.0",
-    "uuid": "^11.0.4",
+    "uuid": "^14.0.0",
     "@xmldom/xmldom": "^0.9.5",
     "consolidate": "^1.0.4",
     "comment-json": "^5.0.0",
