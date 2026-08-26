@@ -77,7 +77,7 @@
     "prettier": "^3.9.6",
     "tmp": "^0.2.7",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "^7.0.0"
   },
   "overrides": {
     "ajv@8.18.0": "8.20.0",
