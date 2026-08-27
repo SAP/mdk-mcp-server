@@ -77,9 +77,10 @@
     "prettier": "^3.9.6",
     "tmp": "^0.2.7",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "~5.7.2"
   },
   "overrides": {
+    "typescript": "~5.7.2",
     "ajv@8.18.0": "8.20.0",
     "postcss": "^8.4.31",
     "glob": "^13.0.0",
