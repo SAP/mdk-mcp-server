@@ -12,7 +12,8 @@ const MAX_PATH_LENGTH = 1000;
 const MAX_ENTITY_SETS = 50;
 
 // Allowed characters for different input types - support Windows paths with drive letters and backslashes
-const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\\s:()]+$/;
+// Note: space (0x20) is permitted for paths like "/Users/John Doe/project" but newlines/tabs are not
+const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\ :()]+$/;
 const SAFE_PROMPT_REGEX = /^[\w\s.,;:!?()[\]{}"'=+/@#$%&*`~\n\r\t_-]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;

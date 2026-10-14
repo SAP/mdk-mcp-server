@@ -995,7 +995,19 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                     settings["mdk.bundlerExternals"] &&
                     Array.isArray(settings["mdk.bundlerExternals"])
                   ) {
-                    externals = settings["mdk.bundlerExternals"];
+                    const raw: unknown[] = settings["mdk.bundlerExternals"];
+                    const valid = raw.filter(
+                      (pkg): pkg is string =>
+                        typeof pkg === "string" &&
+                        pkg.length > 0 &&
+                        /^[@a-zA-Z0-9/_-]+$/.test(pkg)
+                    );
+                    if (valid.length !== raw.length) {
+                      console.error(
+                        `[MDK MCP Server] Ignored ${raw.length - valid.length} invalid externals entry(s) from .vscode/settings.json`
+                      );
+                    }
+                    externals = valid;
                     console.error(
                       `[MDK MCP Server] Using externals from .vscode/settings.json: ${externals.join(
                         ", "
@@ -1013,9 +1025,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             }
 
             // Use getMobileServiceAppNameWithFallback to get mobile service app name with fallback logic
-            const mobileServiceAppName =
+            const rawMobileServiceAppName =
               await getMobileServiceAppNameWithFallback(projectPath);
-            if (!mobileServiceAppName) {
+            if (!rawMobileServiceAppName) {
               return {
                 content: [
                   {
@@ -1027,6 +1039,17 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
             }
 
             // Configuration constants
+            const mobileServiceAppName = rawMobileServiceAppName;
+            if (!/^[a-zA-Z0-9._-]+$/.test(mobileServiceAppName)) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Error: Mobile service app name "${mobileServiceAppName}" contains invalid characters. Only alphanumeric characters, dots, underscores, and hyphens are allowed.`,
+                  },
+                ],
+              };
+            }
             const CONFIG = {
               projectPath: projectPath,
               deploymentTarget: "mobile",
@@ -1057,12 +1080,33 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                     serviceMetadata.mobile.destinations.length > 0
                   ) {
                     const destination = serviceMetadata.mobile.destinations[0];
-                    if (destination.name) {
-                      destinationString = `--destination ${destination.name}`;
+                    if (
+                      destination.name &&
+                      /^[a-zA-Z0-9._-]+$/.test(destination.name)
+                    ) {
+                      destinationString = `--destination "${destination.name}"`;
                       // Add destinationUrl if available in metadata
                       if (destination.url) {
-                        destinationString += ` --destinationUrl ${destination.url}`;
+                        let parsedUrl: URL;
+                        try {
+                          parsedUrl = new URL(destination.url);
+                        } catch {
+                          throw new Error(
+                            `Invalid destination URL in .service.metadata: ${destination.url}`
+                          );
+                        }
+                        if (!["https:", "http:"].includes(parsedUrl.protocol)) {
+                          throw new Error(
+                            `Disallowed protocol in destination URL: ${parsedUrl.protocol}`
+                          );
+                        }
+                        destinationString += ` --destinationUrl "${parsedUrl.toString()}"`;
                         if (destination.relativeUrl) {
+                          if (!/^[a-zA-Z0-9/_.-]+$/.test(destination.relativeUrl)) {
+                            throw new Error(
+                              `Invalid relativeUrl in .service.metadata: ${destination.relativeUrl}`
+                            );
+                          }
                           destinationString += destination.relativeUrl;
                         }
                       }
@@ -1096,7 +1140,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
               const deploymentParts = [
                 `${mdkBinary} deploy`,
                 `--target ${CONFIG.deploymentTarget}`,
-                `--name ${CONFIG.projectName}`,
+                `--name "${CONFIG.projectName}"`,
                 CONFIG.showQR ? "--showqr" : "",
                 `--project "${CONFIG.projectPath}"`,
                 externalsString,

@@ -896,14 +896,14 @@ export async function generateTemplateBasedMetadata(
     }
   }
 
-  let script = `${yoCommand} ${mdkGeneratorPath}/generators/app/index.js --dataFile ${projectPath}/headless.json --force`;
+  let script = `${yoCommand} "${mdkGeneratorPath}/generators/app/index.js" --dataFile "${projectPath}/headless.json" --force`;
 
   if (mdkToolsPath) {
     const mdkBinary = path.join(
       mdkToolsPath,
       process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js"
     );
-    script += ` --tool ${mdkBinary}`;
+    script += ` --tool "${mdkBinary}"`;
   }
   return script;
 }
