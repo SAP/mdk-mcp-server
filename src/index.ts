@@ -21,7 +21,12 @@ import {
   getCapMdkConfig,
   resolveMdkProjectPath,
 } from "./cap-utils.js";
-import { validateToolArguments } from "./validation.js";
+import {
+  validateToolArguments,
+  APP_ID_REGEX,
+  EXTERNALS_REGEX,
+  RELATIVE_URL_REGEX,
+} from "./validation.js";
 import {
   getCFToken,
   getMobileServicesAdminAPI,
@@ -1000,7 +1005,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                       (pkg): pkg is string =>
                         typeof pkg === "string" &&
                         pkg.length > 0 &&
-                        /^[@a-zA-Z0-9/_-]+$/.test(pkg)
+                        EXTERNALS_REGEX.test(pkg)
                     );
                     if (valid.length !== raw.length) {
                       console.error(
@@ -1040,7 +1045,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
 
             // Configuration constants
             const mobileServiceAppName = rawMobileServiceAppName;
-            if (!/^[a-zA-Z0-9._-]+$/.test(mobileServiceAppName)) {
+            if (!APP_ID_REGEX.test(mobileServiceAppName)) {
               return {
                 content: [
                   {
@@ -1082,7 +1087,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                     const destination = serviceMetadata.mobile.destinations[0];
                     if (
                       destination.name &&
-                      /^[a-zA-Z0-9._-]+$/.test(destination.name)
+                      APP_ID_REGEX.test(destination.name)
                     ) {
                       destinationString = `--destination "${destination.name}"`;
                       // Add destinationUrl if available in metadata
@@ -1103,7 +1108,7 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                         destinationString += ` --destinationUrl "${parsedUrl.toString()}"`;
                         if (destination.relativeUrl) {
                           if (
-                            !/^[a-zA-Z0-9/_.-]+$/.test(destination.relativeUrl)
+                            !RELATIVE_URL_REGEX.test(destination.relativeUrl)
                           ) {
                             throw new Error(
                               `Invalid relativeUrl in .service.metadata: ${destination.relativeUrl}`

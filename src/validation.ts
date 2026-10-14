@@ -17,6 +17,9 @@ const SAFE_PATH_REGEX = /^[a-zA-Z0-9._\-/\\ :()]+$/;
 const SAFE_PROMPT_REGEX = /^[\w\s.,;:!?()[\]{}"'=+/@#$%&*`~\n\r\t_-]+$/;
 const COMPONENT_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const ENTITY_SET_REGEX = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+export const APP_ID_REGEX = /^[a-zA-Z0-9._-]+$/;
+export const EXTERNALS_REGEX = /^[@a-zA-Z0-9/_-]+$/;
+export const RELATIVE_URL_REGEX = /^[a-zA-Z0-9/_.-]+$/;
 
 // Define validation schemas using Zod
 export const ValidationSchemas = {
