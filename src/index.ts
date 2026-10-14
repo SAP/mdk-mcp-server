@@ -1102,7 +1102,9 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
                         }
                         destinationString += ` --destinationUrl "${parsedUrl.toString()}"`;
                         if (destination.relativeUrl) {
-                          if (!/^[a-zA-Z0-9/_.-]+$/.test(destination.relativeUrl)) {
+                          if (
+                            !/^[a-zA-Z0-9/_.-]+$/.test(destination.relativeUrl)
+                          ) {
                             throw new Error(
                               `Invalid relativeUrl in .service.metadata: ${destination.relativeUrl}`
                             );
