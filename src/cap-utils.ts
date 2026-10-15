@@ -306,6 +306,15 @@ export async function getCapMdkConfig(
   const mdkProjectName = `${normalizedProjectName}_mdk`;
   const mdkProjectPath = path.join(projectPath, "app", mdkProjectName);
 
+  // Ensure the resolved path stays within the CAP project boundary
+  const resolvedProjectPath = path.resolve(projectPath);
+  const resolvedMdkPath = path.resolve(mdkProjectPath);
+  if (!resolvedMdkPath.startsWith(resolvedProjectPath + path.sep)) {
+    throw new Error(
+      `Invalid CAP project name "${projectName}": resolves outside the project directory`
+    );
+  }
+
   const services = await getCapServicesInfo(projectPath);
   const entitySets = await extractEntitySetsFromCapProject(projectPath);
 
