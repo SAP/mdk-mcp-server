@@ -116,7 +116,7 @@
     "@babel/plugin-proposal-optional-chaining": "npm:@babel/plugin-transform-optional-chaining@^8.0.0",
     "@babel/plugin-proposal-async-generator-functions": "npm:@babel/plugin-transform-async-generator-functions@^8.0.0",
     "@babel/plugin-proposal-object-rest-spread": "npm:@babel/plugin-transform-object-rest-spread@^8.0.0",
-    "@opentelemetry/core": "^2.8.0",
+    "@opentelemetry/core": "^3.0.0",
     "axios": "^1.20.0",
     "lodash": "^4.17.24",
     "minimatch": "^10.2.5",
