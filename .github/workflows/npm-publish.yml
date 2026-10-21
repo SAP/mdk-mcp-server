@@ -67,12 +67,13 @@ jobs:
           tag: 'v${{ steps.package-version.outputs.current-version }}'
           body: '${{ steps.parse-changelog.outputs.body }}'
       - run: npx npm@latest publish --access public
-      - name: Download MCP Publisher
-        run: |
-          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
-      - name: Publish to MCP Registry
-        env:
-          GITHUB_TOKEN: ${{ secrets.MCP_PUBLISH_TOKEN }}
-        run: |
-          ./mcp-publisher login github
-          ./mcp-publisher publish
+      # Temporarily disabled - MCP registry publish requires SAP org verification
+      # - name: Download MCP Publisher
+      #   run: |
+      #     curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+      # - name: Publish to MCP Registry
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.MCP_PUBLISH_TOKEN }}
+      #   run: |
+      #     ./mcp-publisher login github
+      #     ./mcp-publisher publish
