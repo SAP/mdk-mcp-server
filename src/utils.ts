@@ -1256,7 +1256,7 @@ export async function getServerConfig(): Promise<{
         "25.9",
         "26.3",
         "26.6",
-        "26.9"
+        "26.9",
       ];
       if (!availableVersions.includes(schemaVersionFromArgs)) {
         console.warn(
