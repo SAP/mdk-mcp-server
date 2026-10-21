@@ -1903,10 +1903,7 @@ export default async function run(_options = {}) {
     console.error("[MDK MCP Server] Using existing schema embeddings");
   }
 
-  const rulembeddingPath = path.join(
-    embeddingsDir,
-    `rule-chunks.bin`
-  );
+  const rulembeddingPath = path.join(embeddingsDir, `rule-chunks.bin`);
   if (!fs.existsSync(rulembeddingPath)) {
     console.error("[MDK MCP Server] Initializing rule embeddings...");
     await retrieveAndStoreRule(path.join(projectRoot, "res/templates/Rule"));
@@ -1926,7 +1923,9 @@ export default async function run(_options = {}) {
   // Connect to transport AFTER all initialization is complete
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("[MDK MCP Server] Server connected and ready to accept requests");
+  console.error(
+    "[MDK MCP Server] Server connected and ready to accept requests"
+  );
 
   // Handle graceful shutdown
   process.on("SIGINT", () => {
