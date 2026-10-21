@@ -832,7 +832,6 @@ export async function generateTemplateBasedMetadata(
 
   // Prepare MDK generation command
   const mdkToolsPath = await getModulePath("mdk-tools");
-  const mdkGeneratorPath = await getModulePath("generator-mdk");
 
   // Resolve yo executable
   // For npm/yarn: use node_modules/.bin/yo (faster, more reliable)
@@ -896,7 +895,7 @@ export async function generateTemplateBasedMetadata(
     }
   }
 
-  let script = `${yoCommand} "${mdkGeneratorPath}/generators/app/index.js" --dataFile "${projectPath}/headless.json" --force`;
+  let script = `${yoCommand} mdk:app --dataFile "${projectPath}/headless.json" --force`;
 
   if (mdkToolsPath) {
     const mdkBinary = path.join(
