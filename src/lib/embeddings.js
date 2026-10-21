@@ -25,7 +25,7 @@ const MiniLM = (async () => {
 
 export async function loadChunks(
   id,
-  dir = path.join(__dirname, "..", "embeddings")
+  dir = path.join(__dirname, "..", "..", "embeddings")
 ) {
   function _throwCorruptedError() {
     const error = new Error("Corrupted files");
@@ -167,7 +167,7 @@ export async function saveChunks(
   id,
   chunks,
   embeddings,
-  dir = path.join(__dirname, "..", "embeddings")
+  dir = path.join(__dirname, "..", "..", "embeddings")
 ) {
   if (!chunks.length) {
     throw new Error("No chunks to save");
