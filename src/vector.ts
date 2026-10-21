@@ -106,13 +106,13 @@ export async function retrieveAndStore(
   await createEmbeddings(`name-chunks-${version}`, names);
 }
 
-export function retrieveAndStoreRule(folderPath: string): void {
+export async function retrieveAndStoreRule(folderPath: string): Promise<void> {
   const docs = loadDocumentsFromFolder(folderPath);
 
   const names = docs.map(doc => {
     return doc.source;
   });
-  createEmbeddings("rule-chunks", names);
+  await createEmbeddings("rule-chunks", names);
 }
 
 /**

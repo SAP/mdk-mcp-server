@@ -4,9 +4,9 @@
  * Generates embeddings for an array of texts.
  * @param id Id of embedding vectors.
  * @param texts Array of input strings to embed.
- * @returns Array of embedding vectors (number[][])
+ * @returns Promise that resolves when embeddings are created and saved
  */
-export function createEmbeddings(id: string, texts: string[]): number[][];
+export function createEmbeddings(id: string, texts: string[]): Promise<void>;
 
 export function loadChunks(id: string, dir?: string): Promise<string[]>;
 
