@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Version 0.4.1 - 2026-10-21
+
+### Changed
+- Update yo to 7.0.1
+- Support 26.9 schema version
+
 ## Version 0.4.0 - 2026-07-29
 
 ### Added
