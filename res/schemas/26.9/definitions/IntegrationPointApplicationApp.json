@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/IntegrationPointApplicationApp",
+  "title": "IntegrationPointApplicationApp",
+  "description": "In order to support component project modifying properties in the Application.app metadata, the CIM file now supports specifying the Application.app. In order to do so:\n\n* Duplicate the Application.app in the Base project, rename it e.g. OverrideApplication.app\n* Paste the duplicated file in your component project\n* In CIM file, add an integration point pointing\n  * Source: OverrideApplication.app from your component project;\n  * Target: Application.app from your Base project",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/ApplicationApp"
+    },
+    "Target": {
+      "$ref": "definitions/ApplicationApp"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

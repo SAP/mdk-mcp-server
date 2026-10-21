@@ -1,0 +1,44 @@
+{
+  "$id": "Page/FormCell/Document",
+  "title": "Document",
+  "description": "The Document control is a widget that displays an SAP Document Service folder as an embedded element.\nIt is only available in web runtime.",
+  "additionalProperties": {
+    "proxy": "FormCellControlProxy"  
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The key name of the property."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disable or enable document uploading/deleting.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Set the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Set the visibility of the separator line below the control. This property takes precedence over `ControlSeparator` in section and is only supported for FormCell control in SectionedTable and not supported in FormCell Container.",
+      "default": true
+    },
+    "Value": {
+      "type": "string",
+      "description": "A repositoryId, rootFolderId or objectId which links to a unique folder of document service. If leave empty, a new folder will be created in document service instance."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Document"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

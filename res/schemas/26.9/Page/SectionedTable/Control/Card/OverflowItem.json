@@ -1,0 +1,66 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/OverflowItem",
+  "title": "OverflowItem",
+  "additionalProperties": {
+    "proxy": "CardHeaderActionButtonOverflowButtonProxy"  
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of the button."
+    },
+    "OnPress": {
+      "anyOf": [
+        {
+          "$ref": "definitions/ActionOrRule"
+        },
+        {
+          "$ref": "Page/Common/OnPressObject"
+        }
+      ],
+      "description": "Action or rule to be performed when the event is triggered.  The ClientAPI object to be received in rule function is [CardHeaderActionButtonOverflowButtonProxy](../../../../../apidoc/classes/cardheaderactionbuttonoverflowbuttonproxy.md)."  
+    },
+    "Title": {
+      "type": "string",
+      "description": "Label to be displayed on the button. For Android, the text is always in upper case and cannot be styled to contain lower case letters."
+    },
+    "Image": {
+      "description": "Image to be displayed in the ActionItem.",
+      "$ref": "definitions/Image"
+    },
+    "ButtonType": {
+      "enum": [
+        { "const": "Normal", "description": "Action that performs general task." },
+        { "const": "Destructive", "description": "Action that deletes data or performs some type of destructive task." },
+        { "const": "Disabled", "description": "Action that cannot perform any operation." }
+      ],
+      "default": "Normal",
+      "type": "string",
+      "description": "Constants indicating the style information that is applied to the action button. iOS only."
+    },
+    "Styles": {
+      "description": "Style to be applied on the `OverflowItem`.",
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for `Image`."
+        },
+        "Title": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "Supported in Android only. The string value is a style class name for `Title`."
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "CardHeaderActionButton.Type.OverflowButton"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

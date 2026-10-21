@@ -1,0 +1,49 @@
+{
+  "$id": "Page/SectionedTable/Control/ImageCell",
+  "title": "ImageCell",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "BindableSectionProxy"
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Only valid for static section, will be ignored in dynamic sections."
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Subtitle": {
+      "type": "string"
+    },
+    "Attribute": {
+      "type": "string"
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the image is pressed."
+    },
+    "Image": {
+      "$ref": "definitions/Image",
+      "description": "The path of the image."
+    },
+    "ImageIsCircular": {
+      "type": "boolean",
+      "default": false
+    },
+    "Styles": {
+      "properties": {
+        "Image": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name of `Image`."
+        }
+      },
+      "type": "object"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}

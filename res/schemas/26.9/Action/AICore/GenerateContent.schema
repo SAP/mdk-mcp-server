@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.AICore.Generate.Content",
+  "title": "AICore Generate Content",
+  "description": "Generate Content action is used to send a generateContent request to the AI Core service.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the AI Core Service in key/value pair format",
+      "default": {"content-type": "application/json"}
+    },
+    "Path": {
+      "type": "string",
+      "description": "The endpoints such as \"/models/gemini-1.5-pro:generateContent\" are not required if \"/models/gemini-1.5-pro:generateContent\" is already in the full path of destination"
+    },
+    "Properties": {
+      "$ref": "definitions/GenerateContentProperties",
+      "description": "A list of the property names and values in key/value pairs format."
+    },
+    "ResourceGroup": {
+      "description": "Specify the resource group. Resource groups represent a virtual collection of related resources within the scope of your AI runtime environment.",
+      "type": "string",
+      "default": "default"
+    },
+    "Target": {
+      "$ref": "definitions/AICoreTarget"
+    },
+    "_Type": {
+      "const": "Action.Type.AICore.Generate.Content"
+    }
+  },
+  "required": [
+    "Target",
+    "Properties",
+    "_Type"
+  ],
+  "type": "object"
+}

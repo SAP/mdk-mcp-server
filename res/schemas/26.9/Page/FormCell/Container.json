@@ -1,0 +1,32 @@
+{
+  "$id": "Page/FormCell/Container",
+  "title": "FormcellContainer",
+  "description": "This control renders a list of Form Sections.\n\nThis control will always render as a full screen control taking over the entire space of the page.",
+  "additionalProperties": {
+    "proxy": "FormCellContainerProxy"  
+  },
+  "properties": {
+    "Sections": {
+      "items": {
+        "$ref": "Page/FormCell/Section"
+      },
+      "type": "array",
+      "description": "List of sections defined for the form cell."
+    },
+    "LoadingIndicator": {
+      "$ref": "definitions/LoadingIndicator",
+      "description": "Configure the loading indicator shown at the initial page loading."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCellContainer"
+    }
+  },
+  "required": [
+    "_Type",
+    "_Name"
+  ],
+  "type": "object"
+}

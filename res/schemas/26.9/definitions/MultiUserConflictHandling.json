@@ -1,0 +1,18 @@
+{
+    "$id": "definitions/MultiUserConflictHandling",
+    "title": "MultiUserConflictHandling",
+    "description": "Configures the offline stores uploaded to the server when the offline conflict handling mode is set to `Discard Pending Transactions After Upload` in Mobile Services. Only applies in multi-user mode.",
+    "type": "object",
+    "required": ["UploadEncryptionKey"],
+    "properties": {
+        "UploadEncryptionKey": {
+            "type": "string",
+            "description": "Key used to encrypt the offline stores before uploading. This is compulsory and if it is missing or empty, the pending transactions are not backed up and the user is notified."
+        },
+        "UploadRequestQueueOnly": {
+            "type": "boolean",
+            "default": true,
+            "description": "Specifies which offline stores will be backed up to the server. `true` (default) uploads the request queue only. `false` uploads both the entity store and the request queue."
+        }
+    }
+}

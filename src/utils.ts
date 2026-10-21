@@ -1256,6 +1256,7 @@ export async function getServerConfig(): Promise<{
         "25.9",
         "26.3",
         "26.6",
+        "26.9"
       ];
       if (!availableVersions.includes(schemaVersionFromArgs)) {
         console.warn(
@@ -1276,7 +1277,7 @@ export async function getServerConfig(): Promise<{
 
     // Use command line argument if valid, otherwise use package.json config
     const schemaVersion =
-      schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "26.6";
+      schemaVersionFromArgs || packageJson.mdkConfig?.schemaVersion || "26.9";
 
     return {
       schemaVersion,
@@ -1284,7 +1285,7 @@ export async function getServerConfig(): Promise<{
   } catch {
     // Default configuration if package.json cannot be read
     return {
-      schemaVersion: "26.6",
+      schemaVersion: "26.9",
     };
   }
 }
@@ -1310,10 +1311,10 @@ export async function getSchemaVersion(projectPath: string): Promise<string> {
       }
     }
 
-    return "26.6";
+    return "26.9";
   } catch (error) {
     console.error("Error reading schema version from Application.app:", error);
     // Return server default value on error
-    return "26.6";
+    return "26.9";
   }
 }

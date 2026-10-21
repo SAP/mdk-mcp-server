@@ -1,0 +1,139 @@
+{
+  "$id": "Action.Type.ProgressBanner",
+  "title": "ProgressBanner",
+  "description": "Progress banner indicates that an action or an action chain is being executed in the background. The banner gets displayed in the app's main navigation bar beside the progress bar. Users can define the message to be displayed in the banner and the message to be displayed once the action execution is successful.\n\nNote: Failure handling is disabled for this action type as there are no viable ways for a progress banner to fail. Success handler can be used to chain other actions to the progress banner. The success action gets executed immediately after the progress banner gets displayed.\n\nOn iOS, the progress banner is displayed until the chain of action gets executed successfully. If the message to be displayed after the action execution is empty, the progress banner gets dismissed right after the action execution is complete.\n\nOn Android, the progress banner is displayed until the chain of action gets executed successfully with a \"Dismiss\" button. If there aren’t any actions chained to the progress banner, the message defined to be displayed after successful execution of the action chain is displayed.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Message": {
+      "description": "Message to be displayed when an action gets initiated right after the user interacts with the success banner. A progress indicator will be displayed beside the message to indicate the execution progress. If the provided text is too long, it will be wrapped.",
+      "type": "string"
+    },
+    "CompletionMessage": {
+      "description": "Message to be displayed beside the progress indicator after the successful execution of the action chain. If the text is too long, it will be wrapped.",
+      "type": "string"
+    },
+    "CompletionTimeout": {
+      "description": "Indicates how long the success banner should be displayed. The duration must be defined in seconds. If set to 0 seconds, the banner gets displayed indefinitely until user chooses to dismiss it manually (not applicable for Android). `CompletionTimeout` is applicable only if `CompletionMessage` is defined.",
+      "default": 0,
+      "type": "integer"
+    },
+    "Animated": {
+      "description": "Indicates whether the banner is animated or not. This parameter is not applicable for Android. By default, banners on Android will always be animated.",
+      "default": true,
+      "type": "boolean"
+    },
+    "ActionLabel": {
+      "type": "string",
+      "description": "`ActionLabel` can be used to indicate that the progress banner is clickable. On Android, it will be used as a button label. On iOS, it will be appended to `Message`."
+    },
+    "OnActionLabelPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when `ActionLabel` is pressed. This is applicable only when both `ActionLabel` and `OnActionLabelPress` are non-empty."
+    },
+    "CompletionActionLabel": {
+      "type": "string",
+      "description": "CompletionActionLabel can be used to indicate that the banner that is displayed after the successful execution of the action chain is clickable. On Android, it will be used as a button label. On iOS, it will be appended to `CompletionMessage`."
+    },
+    "OnCompletionActionLabelPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when `CompletionActionLabel` is pressed. This is applicable only when both `CompletionActionLabel` and `OnCompletionActionLabelPress` are non-empty."
+    },    
+    "DismissBannerOnAction": {
+      "type": "boolean",
+      "description": "Indicates whether the banner must be dismissed or not when the user clicks on it to perform another action. This is used for both progress and completion banner.",
+      "default": false
+    },
+    "Semantic": {
+      "type": "string",
+      "default": "Default",
+      "enum": [
+        {
+          "const": "Default",
+          "description": "Default semantic for typical actions. For iOS, the color top border of the `Banner` will be tinted, the color of the `MessageText` will be tinted if `ActionLabel` and `OnActionLabelPress` is defined, else greyed out to indicate that it is not interactable. For Android, it will be the default progress banner in Progress state."
+        },
+        {
+          "const": "Normal",
+          "description": "Neutral semantic for typical actions."
+        },
+        {
+          "const": "Tint",
+          "description": "Semantic indicating a tinted action."
+        },
+        {
+          "const": "Positive",
+          "description": "Semantic for positive actions."
+        },
+        {
+          "const": "Negative",
+          "description": "Semantic for negative actions."
+        },
+        {
+          "const": "Warning",
+          "description": "Semantic for warning or cautionary actions."
+        }
+      ],
+      "description": "Semantic applied to the banner when action is started and is in progress. Defaults to 'Default'. For iOS, it applies to the `Message` text's color and the color of the banner's top border. For Android, it applies only to the `Message` text's color. Supported in Mobile only."
+    },
+    "CompletionSemantic": {
+      "type": "string",
+      "default": "Default",
+      "enum": [
+        {
+          "const": "Default",
+          "description": "Default semantic for typical actions. For iOS, the color top border of the `Banner` will be tinted, the color of the `MessageText` will be tinted if `CompletionActionLabel` and `OnCompletionActionLabelPress` is defined, else greyed out to indicate that it is not interactable. For Android, it will be the default progress banner in Completion state."
+        },
+        {
+          "const": "Normal",
+          "description": "Neutral semantic for typical actions."
+        },
+        {
+          "const": "Tint",
+          "description": "Semantic indicating a tinted action."
+        },
+        {
+          "const": "Positive",
+          "description": "Semantic for positive actions."
+        },
+        {
+          "const": "Negative",
+          "description": "Semantic for negative actions."
+        },
+        {
+          "const": "Warning",
+          "description": "Semantic for warning or cautionary actions."
+        }
+      ],
+      "description": "Semantic applied to the banner upon completion. For iOS, it applies to the `Message` text's color and the color of the banner's top border. For Android, it applies only to the `Message` text's color. Supported in Mobile only."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Custom styles to be applied to ProgressBanner. These styles will override semantic based styling. Supported in Mobile only",
+      "properties": {
+        "Banner": {
+          "$ref": "definitions/BannerStyleStates",
+          "description": "The style object for `Banner` in different states (Progress / Completion). It applies background color styles to the banner on both platforms. It also applies border top (iOS) and progress bar (Android) styles to the banner. For completion state in Android, only background color styles is applicable."
+        },
+        "MessageText": {
+          "$ref": "definitions/BannerStyleStates",
+          "description": "The style object for `Message` in different states (Progress / Completion). It applies color and font styles to the message text of the banner."
+        },
+        "ActionLabel": {
+          "$ref": "definitions/BannerStyleStates",
+          "description": "The style object for `ActionLabel` in different states (Progress / Completion). It applies button styles to the action button. Applicable only in Android."
+        },
+        "DismissButton": {
+          "$ref": "definitions/BannerStyleStates",
+          "description": "The style object for `DismissButton` in different states (Progress / Completion). For iOS, it applies color styles to the Dismiss icon. For Android, it applies button styles to the Dismiss button."
+        }
+      }
+    },
+    "_Type": {
+      "const": "Action.Type.ProgressBanner"
+    }
+  },
+  "required": [
+    "Message",
+    "_Type"
+  ],
+  "type": "object"
+}

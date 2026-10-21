@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.DownloadStream",
+  "title": "ODataService DownloadStream",
+  "description": "DownloadStream action is used to download data stream of OData Properties with type `Edm.Stream` from an OData entity.\n\nThis action can download multiple `Edm.Stream` properties' data stream but only from a single entity, therefore, the result of the Target binding should only return a single entity, otherwise an error will be thrown.\n\nThis action doesn't support ChangeSet.\n\nNote: This action cannot be used to download the associated data stream of a Media Entity (EntityType with HasStream=\"true\"). Please use Action.Type.ODataService.DownloadMedia instead.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "RequestOptions": {
+      "$ref": "definitions/RequestOptions",
+      "description": "Options for processing of data requests"
+    },
+    "DownloadOptions": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions/DownloadOptions"
+      },
+      "description": "Options for download stream requests"
+    },
+    "Properties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "A list of property names with Edm.Stream type in the target entity."
+    },
+    "Target": {
+      "$ref": "definitions/LinkQueryTarget",
+      "description": "This action can only be executed on a single entity. therefore the Target specifier must be configured to return only 1 entity, otherwise this action will fail"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.DownloadStream"
+    }
+  },
+  "type": "object",
+  "required": [
+    "Target",
+    "_Type",
+    "Properties"
+  ]
+}

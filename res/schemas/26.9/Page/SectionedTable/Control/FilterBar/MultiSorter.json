@@ -1,0 +1,68 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/MultiSorter",
+  "title": "MultiSorter",
+  "description": "This control renders a MultiSorter control on filter bar. It allows user to define sort order on multiple sort items, change the sort sequence of the items by dragging various items, change the sort direction for each sort items (ascending or descending order), and customize the ascending/descending labels.",
+  "additionalProperties": {
+    "proxy": "FilterBarMultiSorterControlProxy"  
+  },
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allows the user to close the picker without selecting a value or to clear all existing selections.\nOn Android, this property is ignored and empty selection is always allowed."
+    },
+    "DisplayOnBar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicate whether the control should always be displayed on the FilterBar even when not selected."
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Android only. Helper text to be displayed."
+    },
+    "Items": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+        "$ref": "Page/SectionedTable/Control/FilterBar/MultiSorterFixedCollection"
+        }
+      ],
+      "description": "The items to sort by."
+    },
+    "Label": {
+      "type": "string",
+      "description": "The label displayed for the control on the FilterBar and within the FilterBar dialog."
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "When not specified or not found in the `Items` no selection is made. An array of the above values can be used to specify multiple selection. For MultiSorter, the value format is special: each value may include a sort direction suffix (`asc` or `desc`), e.g. `\"valueA asc\"`, `\"valueB desc\"`. The order of entries in the array also matters. The first entry is the primary sort, the second is the secondary sort, and so on. If no sort direction suffix is provided, it defaults to ascending order."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.MultiSorter"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name",
+    "Items"
+  ]
+}

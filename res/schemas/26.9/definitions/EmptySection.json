@@ -1,0 +1,25 @@
+{
+  "$id": "definitions/EmptySection",
+  "title": "EmptySection",
+  "description": "Used to customize the behavior of the section when it has no items to display.",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "SectionProxy"
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Caption label to be displayed for the extension when the section is empty. A caption that will be shown in a cell between the header and the footer."
+    },
+    "Style": {
+      "type": "string",
+      "description": "A style that will be applied to the label control used to show the Caption.\n\nThis style can also be modified globally using a pre-defined style named EmptySectionCaptionStyle."
+    },
+    "FooterVisible": {
+      "type": "boolean",
+      "description": "Automatically show/hide the footer for the section when the section is empty. This property is intended for replacing the `HidesFooter` property. If this property is defined, then `HidesFooter` property is ignored.",
+      "default": false
+    }
+  },
+  "required": []
+}

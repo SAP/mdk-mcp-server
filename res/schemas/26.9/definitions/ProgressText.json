@@ -1,0 +1,32 @@
+{
+  "$id": "definitions/ProgressText",
+  "title": "ProgressText",
+  "description": "[Deprecated. Use [ProgressMessages](ProgressMessages.schema.md) in the service definition's OfflineOptions instead.]",
+  "properties": {
+    "Opening": {
+      "type": "string"
+    },
+    "Initializing": {
+      "type": "string"
+    },
+    "InitialCommunication": {
+      "type": "string"
+    },
+    "StartingDownloadingFile": {
+      "type": "string"
+    },
+    "DownloadingFile": {
+      "type": "string"
+    },
+    "StartingDownloadingData": {
+      "type": "string"
+    },
+    "DownloadingData": {
+      "type": "string"
+    },
+    "Opened": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

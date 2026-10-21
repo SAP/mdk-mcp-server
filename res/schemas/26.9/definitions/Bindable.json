@@ -1,0 +1,24 @@
+{
+  "$id": "definitions/Bindable",
+  "title": "Bindable",
+  "description": "A bindable type can take the followings forms as long as they are resolved to the (primitive) type in run-time.",
+  "anyOf": [
+    {
+      "pattern": "^{.+}$",
+      "description": "Object binding e.g. `{MyProperty}`",
+      "type": "string"
+    },
+    {
+      "$ref": "definitions/Global",
+      "description": "A _.global_ file that contains the definition of a global constant."
+    },
+    {
+      "$ref": "definitions/Rule",
+      "description": "Rules are JavaScript modules that can be used to add application functionality using ES5 or ES6 syntax."
+    },
+    {
+      "$ref": "definitions/TargetPath",
+      "description": "Target paths are strings interpreted at runtime and comprise segments to be resolved one after another, with the result of one being used for the evaluation of the next."
+    }
+  ]
+}

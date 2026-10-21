@@ -1,0 +1,68 @@
+{
+  "$id": "Page/SectionedTable/Control/FilterBar/Segmented",
+  "title": "Segmented",
+  "additionalProperties": {
+    "proxy": "FilterBarSegmentedControlProxy"  
+  },
+  "properties": {
+    "AllowEmptySelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allows the user to close the picker without selecting a value or to clear all existing selections.\nOn Android, this property is ignored and empty selection is always allowed."
+    },
+    "AllowMultipleSelection": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allows user to select more than one value from the items."
+    },
+    "DisplayOnBar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicate whether the control should always be displayed on the FilterBar even when not selected."
+    },
+    "Items": {
+      "description": "An array of items for this control.",
+      "anyOf": [
+        {
+          "$ref": "definitions/EntitySetTarget"
+        },
+        {
+          "$ref": "definitions/FixedCollection"
+        }
+      ]
+    },
+    "Label": {
+      "type": "string",
+      "description": "The label displayed for the control on the FilterBar and within the FilterBar dialog."
+    },
+    "SimpleQuery": {
+      "$ref": "Page/SectionedTable/Control/FilterBar/SimpleQuery"
+    },
+    "Value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "When not specified or not found in the `Items` no selection is made. An array of the above values can be used to specify multiple selection."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "FilterBar.Type.Segmented"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ],
+  "description": "A segmented control allows the selection of one or more options among values within a defined category."
+}

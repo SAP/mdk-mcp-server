@@ -1,0 +1,13 @@
+{
+    "$id": "Page/SectionedTable/Control/FilterBar/ListPickerSearch",
+    "title": "Search",
+    "description": "Search over the items in the list.",
+    "properties": {
+      "Enabled": {
+        "type": "boolean",
+        "description": "Enables search on the ListPicker.",
+        "default": false
+      }
+    },
+    "type": "object"
+  }

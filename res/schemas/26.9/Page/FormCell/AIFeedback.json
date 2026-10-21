@@ -1,0 +1,71 @@
+{
+  "$id": "Page/FormCell/AIFeedback",
+  "title": "AIFeedback",
+  "description": "A specialized FormCell designed exclusively for AI experiences. It displays thumbs-up and thumbs-down vote buttons for collecting user feedback on AI-generated content.\n\nUnlike traditional FormCells, AIFeedback does not support Validation, HelperText, or RequiredIndicator properties. It is only supported in FormCellSection (SectionedTable) and MultiColumn layouts, not supported in FormCellContainer.\n\nDo: Use AIFeedback to allow users to share their feedback on AI experiences.\n\nDon't: Do not use AIFeedback for feedback that is not related to AI.\n\nNote: This control does not embed any AI capabilities itself. It is a UI control that facilitates AI experiences. It is up to the developer to determine the AI scenarios.",
+  "additionalProperties": {
+    "proxy": "AIFeedbackFormCellProxy"
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "The caption text displayed alongside the vote buttons. Limited to a maximum of two lines, longer text is truncated with an ellipsis."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disables or enables interaction. The control will have a reduced opacity if this property is false.",
+      "default": true
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Value": {
+      "type": "string",
+      "description": "The current feedback vote value. Accepted values are: \"None\", \"Up\", \"Down\" (case-sensitive). If an invalid value is provided, it defaults to \"None\".",
+      "enum": ["None", "Up", "Down"],
+      "default": "None"
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after the vote value changes."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Caption`, and `VoteButtons`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/AIFeedbackBackgroundClass",
+          "description": "The string value is a style class name of `Background`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/AIFeedbackCaptionClass",
+          "description": "The string value is a style class name of `Caption`."
+        },
+        "VoteButtons": {
+          "type": "string",
+          "$ref": "Styles/VoteButtonsClass",
+          "description": "The string value is a style class name of `VoteButtons`."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.AIFeedback"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

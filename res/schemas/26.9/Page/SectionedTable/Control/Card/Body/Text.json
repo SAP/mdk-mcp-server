@@ -1,0 +1,39 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Body/Text",
+  "title": "Text",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardBodyContentTextProxy"
+  },
+  "properties": {
+    "Text": {
+      "type": "string"
+    },
+    "NumberOfLines": {
+      "type": "integer",
+      "description": "The number of lines in which the text is displayed. The height of the cell grows to display the text within the specified number of lines. The default value is 1. Any value less than or equal to zero is considered as no limit.",
+      "default": 1
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Style to be applied on the Text.",
+      "properties": {
+        "Text": {
+          "type": "string",
+          "$ref": "Styles/TextClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Text`."
+        }
+      }
+    },
+    "_Type": {
+      "const": "CardBodyContent.Type.Text"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "_Type",
+    "Text"
+  ]
+}

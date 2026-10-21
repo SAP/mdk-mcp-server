@@ -132,6 +132,6 @@
     "js-yaml": "^4.1.0"
   },
   "mdkConfig": {
-    "schemaVersion": "26.6"
+    "schemaVersion": "26.9"
   }
 }

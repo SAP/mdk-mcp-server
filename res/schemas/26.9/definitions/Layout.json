@@ -1,0 +1,36 @@
+{
+  "$id": "definitions/Layout",
+  "title": "Layout",
+    "type": "object",
+    "description": "Common layout properties for a collection view as those used in the SimplePropertyCollection, KeyValue, and ImageCollection sections.",
+    "properties": {
+      "NumberOfColumns": {
+        "type": "integer",
+        "description": "The number of columns to be displayed.\n\n* In iOS, this setting is only valid in regular mode (iPad or large iPhone Landscape). In compact mode it will always be set to 1 column. \n* In Android, this setting is only valid when current screen width is larger than 600dp. When the current screen width (e.g. in phone portrait mode) is less than 600dp, it will always be set to 1 column.\n* In web, the value can only be 1 or 2. For a value greater than 2, it will be set to 2.\n * Ignored by ImageCollection.",
+        "default": 2
+      },
+      "MinimumInteritemSpacing": {
+        "type": "integer",
+        "description": "The minimum horizontal space between two items. If not provided, the SDK default will be used. Ignored by ImageCollection."
+      },
+      "LayoutType": {
+        "type": "string",
+        "enum": [
+          {
+            "const": "HorizontalScroll",
+            "description": "Display image collection in a single horizontal line. It can scroll left and right and should be used when you want users to preview a subset of a list."
+          },
+          {
+            "const": "HorizontalFit",
+            "description": "Display image collection in a single horizontal line. The only difference from the horizontal scroll is that this variation does not scroll. It should be used when there is a specific number of cells you want to display. It can also be used if you want to preview a subset of information."
+          },
+          {
+            "const": "Vertical",
+            "description": "Allow image collection to stack vertically. This variation should be used when all collection cells in the collection are to be displayed."
+          }
+        ],
+        "default": "HorizontalFit",
+        "description": "Only applicable to ImageCollection."
+      }
+    }
+  }

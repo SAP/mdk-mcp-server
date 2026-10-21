@@ -1,0 +1,33 @@
+{
+  "$id": "definitions/IntegrationPoint",
+  "title": "IntegrationPoint",
+  "anyOf": [
+    {
+      "$ref": "definitions/IntegrationPointAction"
+    },
+    {
+      "$ref": "definitions/IntegrationPointGlobal"
+    },
+    {
+      "$ref": "definitions/IntegrationPointPage"
+    },
+    {
+      "$ref": "definitions/IntegrationPointRule"
+    },
+    {
+      "$ref": "definitions/IntegrationPointService"
+    },
+    {
+      "$ref": "definitions/IntegrationPointI18n"
+    },
+    {
+      "$ref": "definitions/IntegrationPointStyle"
+    },
+    {
+      "$ref": "definitions/IntegrationPointApplicationApp"
+    },
+    {
+      "$ref": "definitions/IntegrationPointFragment"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "$id": "definitions/ApplicationApp",
+  "title": "ApplicationApp",
+  "pattern": "(^\/.+\/).*(.+\\.app)$|(^).*(.+\\.app)$",
+  "type": "string",
+  "description": "An file underneath the project base / components folder that has a _.app_ extension.",
+  "examples": [
+    "/components/Application_changed.app",
+    "/base/Application.app"
+  ]
+}

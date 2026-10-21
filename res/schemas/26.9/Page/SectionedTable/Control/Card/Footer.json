@@ -1,0 +1,40 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/Footer",
+  "title": "CardFooter",
+  "description": "The card footer, also referred to as card toolbar, is the bottom part of a card that contains important or routine actions that directly impact the card, such as “Approve” or “Submit”. The footer can accommodate a maximum of two action buttons.",
+  "additionalProperties": {
+    "proxy": "CardFooterProxy"  
+  },
+  "properties": {
+    "Visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "PrimaryAction": {
+      "description": "Primary action button on card footer. Displayed on the right side in the footer. The primary action button is used to highlight the most important action.",
+      "$ref": "Page/SectionedTable/Control/Card/FooterAction"
+    },
+    "SecondaryAction": {
+      "description": "Secondary action button on card footer. The secondary action button is used for actions that are not the primary action.",
+      "$ref": "Page/SectionedTable/Control/Card/FooterAction"
+    },
+    "Styles": {
+      "description": "Style to be applied on the card footer.",
+      "properties": {
+        "Footer": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "Supported in iOS only. The string value is a style class name for `Footer`. "
+        }
+      },
+      "type": "object"
+    },
+    "_Type": {
+      "const": "Card.Type.Footer"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

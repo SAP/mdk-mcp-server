@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/ImageSize",
+  "title": "ImageSize",
+  "description": "Size of the image.",
+  "type": "object",
+  "properties": {
+    "Width": {
+      "type": "integer",
+      "default": 0,
+      "description": "Specify width for the image."
+    },
+    "Height": {
+      "type": "integer",
+      "default": 0,
+      "description": "Specify height for the image."
+    }
+  }
+}

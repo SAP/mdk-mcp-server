@@ -1,0 +1,49 @@
+{
+  "$id": "definitions/AggregateItem",
+  "title": "AggregateItem",
+  "description": "`AggregateItem` in the `SummaryView` of ChartContent.",
+  "properties": {
+    "Title": {
+      "type": "string"
+    },
+    "TrendTitle": {
+      "description": "This is only for iOS and not supported in Android.",
+      "type": "string"
+    },
+    "TrendImage": {
+      "description": "This is only for iOS and not supported in Android.",
+      "$ref": "definitions/Image"
+    },
+    "Value": {
+      "description": "You can provide a combination of three properties: `LeadingUnit`, `Metrics`, `TrailingUnit`. Instead of setting a fixed `Metrics` value, you can use `Function` property to automatically calculate the value. If you don't choose any `Metric` or `Function`, default `Function` of `SUM` will be applied. If this `Value` attribute is absent, then the default `Function` of `SUM` will be applied.",
+      "type": "object",
+      "properties": {
+        "LeadingUnit": {
+          "type": "string"
+        },
+        "TrailingUnit": {
+          "type": "string"
+        },
+        "Function": {
+          "description": "This will be applied if both `Metrics` and `Function` are missing.",
+          "type": "string",
+          "enum": [
+            "Sum",
+            "Average",
+            "Max",
+            "Min"
+          ],
+          "default": "Sum"
+        },
+        "Metrics": {
+          "description": "If this is absent, data will be derived based on `Function`, which is applied on the `ChartView.Data` items to arrive at the value.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      }
+    }
+  },
+  "type": "object"
+}

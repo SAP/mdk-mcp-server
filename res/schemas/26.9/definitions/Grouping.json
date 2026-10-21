@@ -1,0 +1,47 @@
+{
+  "$id": "definitions/Grouping",
+  "title": "Grouping",
+  "description": "Grouping of the list items.",
+  "additionalProperties": {
+    "proxy": "ObjectTableProxy"
+  },
+  "properties": {
+    "GroupingProperties": {
+      "description": "An array of EntitySet property names used to group list items, or a `Rule` that returns such an array. Property names not present in the EntitySet are ignored. These properties are automatically added at the front of the OData `$orderby` clause. Additional sort keys defined in `QueryOptions` of `Target` are appended after them, with deduplication if a grouping property is already present. Ensure that these fields are requested via the OData `$select` in the `QueryOptions` of `Target` so that they are returned by the query.",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "definitions/Rule",
+          "description": "Expects return of `GroupingProperties` in array format."
+        }
+      ]
+    },
+    "Header": {
+      "description": "Configuration for the header displayed above each grouped section. Define one or more `GroupingItem` entries in `Items`. If multiple are provided, only the first is used for rendering. Alternatively, `Items` can be a `Rule` that returns an array of `GroupingItem` objects. Only the first returned item will be rendered.",
+      "properties": {
+        "Items": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "definitions/GroupingItem"
+              },
+              "description": "One or more `GroupingItem` objects may be defined; only the first is used when rendering."
+            },
+            {
+              "$ref": "definitions/Rule",
+              "description": "Expects a `Rule` that returns an array of `GroupingItem` objects; only the first element will be used for rendering."
+            }
+          ]
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

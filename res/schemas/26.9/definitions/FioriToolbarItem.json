@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/FioriToolbarItem",
+  "title": "FioriToolbarItem",
+  "description": "Fiori toolbar item to be displayed on fiori toolbar",
+  "additionalProperties": {
+    "proxy": "FioriToolbarItemProxy"
+  },
+  "anyOf": [
+    {
+      "$ref": "Page/FioriToolbarItem/Button",
+      "description": "A button communicates the action that it is going to initiate. Users can click a button to begin a process or workflow, or to trigger an action."
+    },
+    {
+      "$ref": "Page/FioriToolbarItem/Icon",
+      "description": "A `FioriToolbar` icon indicates the action it will initiate. Users can click on the icon to begin a process, workflow, or trigger an action."
+    }
+  ]
+}

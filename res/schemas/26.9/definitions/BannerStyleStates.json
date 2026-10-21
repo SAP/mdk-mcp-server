@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/BannerStyleStates",
+  "title": "BannerStyleStates",
+  "description": "Progress Banner Styles in different states.",
+  "type": "object",
+  "properties": {
+    "Progress": {
+      "type": "string",
+      "$ref": "Styles/ProgressBannerClass",
+      "description": "The string value is the style class name of a banner component when the action starts and is in progress."
+    },
+    "Completion": {
+      "type": "string",
+      "$ref": "Styles/ProgressBannerClass",
+      "description": "The string value is the style class name of a banner component after the action gets executed successfully."
+    }
+  }
+}

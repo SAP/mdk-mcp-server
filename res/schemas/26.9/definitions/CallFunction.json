@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/CallFunction",
+  "title": "OData Function",
+  "properties": {
+    "Name": {
+      "type": "string",
+      "description": "The name of the OData function or action imports"
+    },
+    "Parameters": {
+      "type": "object",
+      "description": "A list of function's parameter names and values in key/value pairs format. Complex parameter type is supported."
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "type": "object"
+}
