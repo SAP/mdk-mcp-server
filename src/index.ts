@@ -1881,7 +1881,7 @@ export default async function run(_options = {}) {
   const schemaPath = path.join(projectRoot, "res/schemas");
 
   // Check if embeddings exist for the version, if not initialize the configured version
-  const embeddingsDir = path.join(projectRoot, "embeddings");
+  const embeddingsDir = path.join(projectRoot, "build/embeddings");
   if (!fs.existsSync(embeddingsDir)) {
     fs.mkdirSync(embeddingsDir, { recursive: true });
   }
