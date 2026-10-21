@@ -1872,10 +1872,6 @@ async function setupTelemetry(): Promise<void> {
 export default async function run(_options = {}) {
   console.error("[MDK MCP Server] Starting server initialization...");
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("[MDK MCP Server] Server connected and running");
-
   // Get server configuration
   const serverConfig = await getServerConfig();
   console.error(
@@ -1885,16 +1881,21 @@ export default async function run(_options = {}) {
   const schemaPath = path.join(projectRoot, "res/schemas");
 
   // Check if embeddings exist for the version, if not initialize the configured version
+  const embeddingsDir = path.join(projectRoot, "embeddings");
+  if (!fs.existsSync(embeddingsDir)) {
+    fs.mkdirSync(embeddingsDir, { recursive: true });
+  }
+
   const versionEmbeddingPath = path.join(
-    projectRoot,
-    `build/embeddings/schema-chunks-${serverConfig.schemaVersion}.bin`
+    embeddingsDir,
+    `schema-chunks-${serverConfig.schemaVersion}.bin`
   );
 
   if (!fs.existsSync(versionEmbeddingPath)) {
     console.error(
       `[MDK MCP Server] Initializing schema embeddings for version ${serverConfig.schemaVersion}...`
     );
-    retrieveAndStore(schemaPath, serverConfig.schemaVersion);
+    await retrieveAndStore(schemaPath, serverConfig.schemaVersion);
     console.error(
       "[MDK MCP Server] Schema embeddings initialized successfully"
     );
@@ -1903,12 +1904,12 @@ export default async function run(_options = {}) {
   }
 
   const rulembeddingPath = path.join(
-    projectRoot,
-    `build/embeddings/rule-chunks.bin`
+    embeddingsDir,
+    `rule-chunks.bin`
   );
   if (!fs.existsSync(rulembeddingPath)) {
     console.error("[MDK MCP Server] Initializing rule embeddings...");
-    retrieveAndStoreRule(path.join(projectRoot, "res/templates/Rule"));
+    await retrieveAndStoreRule(path.join(projectRoot, "res/templates/Rule"));
     console.error("[MDK MCP Server] Rule embeddings initialized successfully");
   } else {
     console.error("[MDK MCP Server] Using existing rule embeddings");
@@ -1921,7 +1922,11 @@ export default async function run(_options = {}) {
 
   await setupTelemetry();
   console.error("[MDK MCP Server] Telemetry initialized");
-  console.error("[MDK MCP Server] Server ready to accept requests");
+
+  // Connect to transport AFTER all initialization is complete
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("[MDK MCP Server] Server connected and ready to accept requests");
 
   // Handle graceful shutdown
   process.on("SIGINT", () => {
