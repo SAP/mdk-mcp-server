@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.AICore.Chat.Completions",
+  "title": "AICore Chat Completions",
+  "description": "Chat Completions action is used to send a /chats/completions request to the AI Core service.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "APIVersion": {
+      "description": "Specify the API version. For information about the supported API versions, see Chat completions in the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).",
+      "type": "string",
+      "default": "2024-02-01"
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the AI Core Service in key/value pair format",
+      "default": {"content-type": "application/json"}
+    },
+    "Path": {
+      "type": "string",
+      "description": "The endpoints such as \"/chat/completions\" are not required if  if \"/chat/completions\" is already in the full path of destination"
+    },
+    "Properties": {
+      "$ref": "definitions/ChatCompletionsProperties",
+      "description": "A list of the property names and values in key/value pairs format."
+    },
+    "ResourceGroup": {
+      "description": "Specify the resource group. Resource groups represent a virtual collection of related resources within the scope of your AI runtime environment.",
+      "type": "string",
+      "default": "default"
+    },
+    "Target": {
+      "$ref": "definitions/AICoreTarget"
+    },
+    "_Type": {
+      "const": "Action.Type.AICore.Chat.Completions"
+    }
+  },
+  "required": [
+    "Target",
+    "Properties",
+    "_Type"
+  ],
+  "type": "object"
+}

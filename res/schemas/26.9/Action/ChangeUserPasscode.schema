@@ -1,0 +1,15 @@
+{
+  "$id": "Action.Type.ChangeUserPasscode",
+  "title": "ChangeUserPasscode",
+  "description": "Define an action that allows users to change their passcode.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.ChangeUserPasscode"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

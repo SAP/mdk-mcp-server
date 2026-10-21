@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.ChangeSet",
+  "title": "ODataService ChangeSet",
+  "description": "Change set actions are configured with an array of actions that are executed serially. If any action fails the entire change set fails.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "Actions": {
+      "items": {
+        "$ref": "definitions/ActionOrRule"
+      },
+      "type": "array",
+      "description": "An array of OData actions that'll be executed serially. If any action fails the entire change set fails"
+    },
+    "Headers": {
+      "type": "object",
+      "description": "Custom headers to be included as part of the request to the OData Service in key/value pair format"
+    },
+    "Target": {
+      "$ref": "definitions/ServiceOnlyTarget",
+      "description": "Only service name is required"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.ChangeSet"
+    }
+  },
+  "required": [
+    "_Type",
+    "Target",
+    "Actions"
+  ],
+  "type": "object"
+}

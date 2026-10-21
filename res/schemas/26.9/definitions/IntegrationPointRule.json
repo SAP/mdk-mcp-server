@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointRule",
+  "title": "IntegrationPointRule",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Rule"
+    },
+    "Target": {
+      "$ref": "definitions/Rule"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

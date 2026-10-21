@@ -1,0 +1,41 @@
+{
+  "$id": "Action/Logger/SetState",
+  "title": "SetState",
+  "description": "This action is used to change the state of the logger (On or Off).\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "LogFileName": {
+      "type": "string",
+      "description": "Name of the log file. If the name is not provided, \"ClientLog.txt\" will be considered by default."
+    },
+    "LoggerState": {
+      "enum": [
+        {
+          "const": "Off",
+          "description": "Turn off the logger"
+        },
+        {
+          "const": "On",
+          "description": "Turn on the logger"
+        },
+        {
+          "const": "Toggle",
+          "description": "Toggle the state of logger depending on the current state of the logger"
+        }
+      ],
+      "type": "string"
+    },
+    "MaxFileSize": {
+      "type": "integer",
+      "description": "Max log file size in MB. If the size is not provided, 5MB will be considered by default. If the size is set to 0, then there are no restrictions with respect to the file size."
+    },
+    "_Type": {
+      "const": "Action.Type.Logger.SetState"
+    }
+  },
+  "required": [
+    "LoggerState",
+    "_Type"
+  ],
+  "type": "object"
+}

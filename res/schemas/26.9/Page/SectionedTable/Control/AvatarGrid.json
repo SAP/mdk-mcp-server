@@ -1,0 +1,44 @@
+{
+    "$id": "Page/SectionedTable/Control/AvatarGrid",
+    "title": "AvatarGrid",
+    "additionalProperties": {
+        "proxy": "ObjectCellProxy"
+    },
+    "properties": {
+        "Avatar": {
+            "description": "Dynamic binding of Avatar that contains image or image text to be displayed.",
+            "$ref": "Page/SectionedTable/Control/Avatar"
+        },
+        "Avatars": {
+            "description": "Static binding of Avatar that contains image or image text to be displayed.",
+            "anyOf": [
+                {
+                    "items": {
+                        "$ref": "Page/SectionedTable/Control/Avatar" 
+                    },
+                    "type": "array"
+                },
+                {
+                    "$ref": "definitions/Rule"
+                }
+            ]
+        },
+        "GridMax": {
+            "type": "integer",
+            "default": 5,
+            "description": "Maximum number of avatars to be displayed in `AvatarGrid` including extra avatar counter."
+        },
+        "ImageIsCircular": {
+            "type": "boolean",
+            "default": true,
+            "description": "If the value is true, the image in grid is displayed in a circular shape. Otherwise, it will be a square."
+        },
+        "BindingCollection": {
+            "description": "Definition of the BindingCollection to dynamically populate the collection. You can set this to binding/rule to return an array of data items. Note: If this is set to binding/rule, you must return an array of data items.",
+            "$ref": "definitions/Bindable"
+        }
+    },
+    "type": "object",
+    "required": ["Avatars"]
+}
+  

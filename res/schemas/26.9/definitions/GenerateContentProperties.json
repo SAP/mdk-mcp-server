@@ -1,0 +1,37 @@
+{
+  "$id": "definitions/GenerateContentProperties",
+  "title": "GenerateContentProperties",
+  "description": "A list of the generate content property names and values in key/value pairs format.",
+  "type": "object",
+  "properties": {
+    "Contents": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array",
+      "description": "The content of the current conversation with the model."
+    },
+    "GenerationConfig": {
+      "type": "object",
+      "description": "Generation configuration settings."
+    },
+    "SafetySettings": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array",
+      "description": "Per request settings for blocking unsafe content. \n\n\n\nFor more information, see [this](https://ai.google.dev/gemini-api/docs/safety-settings)"
+    },
+    "SystemInstruction": {
+      "type": "object",
+      "description": "Instructions for the model to steer it toward better performance. For example, \"Answer as concisely as possible\" or \"Don't use technical terms in your response\"."
+    },
+    "Tool": {
+      "type": "array",
+      "description": "A piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model."
+    }
+  },
+  "required": [
+    "Contents"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$id": "definitions/CalendarQueryTarget",
+  "title": "CalendarQueryTarget",
+  "additionalProperties": {
+    "proxy": "CalendarProxy"
+  },
+  "allOf": [
+    {
+      "$ref": "definitions/QueryTarget"
+    },
+    {
+      "properties": {
+        "DateProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of property names that represent date values in the data items. These properties will be used to determine the times of events in the calendar."
+        }
+      },
+      "type": "object"
+    }
+  ]
+}

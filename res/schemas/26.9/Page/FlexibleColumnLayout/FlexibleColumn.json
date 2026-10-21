@@ -1,0 +1,21 @@
+{
+  "$id": "Page/FlexibleColumnLayout/FlexibleColumn",
+  "title": "FlexibleColumn",
+  "additionalProperties": {
+    "proxy": "PageProxy"  
+  },
+  "properties": {
+    "_Name": {
+      "type": "string"
+    },
+    "PageToOpen": {
+      "description": "Page to be rendered in a flexible column, references a .page file.",
+      "$ref": "definitions/Page"
+    }
+  },
+  "required": [
+    "_Name",
+    "PageToOpen"
+  ],
+  "type": "object"
+}

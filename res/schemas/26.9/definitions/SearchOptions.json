@@ -1,0 +1,51 @@
+{
+  "$id": "definitions/SearchOptions",
+  "title": "SearchOptions",
+  "description": "Options for generating the OData search query. Not applicable to ListPicker using fixed collection",
+  "properties": {
+    "CaseSensitive": {
+      "default": false,
+      "description": "Determines the case sensitivity of the search. This applies to Offline OData only. For Online OData, case sensitivity depends on the backend service used.",
+      "type": "boolean"
+    },
+    "NumberSearch": {
+      "description": "Options for number-typed properties. This applies to both Offline and Online OData. However, using Online OData, enabling `NumberSearch` without backend support or using an unsupported `ConversionMethod` will cause the entire search process to fail if there are number-typed properties in the search keys.",
+      "properties": {
+        "Enabled": {
+          "default": "false",
+          "description": "Determines whether number-typed properties should be included during a search.",
+          "type": "boolean"
+        },
+        "ConversionMethod": {
+          "description": "The conversion method to use on number-typed properties during a search, if `NumberSearch` is enabled. This applies to Online OData only.",
+          "default": "NoConversion",
+          "enum": [
+            { "const": "NoConversion",
+                "description": "No conversion."
+            },
+            { "const": "UseCast",
+                "description": "Conversion into `Edm.String` by calling `cast`."
+            },
+            { "const": "UseConcat",
+                "description": "Conversion into `Edm.String` by calling `concat` with an empty string."
+            }
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "UseSearchOverFilter": {
+      "description": "Options for UseSearchOverFilter properties. This applies to both Offline and Online OData.",
+      "properties": {
+        "Enabled": {
+          "default": false,
+          "description": "Determines whether to use Built-in Search - $search query option.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

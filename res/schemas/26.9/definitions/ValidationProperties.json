@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/ValidationProperties",
+  "title": "ValidationProperties",
+  "properties": {
+    "ValidationMessage": {
+      "type": "string",
+      "description": "The validation message."
+    },
+    "ValidationMessageColor": {
+      "type": "string",
+      "description": "The color of the validation message as a hexadecimal string, e.g. \"ffffff\"."
+    },
+    "SeparatorBackgroundColor": {
+      "type": "string",
+      "description": "The background color of the separator as a hexadecimal string, e.g. \"ffffff\"."
+    },
+    "SeparatorIsHidden": {
+      "type": "boolean",
+      "description": "The visibility of the separator."
+    },
+    "ValidationViewBackgroundColor": {
+      "type": "string",
+      "description": "The background color of the validation view as a hexadecimal string, e.g. \"ffffff\"."
+    },
+    "ValidationViewIsHidden": {
+      "type": "boolean",
+      "description": "The visibility of the validation view."
+    }
+  }
+}

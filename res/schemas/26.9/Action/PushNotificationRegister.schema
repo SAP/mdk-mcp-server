@@ -1,0 +1,15 @@
+{
+  "$id": "Action.Type.PushNotificationRegister",
+  "title": "PushNotificationRegister",
+  "description": "Register a device with SAP Mobile Services to allow push notifications to be sent to the device.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.PushNotificationRegister"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,25 @@
+{
+  "$id": "Page/Common/OnPressObject",
+  "title": "OnPressObject",
+  "description": "Currently only ButtonTable supports this.",
+  "properties": {
+    "Handler": {
+     "$ref": "definitions/ActionOrRule"
+    },
+    "UserInteraction": {
+      "description": "This object is used to control user interaction while the action is executing.\n\nWhen the action completes the enabled state defaults to true and the outer title is used.",
+      "properties": {
+        "Enabled": {
+          "description": "This property can be used to disable user interaction.",
+          "default": true,
+          "type": "boolean"
+        },
+        "Title": {
+          "description": "This property can be used to modify the title of the control after the OnPress event is received. The default is the outer title.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  }
+}

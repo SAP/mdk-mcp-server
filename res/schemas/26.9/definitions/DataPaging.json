@@ -1,0 +1,26 @@
+{
+  "$id": "definitions/DataPaging",
+  "title": "DataPaging",
+  "description": "Configure the loading indicator shown at the end of the list, when loading next page of data. \n Also configure page size for fetching data.",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": ["BindableSectionProxy", "ListPickerFormCellProxy"]
+  },
+  "properties": {
+    "ShowLoadingIndicator": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show or hide loading indicator when loading next page of data."
+    },
+    "LoadingIndicatorText": {
+      "type": "string",
+      "default": "",
+      "description": "Text to show under the loading indicator. Only applicable when `ShowLoadingIndicator` is set to true."
+    },
+    "PageSize": {
+      "type": "integer",
+      "default": 50,
+      "description": "Specify page size for fetching data."
+    }    
+  }
+}

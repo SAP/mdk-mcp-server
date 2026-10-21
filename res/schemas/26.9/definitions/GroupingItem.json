@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/GroupingItem",
+  "title": "GroupingItem",
+  "description": "Grouping Item.",
+  "additionalProperties": {
+    "proxy": "ObjectTableProxy"
+  },
+  "properties": {
+    "Title": {
+      "type": "string",
+      "description": "The title of the group header."
+    },
+    "Styles": {
+      "description": "A style to be applied on the group header",
+      "properties": {
+        "Title": {
+          "type": "string",
+          "$ref": "Styles/TextPaintClass",
+          "description": "The string value is a style class name of `Title`."
+        },
+        "BackgroundColor": {
+          "type": "string",
+          "$ref": "Styles/BackgroundClass",
+          "description": "The string value is a style class name of `BackgroundColor`."
+        }
+      },
+      "type": "object"
+    }
+  }
+}

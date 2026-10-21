@@ -1,0 +1,23 @@
+{
+  "$id": "definitions/DefiningRequest",
+  "title": "DefiningRequest",
+  "properties": {
+    "AutomaticallyRetrievesStreams": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to automatically download the actual media associated with the Entity and store it in the offline database."
+    },
+    "Name": {
+      "type": "string",
+      "description": "The defining request name"
+    },
+    "Query": {
+      "type": "string",
+      "description": "An Entity name or an Entity name with filters, e.g. Products?$filter=CategoryID eq '123'. This property is required for adding defining request."
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,15 @@
+{
+  "$id": "Action.Type.ApplicationUpdate",
+  "title": "ApplicationUpdate",
+  "description": "Application update action allows the client to manually check for an application update. Check is considered successful if the application checks for a new version or downloads a new version. However, check is considered a failure if the application fails to either check for a new version or download the new version.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.ApplicationUpdate"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

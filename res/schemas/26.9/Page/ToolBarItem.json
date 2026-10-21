@@ -1,0 +1,67 @@
+{
+  "$id": "Page/ToolBarItem",
+  "title": "ToolBarItem",
+  "description": "ToolBarItem is a control item that can be added to the tool bar.",
+  "additionalProperties": {
+    "proxy": "PageProxy"
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Displayed label of the toolbar item. The default value is the same as the value of `_Name`."
+    },
+    "Clickable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicates if the toolbar item is clickable. If the value is false, the item cannot be enabled and behaves like a label."
+    },
+    "Enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enables or disables the toolbar item."
+    },
+    "Visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set the visibility of this control."
+    },
+    "ItemType": {
+      "enum":[
+        "Button",
+        "Normal"
+      ],
+      "description": "Indicates the item type of the toolbar item. It provides two options: `Normal` (text button) and `Button` (contained button). This parameter is applicable only to Android.",
+      "type": "string"
+    },
+    "Icon": {
+      "$ref": "definitions/Image",
+      "description": "Adds an image to your toolbar. Overwrites `Caption`, if specified."
+    },
+    "OnPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when the toolbar item is pressed."
+    },
+    "SystemItem": {
+      "$ref": "definitions/SystemItem",
+      "description": "Adds predefined system-supplied icon or text. Overwrites `Caption` and `Icon` if specified.\n\nIf you set the width but not the icon or caption, then an empty space with the specified width will be rendered.\n\nOn Android devices, the `SystemItem` renders with black colored icon due to the white background."
+    },
+    "Width": {
+      "type": "integer",
+      "description": "The width of the control in Device Independent Pixel. The DIP value will be converted to pixels of the platform (based on scale and on density for iOS and Android respectively).\n\nMandatory if `SystemItem` is set to `FixedSpace`, optional for `Caption` and `Icon`.\n\nBy default, the caption and icon widths are calculated automatically."
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is a [style class name of `Icon`](../Styles/ImageClass.style.md)."
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.ToolbarItem"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

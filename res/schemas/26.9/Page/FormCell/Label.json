@@ -1,0 +1,48 @@
+{
+  "$id": "Page/FormCell/Label",
+  "title": "Label",
+  "description": "A LabelFormCell control is display-only, non-editable, and does not accept user input. This control displays a single body of text, and its associated properties are applied to the entire body of text. This control is supported in both FormCell Container and FormCell Section and works in both single and multi-column layouts.",
+  "additionalProperties": {
+    "proxy": "LabelFormCellProxy"  
+  },
+  "properties": {
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Label"
+    },
+    "Text": {
+      "type": "string",
+      "description": "The text that is displayed."
+    },
+    "TextWrap": {
+      "type": "boolean",
+      "description": "Wraps overflowing display text onto multiple lines.",
+      "default": true
+    },
+    "MaxLines": {
+      "type": "integer",
+      "description": "Number of lines of displayed text before truncation."
+    },
+    "Style": {
+      "type": "string",
+      "description": "Sets the style for the entire LabelFormCell control.\nThe supported styles and CSS properties are listed here: [LabelFormCellClass](../../Styles/LabelFormCellClass.style.md)."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over the `ControlSeparator` in section, only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

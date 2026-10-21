@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointAction",
+  "title": "IntegrationPointAction",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/Action"
+    },
+    "Target": {
+      "$ref": "definitions/Action"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

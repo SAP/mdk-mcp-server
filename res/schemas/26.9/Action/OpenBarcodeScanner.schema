@@ -1,0 +1,19 @@
+{
+  "$id": "Action.Type.OpenBarcodeScanner",
+  "title": "OpenBarcodeScanner",
+  "description": "This action allows the users to open a barcode scanner on a mobile device.\n\nThe properties defined in [Action](../Action.schema.md) are also applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Path": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Action.Type.OpenBarcodeScanner",
+      "description": "OpenBarcodeScanner: This action opens the barcode scanner and returns the result after scanning."
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,136 @@
+{
+  "$id": "Page/FormCell/Stepper",
+  "title": "Stepper",
+  "description": "The stepper control is used for incrementing or decrementing numeric values.",
+  "additionalProperties": {
+    "proxy": "FormCellControlProxy"  
+  },
+  "properties": {
+     "Caption": {
+      "type": "string",
+      "description": "The key name of the property."
+    },
+    "IsEditable": {
+      "type": "boolean",
+      "description": "Disables or enables interaction. The control will have a reduced opacity if this property is false.",
+      "default": true
+    },
+    "HelperText": {
+      "type": "string",
+      "description": "Helper text to be displayed if there is no validation view."
+    },
+    "IsVisible": {
+      "type": "boolean",
+      "description": "Sets the visibility of the control.",
+      "default": true
+    },
+    "Separator": {
+      "type": "boolean",
+      "description": "Sets the visibility of the separator line below the control. This property will take precedence over `ControlSeparator` in section and is only supported for Form Cell control in Sectioned Table and not supported in Form Cell Container.",
+      "default": true
+    },
+    "Value": {
+      "type": "number",
+      "description": "Initial value of the stepper control.",
+      "default": 0
+    },
+    "Step": {
+      "type": "number",
+      "description": "The increment/decrement step value.",
+      "default": 1
+    },
+    "MinValue": {
+      "type": "number",
+      "description": "The minimum allowed value.",
+      "default": 0
+    },
+    "MaxValue": {
+      "type": "number",
+      "description": "The maximum allowed value.",
+      "default": 9999
+    },
+    "DecimalPlacesSupported": {
+      "type": "number",
+      "description": "The number of decimal places supported for the stepper value. On iOS, this property sets the maximum decimal places that can be displayed or calculated.",
+      "default": 0
+    },
+    "OnValueChange": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action or rule to perform after the value has changed."
+    },
+    "Validation": {
+      "$ref": "definitions/Validation",
+      "description": "The validation view properties. However, styling in ValidationView will not be supported."
+    },
+    "IncrementIcon": {
+      "$ref": "definitions/Image",
+      "description": "The icon to increase the stepper value."
+    },
+    "DecrementIcon": {
+      "$ref": "definitions/Image",
+      "description": "The icon to decrease the stepper value."
+    },
+    "IncrementIconIsCircular": {
+      "type": "boolean",
+      "description": "Determines whether to set the increment icon as a circular shape.",
+      "default": false
+    },
+    "DecrementIconIsCircular": {
+      "type": "boolean",
+      "description": "Determines whether to set the decrement icon as a circular shape.",
+      "default": false
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `Background`, `Stepper`, `StepperTextField`, `IncrementIcon`, `DecrementIcon`, `Caption` and `HelperText`.",
+      "properties": {
+        "Background": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `Background`. Used as the default when a plain string is passed."
+        },
+        "Stepper": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `Stepper`."
+        },
+        "StepperTextField": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `StepperTextField`."
+        },
+        "IncrementIcon": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `IncrementIcon`."
+        },
+        "DecrementIcon": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `DecrementIcon`."
+        },
+        "Caption": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name of `Caption`."
+        },
+        "HelperText": {
+          "type": "string",
+          "$ref": "Styles/StepperFormCellClass",
+          "description": "The string value is a style class name for the helper text."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.FormCell.Stepper"
+    }
+  },
+  "type": "object",
+  "required": [
+    "_Type",
+    "_Name"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$id": "Action.Type.CheckRequiredFields",
+  "title": "CheckRequiredFields",
+  "description": "You can run a check to make sure that the app user has provided inputs for all required fields. Specific UI controls or rules allow you to define a field as mandatory.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "RequiredFields": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "description": "Names of required fields. Value can be an array of string constants or a rule."
+    },
+    "_Type": {
+      "const": "Action.Type.CheckRequiredFields"
+    }
+  },
+  "required": [
+    "RequiredFields",
+    "_Type"
+  ],
+  "type": "object"
+}

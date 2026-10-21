@@ -1,0 +1,18 @@
+{
+  "$id": "definitions/LinkQueryFunctionTarget",
+  "title": "LinkQueryFunctionTarget",
+  "anyOf": [
+    {
+      "$ref": "definitions/QueryTarget"
+    },
+    {
+      "$ref": "definitions/LinkTarget"
+    },
+    {
+      "$ref": "definitions/CallFunctionTarget"
+    },
+    {
+      "$ref": "definitions/RestServiceTarget"
+    }
+  ]
+}

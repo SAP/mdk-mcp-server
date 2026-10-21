@@ -1,0 +1,17 @@
+{
+  "$id": "definitions/IntegrationPointI18n",
+  "title": "IntegrationPointI18n",
+  "properties": {
+    "Source": {
+      "$ref": "definitions/I18n"
+    },
+    "Target": {
+      "$ref": "definitions/I18n"
+    }
+  },
+  "required": [
+    "Source",
+    "Target"
+  ],
+  "type": "object"
+}

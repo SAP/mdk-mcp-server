@@ -1,0 +1,99 @@
+{
+  "$id": "definitions/Transition",
+  "title": "Transition",
+  "description": "Navigate to a new page that uses the default transition and animation, which can be customized by defining the `Transition` property in Navigation action.\n\nThis is applicable only for page-to-page navigation, including within modal dialog. It does not apply to opening and closing of modal dialog nor tab switching in BottomNavigation.",
+  "type": "object",
+  "properties": {
+    "Curve": {
+      "description": "Transition animation curve.",
+      "enum": [
+        {
+          "const": "Ease",
+          "description": "The animation starts slow, speeds up, and then ends slow."
+        },
+        {
+          "const": "EaseIn",
+          "description": "The animation sequence starts out slow and speeds up as the end approaches."
+        },
+        {
+          "const": "EaseInOut",
+          "description": "The animation starts slow, speeds up, and then slows down again."
+        },
+        {
+          "const": "EaseOut",
+          "description": "The animation starts out fast and slows as the end of the sequence approaches."
+        },
+        {
+          "const": "Linear",
+          "description": "The animation is performed at a constant speed for the specified duration."
+        },
+        {
+          "const": "Spring",
+          "description": "The animation moves to a target point, overshoot a little, then bounce back."
+        }
+      ],
+      "type": "string"
+    },
+    "Duration": {
+      "type": "integer",
+      "description": "The length of the transition in seconds."
+    },
+    "Name": {
+      "description": "Built-in transitions.",
+      "enum": [
+        {
+          "const": "None",
+          "description": "No transition effect"
+        },
+        {
+          "const": "Curl",
+          "description": "iOS only, same as `CurlUp`."
+        },
+        {
+          "const": "CurlUp",
+          "description": "iOS only"
+        },
+        {
+          "const": "CurlDown",
+          "description": "iOS only"
+        },
+        {
+          "const": "Explode",
+          "description": "Android 5.0 and above only"
+        },
+        {
+          "const": "Fade"
+        },
+        {
+          "const": "Flip",
+          "description": "Same as `FlipRight`"
+        },
+        {
+          "const": "FlipRight",
+          "description": "iOS only"
+        },
+        {
+          "const": "FlipLeft",
+          "description": "iOS only"
+        },
+        {
+          "const": "Slide",
+          "description": "Same as `SlideLeft`"
+        },
+        {
+          "const": "SlideLeft"
+        },
+        {
+          "const": "SlideRight"
+        },
+        {
+          "const": "SlideTop"
+        },
+        {
+          "const": "SlideBottom"
+        }
+      ],
+      "type": "string"
+    }
+  }
+}

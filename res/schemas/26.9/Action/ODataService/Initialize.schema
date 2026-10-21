@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.ODataService.Initialize",
+  "title": "ODataService Initialize",
+  "description": "ODataService Initialize action is used to perform opening and, if needed, the initial creation of offline stores and download of data from the target OData service.\n\nAll the properties defined under [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "DefiningRequests": {
+      "items": {
+        "$ref": "definitions/DefiningRequest"
+      },
+      "type": "array",
+      "description": "List of defining requests. A defining request is an OData read request that the Offline OData will use to retrieves data from the target OData Service and populate in the local offline database"
+    },
+    "ProgressText":{
+      "$ref": "definitions/ProgressText",
+      "description": "[Deprecated. Use [ProgressMessages](../../Service.schema.md#progressmessages) in the service definition's OfflineOptions instead.]\n\nProgressText consists of customizable texts for each state, replacing the progress indicator text shown during Initialize Offline OData. For the `ProgressText.DownloadingFile` and `ProgressText.DownloadingData` properties, you can define dynamic parameters {0} and/or {1} to display size and size unit. If you do not customize a state, the default will display.\n\nNote: If `ProgressMessages` is defined in the service definition's `OfflineOptions`, it will take precendence over `ProgressText`. Refer to the `ProgressMessages` property in the Service definition for step-level progress customization."
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service"
+    },
+    "_Type": {
+      "const": "Action.Type.ODataService.Initialize"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

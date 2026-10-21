@@ -1,0 +1,7 @@
+{
+  "$id": "definitions/Rule",
+  "title": "Rule",
+  "description": "Path to file with a _.js_ extension under the project's `Rules` folder",
+  "pattern": "(^\/.+\/Rules\/).*(.+\\.js)$|(^Rules\/).*(.+\\.js)$",
+  "type": "string"
+}

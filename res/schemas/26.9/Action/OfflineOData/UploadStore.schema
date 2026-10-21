@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "Action.Type.OfflineOData.UploadStore",
+  "title": "OfflineOData Store Upload",
+  "description": "MDK now provides the ability for applications to upload the offline store (both the main offline database (UDB) and the Request Queue database) to Mobile Services to assist with troubleshooting. This capability helps developers and support teams more effectively investigate and diagnose issues related to the offline store, reducing the time required to identify the root cause of problems reported by business users. \n\nTo use this feature, enable the offline store upload policy in the SAP Mobile Services Admin UI for the MDK app. \n\nDevelopers can download the uploaded files on their local machines and use the [ILODATA](https://help.sap.com/doc/f53c64b93e5140918d676b927a3cd65b/Cloud/en-US/docs-en/troubleshooting/mdk/troubleshooting.html#inspecting-the-offline-database-files) tool to analyze them. \n\nAll properties outlined in [Action](../../Action.schema.md) are applicable to this action.",
+  "properties": {
+    "EncryptionKey": {
+      "type": "string",
+      "description": "The encryption key is used to encrypt the uploaded database files. If not specified, the database files are uploaded unencrypted."
+    },
+    "Note": {
+      "type": "string",
+      "description": "Optional note attached to the uploaded database file"
+    },
+    "Service": {
+      "$ref": "definitions/Service",
+      "description": "The target service to be uploaded"
+    },
+    "_Type": {
+      "const": "Action.Type.OfflineOData.UploadStore"
+    }
+  },
+  "required": [
+    "Service",
+    "_Type"
+  ],
+  "type": "object"
+}

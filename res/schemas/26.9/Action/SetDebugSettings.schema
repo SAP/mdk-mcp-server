@@ -1,0 +1,32 @@
+{
+  "$id": "Action.Type.SetDebugSettings",
+  "title": "SetDebugSettings",
+  "description": "Define an action that can enable DebugSettings during runtime or override the DebugSettings in BrandedSettings.json.\n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "_Type": {
+      "const": "Action.Type.SetDebugSettings"
+    },
+    "DebugODataProvider": {
+      "description": "If set to true, console logger is added to the OData provider and set to Debug level.",
+      "type": "boolean",
+      "default": false
+    },
+    "TracingEnabled": {
+      "description": "If set to true, tracing (execution time) is turned on for rules, actions, and so on.",
+      "type": "boolean",
+      "default": false
+    },
+    "Categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of tracing categories for which the console logger is enabled. The following categories are currently supported:\n\n'mdk.trace.action',\n\n'mdk.trace.api',\n\n'mdk.trace.app',\n\n'mdk.trace.binding',\n\n'mdk.trace.branding',\n\n'mdk.trace.core',\n\n'mdk.trace.i18n',\n\n'mdk.trace.lcms',\n\n'mdk.trace.logging',\n\n'mdk.trace.mdkproject',\n\n'mdk.trace.odata',\n\n'mdk.trace.onboarding',\n\n'mdk.trace.profiling',\n\n'mdk.trace.push',\n\n'mdk.trace.restservice',\n\n'mdk.trace.settings',\n\n'mdk.trace.targetpath',\n\n'mdk.trace.ui'."
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object"
+}

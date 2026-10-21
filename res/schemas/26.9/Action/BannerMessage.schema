@@ -1,0 +1,96 @@
+{
+  "$id": "Action.Type.BannerMessage",
+  "title": "BannerMessage",
+  "description": "The banner message is like a self-dismissing toast that is attached to the app's main navigation bar. It is more inclined towards alerting the user of error status. \n\nAll the properties defined under [Action](../Action.schema.md) are applicable to this action.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Animated": {
+      "type": "boolean",
+      "description": "Indicates whether the banner is animated or not. This parameter is not applicable for Android. By default, banners on Android will always be animated.",
+      "default": true
+    },
+    "Duration": {
+      "type": "integer",
+      "description": "Indicates the number of seconds the banner is to be displayed. If the value is set to 0, the banner will be displayed indefinitely until the user taps on the 'Dismiss' button on Android or close icon on iOS.",
+      "default": 2
+    },
+    "Message": {
+      "type": "string",
+      "description": "Text to be displayed in the banner. If the text is too long, it will be wrapped."
+    },
+    "ActionLabel": {
+      "type": "string",
+      "description": "Label to indicate that banner is clickable. On Android, it will be used as button label. On iOS, it will be appended to `Message`."
+    },
+    "OnActionLabelPress": {
+      "$ref": "definitions/ActionOrRule",
+      "description": "Action/Rule to be triggered when `ActionLabel` is pressed. This is applicable only when both `ActionLabel` and `OnActionLabelPress` are non-empty."
+    },
+    "DismissBannerOnAction": {
+      "type": "boolean",
+      "description": "Indicates whether the banner should be dismissed or not after the user clicks on the banner to perform a subsequent action.",
+      "default": false
+    },
+    "Semantic": {
+      "type": "string",
+      "default": "Normal",
+      "enum": [
+        {
+          "const": "Normal",
+          "description": "Neutral semantic for typical actions."
+        },
+        {
+          "const": "Tint",
+          "description": "Semantic indicating a tinted action."
+        },
+        {
+          "const": "Positive",
+          "description": "Semantic for positive actions."
+        },
+        {
+          "const": "Negative",
+          "description": "Semantic for negative or error actions."
+        },
+        {
+          "const": "Warning",
+          "description": "Semantic for warning or cautionary actions."
+        }
+      ],
+      "description": "Semantic applied to the banner. Defaults to 'Normal'. For iOS, it applies to the `Message` text's color and the color of the banner's top border. For Android, it applies only to the `Message` text's color. Supported in Mobile only."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Custom styles to be applied to BannerMessage. These styles will override semantic based styling. Supported in Mobile only.",
+      "properties": {
+        "Banner": {
+          "type": "string",
+          "$ref": "Styles/BannerMessageClass",
+          "description": "The class name for `Banner`, applying background and border top styles (iOS only) to the banner."
+        },
+        "MessageText": {
+          "type": "string",
+          "$ref": "Styles/BannerMessageClass",
+          "description": "The class name for `MessageText`, applying color and font styles to the message text of the banner."
+        },
+        "ActionLabel": {
+          "type": "string",
+          "$ref": "Styles/BannerMessageClass",
+          "description": "The class name for `ActionLabel`, applying button styles to the action button. Applicable only in Android."
+        },
+        "DismissButton": {
+          "type": "string",
+          "$ref": "Styles/BannerMessageClass",
+          "description": "The class name for `DismissButton`. For iOS, it applies color styles to the Dismiss icon. For Android, it applies button styles to the Dismiss button."
+        }
+      }
+    },
+    "_Type": {
+      "const": "Action.Type.BannerMessage"
+    }
+  },
+  "required": [
+    "Message",
+    "_Type"
+  ],
+  "type": "object"
+}

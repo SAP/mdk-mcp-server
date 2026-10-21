@@ -1,0 +1,43 @@
+{
+  "$id": "Page/TabControl/BottomNavigation/BottomNavigation",
+  "title": "BottomNavigation",
+  "additionalProperties": {
+    "proxy": "TabControlProxy"  
+  },
+  "properties": {
+    "Items": {
+      "items": {
+        "$ref": "Page/TabControl/TabItem"
+      },
+      "type": "array",
+      "description": "List of tab items defined for the tab control."
+    },
+    "Styles": {
+      "type": "object",
+      "description": "Set styles for `TabStrip`",
+      "properties": {
+        "TabStrip": {
+          "type": "string",
+          "$ref": "Styles/TabStripClass",
+          "description": "The string value is a style class name for TabStrip. A TabStrip style class has specific properties such as `selected-item-color` (for active tab item), `un-selected-item-color` (for inactive tab items) and `highlight-color` (for highlight line of active tab item on Tabs only)."
+        },
+        "TabItemImage": {
+          "type": "string",
+          "$ref": "Styles/ImageClass",
+          "description": "The string value is a style class name for image in TabItem."
+        }
+      }
+    },
+    "_Name": {
+      "type": "string"
+    },
+    "_Type": {
+      "const": "Control.Type.BottomNavigation"
+    }
+  },
+  "required": [
+    "_Type"
+  ],
+  "type": "object",
+  "description": "This control renders a list of tab items along with content for each tab.\n\nThe control will always render as a full screen control taking over the entire space of the page.\n\nBottomNavigation is mainly used for top level navigation, treated as navigation menu, where the separate tabs don't have shared context. When the tab item is tapped, user is taken to the top level navigation destination associated with the tab item. BottomNavigation should be used when the top level destinations need to be accessible from anywhere in the app.\n\nBottomNavigation can have up to 5 tab items.\n\nThe tab pages of the BottomNavigation would preserve its last state once the tab page is loaded, so that when user switch to another tab item and switch back to the previous tab item, they return to the last screen viewed.\n\nBottomNavigation supports inner navigation (navigation on tab page level), outer navigation (navigation on parent page level by using NavigationAction.OuterNavigation flag). While the outer navigation is supported, it is recommended to use a full modal page display.\n\nToolbar control defined in Parent Page with BottomNavigation control would be ignored.\nBottomNavigation has nested Tabs support. It is not recommended to display BottomNavigation as nested control of BottomNavigation."
+}

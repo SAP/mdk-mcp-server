@@ -70,7 +70,7 @@ If you're on an Intel Mac, you may need to:
     - With Cline open, look below the prompt box and click **Manage MCP Servers**.
     - In the dialog, click **Settings**. The MCP Servers page opens.
     - Click **Configure MCP Servers**. This will open the `cline_mcp_settings.json` file in your editor.
-    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.6 (default), 26.3, 25.9, 25.6, 24.11, and 24.7.
+    - In the JSON settings file, add a configuration block for MDK MCP server within the `mcpServers` section, and save the file. The supported schema versions include 26.9 (default), 26.6, 26.3, 25.9, 25.6, 24.11, and 24.7.
 
     ```json
     {
@@ -78,7 +78,7 @@ If you're on an Intel Mac, you may need to:
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.6"]
+          "args": ["--schema-version", "26.9"]
         }
       }
     }
@@ -106,7 +106,7 @@ If you're on an Intel Mac, you may need to:
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.6"]
+          "args": ["--schema-version", "26.9"]
         }
       }
     }
@@ -138,7 +138,7 @@ If you're on an Intel Mac, you may need to:
       "mcp": {
         "mdk-mcp": {
           "type": "local",
-          "command": ["mdk-mcp", "--schema-version", "26.6"],
+          "command": ["mdk-mcp", "--schema-version", "26.9"],
           "enabled": true
         }
       }
@@ -158,7 +158,7 @@ If you're on an Intel Mac, you may need to:
         "mdk-mcp": {
           "type": "stdio",
           "command": "mdk-mcp",
-          "args": ["--schema-version", "26.6"]
+          "args": ["--schema-version", "26.9"]
         }
       }
     }
@@ -182,7 +182,7 @@ If you're on an Intel Mac, you may need to:
          "mcpServers": {
            "mdk-mcp": {
              "command": "/usr/local/bin/node",
-             "args": ["/usr/local/lib/node_modules/@sap/mdk-mcp-server/build/index.js", "--schema-version", "26.6"]
+             "args": ["/usr/local/lib/node_modules/@sap/mdk-mcp-server/build/index.js", "--schema-version", "26.9"]
            }
          }
        }

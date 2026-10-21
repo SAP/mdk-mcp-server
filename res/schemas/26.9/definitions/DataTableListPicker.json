@@ -1,0 +1,30 @@
+{
+  "$id": "definitions/DataTableListPicker",
+  "title": "DataTableListPicker",
+  "additionalProperties": {
+    "proxy": "DataTableCellProxy"
+  },
+  "properties": {
+    "Caption": {
+      "type": "string",
+      "description": "Displays label on the control."
+    },
+    "PickerItems": {
+      "description": "An array of items for this picker. It can be simple key and value items. Currently, the display value must be unique for iOS platform ",
+      "anyOf": [
+        {
+          "$ref": "definitions/EntitySetTarget"
+        },
+        {
+          "$ref": "definitions/FixedCollection"
+        }
+      ]
+    },
+    "Value": {
+      "type": "string",
+      "description": "When not specified or not found in the `PickerItems` no selection is made. An array of the above values can be used to specify multiple selection."
+    }
+  },
+  "type": "object",
+  "description": "A list picker allows the selection of one option among values within a defined category."
+}

@@ -1,0 +1,88 @@
+{
+  "$id": "definitions/ProgressMessages",
+  "title": "ProgressMessages",
+  "description": "Custom format strings are used to override the default localized progress messages for offline OData operations. Each property corresponds to a specific operation step and accepts a format string with placeholders.\n\nPlaceholders:\n- {0} = current step number\n- {1} = total number of steps\n- {2} = step-specific value (varies by step)\n- {3} = optional additional step-specific value (varies by step)\n\nNote: Byte values are automatically formatted (e.g., 1.50 MB)\n\nStep -> supported values:\n\nProcessingDefiningQueries:\n- {2} = request name\n- {3} = request URL\n\nProcessingRequests:\n- {2} = request number\n- {3} = total requests\n\nReceivingDataFromServer:\n- {2} = received bytes\n\nSendingDataToServer:\n- {2} = sent bytes\n\nDownloadingEntityStore:\n- {2} = received bytes\n- {3} = total bytes\n\nSendingEntityStoreDatabase:\n- {2} = sent bytes\n- {3} = total bytes",
+  "properties": {
+    "BuildingEntityStore": {
+      "type": "string",
+      "description": "Message shown when building the local entity store. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "CreatingBootStrapDatabase": {
+      "type": "string",
+      "description": "Message shown when creating the bootstrap database. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "CreatingRequestQueueDatabase": {
+      "type": "string",
+      "description": "Message shown when creating the request queue database. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "DownloadingEntityStore": {
+      "type": "string",
+      "description": "Message shown when downloading the entity store from the server. Supports `{0}` (current step), `{1}` (total steps), `{2}` (received bytes), and `{3}` (total bytes)."
+    },
+    "ErasingExpiredRequests": {
+      "type": "string",
+      "description": "Message shown when erasing expired requests. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "LoadingMetadata": {
+      "type": "string",
+      "description": "Message shown when loading metadata. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "PerformingTransactionMerge": {
+      "type": "string",
+      "description": "Message shown when performing transaction merge. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "PerformingCreateDeleteMerge": {
+      "type": "string",
+      "description": "Message shown when performing create-delete merge optimization. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "ProcessingDefiningQueries": {
+      "type": "string",
+      "description": "Message shown when processing defining queries. Supports `{0}` (current step), `{1}` (total steps), `{2}` (request name), and `{3}` (request URL)."
+    },
+    "ProcessingRequests": {
+      "type": "string",
+      "description": "Message shown when processing requests. Supports `{0}` (current step), `{1}` (total steps), `{2}` (request number), and `{3}` (total requests)."
+    },
+    "ReapplyingChanges": {
+      "type": "string",
+      "description": "Message shown when reapplying local changes. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "AnalyzingReceivedData": {
+      "type": "string",
+      "description": "Message shown when analyzing received data. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "ReceivingDataFromServer": {
+      "type": "string",
+      "description": "Message shown when receiving data from the server. Supports `{0}` (current step), `{1}` (total steps), and `{2}` (received bytes)."
+    },
+    "RemovingDeletedRelationships": {
+      "type": "string",
+      "description": "Message shown when removing deleted relationships. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "RemovingRemoveAfterUploadRequests": {
+      "type": "string",
+      "description": "Message shown when removing RemoveAfterUpload requests. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "SendingDataToServer": {
+      "type": "string",
+      "description": "Message shown when sending data to the server. Supports `{0}` (current step), `{1}` (total steps), and `{2}` (sent bytes)."
+    },
+    "SendingEntityStoreDatabase": {
+      "type": "string",
+      "description": "Message shown when sending the entity store database. Supports `{0}` (current step), `{1}` (total steps), `{2}` (sent bytes), and `{3}` (total bytes)."
+    },
+    "SendingRequestQueueDatabase": {
+      "type": "string",
+      "description": "Message shown when sending the request queue database. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "UploadPreprocessing": {
+      "type": "string",
+      "description": "Message shown during upload preprocessing. Supports `{0}` (current step) and `{1}` (total steps)."
+    },
+    "WaitingForDownload": {
+      "type": "string",
+      "description": "Message shown when waiting for download. Supports `{0}` (current step) and `{1}` (total steps)."
+    }
+  },
+  "type": "object"
+}

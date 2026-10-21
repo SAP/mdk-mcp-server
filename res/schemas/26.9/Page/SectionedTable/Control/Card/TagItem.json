@@ -1,0 +1,38 @@
+{
+  "$id": "Page/SectionedTable/Control/Card/TagItem",
+  "title": "TagItem",
+  "type": "object",
+  "additionalProperties": {
+    "proxy": "CardHeaderExtendedHeaderTagProxy"
+  },
+  "properties": {
+    "Text": {
+      "type": "string",
+      "description": "Label text for tag"
+    },
+    "Color": {
+      "enum": [
+        "Red",
+        "Blue",
+        "Green",
+        "Pink",
+        "Indigo",
+        "Mango",
+        "Teal",
+        "Grey"
+      ],
+      "default": "Grey",
+      "description": "Color for the tag. It must be one of the eight available colors."
+    },
+    "Style": {
+      "type": "string",
+      "description": "The string value is a [style class](../../../Styles/TagItemClass.style.html) name for the tag label. `Style` has priority over `Color` if both are defined."
+    },
+    "_Type": {
+      "const": "CardHeaderExtendedHeader.Type.Tag"
+    },
+    "_Name": {
+      "type": "string"
+    }
+  }
+}
