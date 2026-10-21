@@ -697,7 +697,7 @@ export async function generateTemplateBasedMetadata(oDataEntitySetsString, templ
             }
         }
     }
-    let script = `${yoCommand} mdk:app --dataFile "${projectPath}/headless.json" --force`;
+    let script = `${yoCommand} @sap/mdk:app --dataFile "${projectPath}/headless.json" --force`;
     if (mdkToolsPath) {
         const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js");
         script += ` --tool "${mdkBinary}"`;
