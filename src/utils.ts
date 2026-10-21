@@ -895,7 +895,7 @@ export async function generateTemplateBasedMetadata(
     }
   }
 
-  let script = `${yoCommand} mdk:app --dataFile "${projectPath}/headless.json" --force`;
+  let script = `${yoCommand} @sap/mdk:app --dataFile "${projectPath}/headless.json" --force`;
 
   if (mdkToolsPath) {
     const mdkBinary = path.join(
