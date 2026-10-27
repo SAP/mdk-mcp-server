@@ -83,7 +83,7 @@
     "typescript": "~5.9.0",
     "ajv@8.18.0": "8.20.0",
     "postcss": "^8.4.31",
-    "glob": "^13.0.0",
+    "glob": "^14.0.0",
     "@octokit/plugin-paginate-rest": "^16.0.0",
     "@octokit/request": "^10.0.0",
     "@octokit/request-error": "^7.0.0",
