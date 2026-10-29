@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Version 0.4.2 - 2026-10-21
+
+### Changed
+- Fix yo dependency issue
+
 ## Version 0.4.1 - 2026-10-21
 
 ### Changed
