@@ -64,7 +64,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@sap/generator-mdk": "^1.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "@types/xml2js": "^0.4.14",
