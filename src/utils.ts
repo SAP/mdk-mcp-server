@@ -605,12 +605,11 @@ async function ensureGeneratorMdkInstalled(): Promise<void> {
       encoding: "utf8",
     });
 
-    console.error(
-      "[MDK MCP Server] @sap/generator-mdk installed successfully"
-    );
+    console.error("[MDK MCP Server] @sap/generator-mdk installed successfully");
   } catch (error) {
     throw new Error(
-      `Failed to install @sap/generator-mdk: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to install @sap/generator-mdk: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 }
@@ -970,7 +969,9 @@ export async function generateTemplateBasedMetadata(
   // Use correct generator namespace based on environment
   // In BAS: @ext-mdkvsc-npm-rel/mdk:app
   // In VS Code: @sap/mdk:app
-  const generatorNamespace = isAppStudio() ? "@ext-mdkvsc-npm-rel/mdk:app" : "@sap/mdk:app";
+  const generatorNamespace = isAppStudio()
+    ? "@ext-mdkvsc-npm-rel/mdk:app"
+    : "@sap/mdk:app";
   console.error(`[MDK MCP Server] Using generator: ${generatorNamespace}`);
 
   let script = `${yoCommand} ${generatorNamespace} --dataFile "${projectPath}/headless.json" --force`;
