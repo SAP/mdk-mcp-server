@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Version 0.4.3 - 2026-11-12
+
+### Changed
+- Fix duplicated generator-mdk tile issue
+
 ## Version 0.4.2 - 2026-10-21
 
 ### Changed

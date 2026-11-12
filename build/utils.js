@@ -3,6 +3,7 @@ import fs from "fs";
 import * as path from "path";
 import xml2js from "xml2js";
 import { fileURLToPath } from "url";
+import { isAppStudio } from "@sap-ux/btp-utils";
 import { getServicesInfo, getServiceEdmx, } from "./artifact-management-wrapper.js";
 /**
  * Simple logger utility
@@ -455,6 +456,55 @@ export function getCapProjectName(projectPath) {
         return null;
     }
 }
+/**
+ * Ensure @sap/generator-mdk is installed
+ * In BAS, it's pre-installed, so no need to install
+ * In VS Code, install it dynamically if not present
+ */
+async function ensureGeneratorMdkInstalled() {
+    // Check if running in SAP Business Application Studio
+    if (isAppStudio()) {
+        console.error("[MDK MCP Server] Running in BAS - @ext-mdkvsc-npm-rel/generator-mdk is pre-installed");
+        return;
+    }
+    // Check if @sap/generator-mdk is already installed
+    try {
+        const generatorPath = await getModulePath("@sap/generator-mdk");
+        if (generatorPath) {
+            console.error("[MDK MCP Server] @sap/generator-mdk is already installed at:", generatorPath);
+            return;
+        }
+    }
+    catch {
+        // Module not found, continue to install
+    }
+    console.error("[MDK MCP Server] @sap/generator-mdk not found, installing dynamically...");
+    try {
+        // Determine the package manager to use
+        const isBun = process.env.npm_config_user_agent?.includes("bun") ||
+            typeof globalThis.Bun !== "undefined" ||
+            process.versions?.bun !== undefined ||
+            process.execPath?.includes("bun");
+        let installCommand;
+        if (isBun) {
+            installCommand = "bun add @sap/generator-mdk --dev";
+        }
+        else {
+            // Use npm by default
+            installCommand = "npm install @sap/generator-mdk --save-dev";
+        }
+        console.error(`[MDK MCP Server] Installing @sap/generator-mdk using: ${installCommand}`);
+        execSync(installCommand, {
+            cwd: projectRoot,
+            stdio: "inherit",
+            encoding: "utf8",
+        });
+        console.error("[MDK MCP Server] @sap/generator-mdk installed successfully");
+    }
+    catch (error) {
+        throw new Error(`Failed to install @sap/generator-mdk: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
+    }
+}
 export async function generateTemplateBasedMetadata(oDataEntitySetsString, templateType, projectPath, offline, entity, cfOrg, cfSpace) {
     const oDataEntitySets = oDataEntitySetsString.split(",");
     const oJson = {
@@ -650,6 +700,8 @@ export async function generateTemplateBasedMetadata(oDataEntitySetsString, templ
     console.error(`[MDK MCP Server] Writing configuration file: ${configPath}`);
     fs.writeFileSync(configPath, JSON.stringify(oConfig, null, 2));
     console.error(`[MDK MCP Server] Configuration file written successfully`);
+    // Ensure generator-mdk is installed (only if not running in BAS)
+    await ensureGeneratorMdkInstalled();
     // Prepare MDK generation command
     const mdkToolsPath = await getModulePath("mdk-tools");
     // Resolve yo executable
@@ -697,7 +749,14 @@ export async function generateTemplateBasedMetadata(oDataEntitySetsString, templ
             }
         }
     }
-    let script = `${yoCommand} @sap/mdk:app --dataFile "${projectPath}/headless.json" --force`;
+    // Use correct generator namespace based on environment
+    // In BAS: @ext-mdkvsc-npm-rel/mdk:app
+    // In VS Code: @sap/mdk:app
+    const generatorNamespace = isAppStudio()
+        ? "@ext-mdkvsc-npm-rel/mdk:app"
+        : "@sap/mdk:app";
+    console.error(`[MDK MCP Server] Using generator: ${generatorNamespace}`);
+    let script = `${yoCommand} ${generatorNamespace} --dataFile "${projectPath}/headless.json" --force`;
     if (mdkToolsPath) {
         const mdkBinary = path.join(mdkToolsPath, process.platform === "win32" ? "mdkcli.cmd" : "mdkcli.js");
         script += ` --tool "${mdkBinary}"`;
