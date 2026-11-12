@@ -52,6 +52,16 @@ export class MobileServicesClient {
         Authorization: cfToken,
         "X-Requested-With": "application/json",
       },
+      // CVE-2026-40895: Strip sensitive headers on redirect to prevent leaking to attacker-controlled domains
+      beforeRedirect: (options, _responseDetails) => {
+        // Remove all custom headers that could leak sensitive data on redirect
+        if (options.headers) {
+          delete options.headers["X-SMP-CONDUIT-REQ-BODY"];
+          delete options.headers["X-Requested-With"];
+          delete options.headers["x-smp-conduit-req-body"];
+          delete options.headers["x-requested-with"];
+        }
+      },
     });
   }
 
