@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, execFileSync } from "child_process";
 import fs from "fs";
 import * as path from "path";
 import xml2js from "xml2js";
@@ -316,11 +316,39 @@ function validateCommandArgs(command: string, args: string[]): void {
 
   // Validate each argument
   for (const arg of args) {
-    // Check for command injection patterns
-    if (/[;&|`$(){}[\]<>\n]/.test(arg)) {
+    // Check for command injection patterns including carriage return
+    if (/[;&|`$(){}[\]<>\r\n]/.test(arg)) {
       throw new Error(
         `Invalid argument: '${arg}' contains potentially dangerous characters`
       );
+    }
+
+    // Enforce allowedArgs if configured for this command
+    // Only check flag arguments (starting with - or --), not positional args
+    if (
+      allowedCommand.allowedArgs &&
+      allowedCommand.allowedArgs.length > 0 &&
+      arg.startsWith("-")
+    ) {
+      // Check if this flag matches any allowed pattern
+      const isAllowed = allowedCommand.allowedArgs.some(allowedArg => {
+        // Exact match
+        if (arg === allowedArg) {
+          return true;
+        }
+        // Prefix match for arguments with values (e.g., --project=value)
+        if (allowedArg.endsWith("=") && arg.startsWith(allowedArg)) {
+          return true;
+        }
+        return false;
+      });
+
+      if (!isAllowed) {
+        throw new Error(
+          `Flag '${arg}' not allowed for command '${baseCommand}'. ` +
+            `Allowed flags: ${allowedCommand.allowedArgs.join(", ")}`
+        );
+      }
     }
 
     // For path arguments, validate they are safe
@@ -341,6 +369,14 @@ export function runCommand(
   console.error(`[MDK MCP Server] Executing command: ${command}`);
 
   try {
+    // Security: Check for newlines/carriage returns in raw command string BEFORE tokenizing
+    // These are command separators that would bypass tokenization-based validation
+    if (/[\r\n]/.test(command)) {
+      throw new Error(
+        "Invalid command: Command contains newline or carriage return characters"
+      );
+    }
+
     // Parse command and arguments, handling quoted arguments properly
     const parts = command.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     if (parts.length === 0) {
@@ -353,7 +389,7 @@ export function runCommand(
     }
     const args = parts.slice(1).map(arg => arg.replace(/"/g, "")); // Remove quotes from args
 
-    // Security: Validate the command and arguments
+    // Security: Validate the command and arguments THAT WILL BE EXECUTED
     validateCommandArgs(baseCommand, args);
 
     // Security: Validate working directory if provided
@@ -385,7 +421,6 @@ export function runCommand(
       commandTimeout = options.timeout || 300000; // 5 minutes for yeoman generation
     }
 
-    // For Windows, handle shell selection properly
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const execOptions: Record<string, any> = {
       cwd: safeCwd,
@@ -393,17 +428,28 @@ export function runCommand(
       stdio: "pipe",
       encoding: "utf-8",
       timeout: commandTimeout,
-      maxBuffer: 50 * 1024 * 1024, // 50MB buffer for large output (validation can produce lots of output)
+      maxBuffer: 50 * 1024 * 1024, // 50MB buffer for large output
     };
 
-    // On Windows, ensure we use the correct shell for .cmd files
-    if (process.platform === "win32") {
-      if (baseCommand.endsWith(".cmd") || baseCommand === "yo") {
-        execOptions.shell = true;
-      }
+    // Security: Determine if shell is required
+    // Only use shell for specific Windows commands that require it
+    const needsShell =
+      process.platform === "win32" &&
+      (baseCommand.endsWith(".cmd") || baseCommand === "yo");
+
+    let output: Buffer;
+
+    if (needsShell) {
+      // Windows .cmd files and yo require shell
+      // Still use execFileSync but with shell:true for these specific cases
+      execOptions.shell = true;
+      output = execFileSync(baseCommand, args, execOptions);
+    } else {
+      // Execute with execFileSync and shell:false (default) for security
+      // This prevents shell metacharacter interpretation
+      output = execFileSync(baseCommand, args, execOptions);
     }
 
-    const output = execSync(command, execOptions);
     console.error(`[MDK MCP Server] Command completed successfully`);
     return output.toString();
   } catch (err: unknown) {
