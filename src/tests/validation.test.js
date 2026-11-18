@@ -8,20 +8,26 @@ import assert from 'node:assert';
 import { ZodError } from 'zod';
 
 // Import security modules from build directory
-import { 
-  ValidationSchemas, 
-  ValidationError, 
-  validateSecurePath, 
-  sanitizeInput, 
+import {
+  ValidationSchemas,
+  ValidationError,
+  validateSecurePath,
+  sanitizeInput,
   validateToolArguments,
-  validateInput 
+  validateInput,
+  addAllowedBaseDirectory,
+  getAllowedBaseDirectories
 } from '../../build/validation.js';
 
 describe('Input Validation Tests', () => {
   test('should validate folder paths securely', () => {
-    // Valid paths
+    // Valid paths within current workspace
     assert.doesNotThrow(() => {
-      validateSecurePath("/Users/test/project");
+      validateSecurePath(process.cwd());
+    });
+
+    assert.doesNotThrow(() => {
+      validateSecurePath("./src");
     });
 
     // Invalid paths with directory traversal
@@ -33,14 +39,21 @@ describe('Input Validation Tests', () => {
       validateSecurePath("/project/../../../etc/shadow");
     }, ValidationError);
 
-    // System directory access
+    // Paths outside workspace should be rejected (Access denied)
+    // Note: These tests verify the allowlist enforcement
     assert.throws(() => {
       validateSecurePath("/etc/passwd");
-    }, ValidationError);
+    }, (err) => {
+      return err instanceof ValidationError &&
+             (err.message.includes("Access denied") || err.message.includes("does not exist"));
+    });
 
     assert.throws(() => {
       validateSecurePath("/System/Library");
-    }, ValidationError);
+    }, (err) => {
+      return err instanceof ValidationError &&
+             (err.message.includes("Access denied") || err.message.includes("does not exist"));
+    });
   });
 
   test('should validate template types', () => {
@@ -83,9 +96,9 @@ describe('Input Validation Tests', () => {
   });
 
   test('should validate tool arguments', () => {
-    // Valid mdk-create arguments
+    // Valid mdk-create arguments (using current workspace)
     const args = {
-      folderRootPath: "/Users/test/project",
+      folderRootPath: process.cwd(),
       scope: "project",
       templateType: "crud",
       oDataEntitySets: "Users,Projects",

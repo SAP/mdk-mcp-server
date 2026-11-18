@@ -4,12 +4,48 @@
  */
 
 import path from "path";
+import fs from "fs";
 import { z } from "zod";
 
 // Input size limits
 const MAX_STRING_LENGTH = 10000;
 const MAX_PATH_LENGTH = 1000;
 const MAX_ENTITY_SETS = 50;
+
+// Security: Define allowed base directories for file operations
+// These directories represent workspace boundaries that folderRootPath can access
+const ALLOWED_BASE_DIRECTORIES = [
+  process.cwd(), // Current working directory (typically the user's workspace)
+];
+
+/**
+ * Get the list of allowed base directories for path validation.
+ * This can be called by tests or other modules to configure allowed paths.
+ */
+export function getAllowedBaseDirectories(): string[] {
+  return [...ALLOWED_BASE_DIRECTORIES];
+}
+
+/**
+ * Add an allowed base directory for path validation.
+ * USE WITH CAUTION: Only add directories that are safe workspace roots.
+ * The directory will be canonicalized (symlinks resolved) before adding.
+ */
+export function addAllowedBaseDirectory(directory: string): void {
+  try {
+    // Canonicalize the directory to resolve symlinks, matching validateSecurePath behavior
+    const canonical = fs.realpathSync(path.resolve(directory));
+    if (!ALLOWED_BASE_DIRECTORIES.includes(canonical)) {
+      ALLOWED_BASE_DIRECTORIES.push(canonical);
+    }
+  } catch {
+    // If directory doesn't exist yet, use resolved path
+    const normalized = path.resolve(directory);
+    if (!ALLOWED_BASE_DIRECTORIES.includes(normalized)) {
+      ALLOWED_BASE_DIRECTORIES.push(normalized);
+    }
+  }
+}
 
 // Allowed characters for different input types - support Windows paths with drive letters and backslashes
 // Note: space (0x20) is permitted for paths like "/Users/John Doe/project" but newlines/tabs are not
@@ -289,9 +325,19 @@ export class ValidationError extends Error {
 
 /**
  * Enhanced path validation with security checks
+ * This function enforces strict workspace confinement to prevent path traversal attacks.
+ *
+ * Security measures:
+ * 1. Canonicalization with fs.realpathSync to resolve symlinks
+ * 2. Allowlist-based validation against ALLOWED_BASE_DIRECTORIES
+ * 3. Proper path separator anchoring to prevent prefix bypass
+ *
+ * @param inputPath - The user-provided path to validate
+ * @returns The canonicalized absolute path if valid
+ * @throws ValidationError if the path is invalid or outside allowed directories
  */
 export function validateSecurePath(inputPath: string): string {
-  // First validate with schema
+  // First validate with schema for basic safety checks
   const result = ValidationSchemas.folderRootPath.safeParse(inputPath);
   if (!result.success) {
     throw new ValidationError(
@@ -301,31 +347,48 @@ export function validateSecurePath(inputPath: string): string {
     );
   }
 
-  // Additional security checks
+  // Resolve to absolute path
   const resolvedPath = path.resolve(inputPath);
 
-  // Check for suspicious patterns (handle both Windows and Unix paths)
-  const suspiciousPatterns = [
-    /\.\./, // Directory traversal
-    /[/\\]proc[/\\]/, // Linux proc filesystem
-    /[/\\]sys[/\\]/, // Linux sys filesystem
-    /[/\\]dev[/\\]/, // Device files
-    /[/\\]etc[/\\]/, // System configuration
-    /C:[/\\]Windows/i, // Windows system directory
-    /C:[/\\]System32/i, // Windows system32
-    /[/\\]Library[/\\]/, // macOS system library
-    /[/\\]System[/\\]/, // macOS system directory
-  ];
-
-  for (const pattern of suspiciousPatterns) {
-    if (pattern.test(resolvedPath)) {
+  // Canonicalize the path to resolve symlinks (prevents symlink-based traversal)
+  let canonicalPath: string;
+  try {
+    // realpathSync resolves all symlinks and returns the canonical absolute path
+    canonicalPath = fs.realpathSync(resolvedPath);
+  } catch {
+    // If the path doesn't exist yet, we'll work with the resolved path
+    // but still need to validate its parent exists and is within bounds
+    const parentDir = path.dirname(resolvedPath);
+    try {
+      const canonicalParent = fs.realpathSync(parentDir);
+      // Reconstruct the path with canonical parent
+      canonicalPath = path.join(canonicalParent, path.basename(resolvedPath));
+    } catch {
       throw new ValidationError("path", inputPath, [
-        "Path accesses restricted system directories",
+        `Path or its parent directory does not exist: ${resolvedPath}`,
       ]);
     }
   }
 
-  return resolvedPath;
+  // Check if the canonical path is within allowed directories (ALLOWLIST approach)
+  const isAllowed = ALLOWED_BASE_DIRECTORIES.some(allowedDir => {
+    const normalizedAllowed = path.resolve(allowedDir);
+    // Use path separator anchoring to prevent prefix bypass attacks
+    // e.g., /home/user vs /home/user-evil
+    return (
+      canonicalPath === normalizedAllowed ||
+      canonicalPath.startsWith(normalizedAllowed + path.sep)
+    );
+  });
+
+  if (!isAllowed) {
+    throw new ValidationError("path", inputPath, [
+      `Access denied: Path '${inputPath}' is outside allowed workspace directories. ` +
+        `Allowed directories: ${ALLOWED_BASE_DIRECTORIES.join(", ")}`,
+    ]);
+  }
+
+  return canonicalPath;
 }
 
 /**
