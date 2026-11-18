@@ -3,7 +3,10 @@
  * Provides simplified API for CAP service metadata operations
  */
 
+import fs from "fs";
+import path from "path";
 import { createMockVSCode } from "./vscode-api-mock.js";
+import { validateSecurePath } from "./validation.js";
 
 // Type definitions for artifact-management
 interface ServiceInfo {
@@ -22,16 +25,40 @@ interface ArtifactManagementAPI {
   getServiceEdmx(projectPath: string, serviceName: string): Promise<string>;
 }
 
-let artifactManagement: ArtifactManagementAPI | null = null;
+// Cache CAP models per workspace to prevent cross-project data leakage
+// Key: canonical workspace path, Value: CAP API instance
+const artifactManagementCache = new Map<string, ArtifactManagementAPI>();
+
+/**
+ * Get canonical workspace key for caching
+ * Uses fs.realpathSync to resolve symlinks and ensure consistent cache keys
+ */
+function getWorkspaceKey(workspaceRoot: string): string {
+  try {
+    // Validate the workspace path for security
+    const validatedPath = validateSecurePath(workspaceRoot);
+    // Canonicalize to handle symlinks consistently
+    return fs.realpathSync(validatedPath);
+  } catch {
+    // If path doesn't exist yet, use resolved absolute path
+    return path.resolve(workspaceRoot);
+  }
+}
 
 /**
  * Initialize artifact-management with mock VSCode API
+ * Each workspace gets its own isolated CAP model instance
  */
 async function initializeArtifactManagement(
   workspaceRoot: string
 ): Promise<ArtifactManagementAPI> {
-  if (artifactManagement) {
-    return artifactManagement;
+  // Get canonical workspace key to ensure cache consistency
+  const workspaceKey = getWorkspaceKey(workspaceRoot);
+
+  // Return cached instance if already initialized for this workspace
+  const cached = artifactManagementCache.get(workspaceKey);
+  if (cached) {
+    return cached;
   }
 
   try {
@@ -52,7 +79,7 @@ async function initializeArtifactManagement(
     }
 
     // Create filesystem instance for the workspace
-    const fs = new NodeFileSystem(workspaceRoot, workspaceRoot);
+    const nodeFs = new NodeFileSystem(workspaceRoot, workspaceRoot);
 
     // Find all .cds files in the project (typically in srv/, db/, app/ directories)
     const cdsPaths: string[] = [];
@@ -61,7 +88,7 @@ async function initializeArtifactManagement(
     for (const dir of dirsToCheck) {
       try {
         // Navigate to the directory
-        const dirFs = dir === "." ? fs : fs.navigate(dir);
+        const dirFs = dir === "." ? nodeFs : nodeFs.navigate(dir);
         // Read .cds files
         const files = await dirFs.readFiles({ ext: "cds" });
         cdsPaths.push(
@@ -79,12 +106,12 @@ async function initializeArtifactManagement(
     }
 
     // Create CapApi with filesystem and CDS file paths
-    const am = new CapApi(fs, cdsPaths);
+    const am = new CapApi(nodeFs, cdsPaths);
 
     // Load the CAP model for the project with flavor option
     await am.load({ flavor: "inferred" });
 
-    artifactManagement = {
+    const api: ArtifactManagementAPI = {
       async getServicesInfo(_projectPath: string): Promise<ServiceInfo[]> {
         try {
           // Get services from CAP model (synchronous call)
@@ -133,7 +160,7 @@ async function initializeArtifactManagement(
       },
 
       async getServiceEdmx(
-        projectPath: string,
+        _projectPath: string,
         serviceName: string
       ): Promise<string> {
         try {
@@ -147,7 +174,10 @@ async function initializeArtifactManagement(
       },
     };
 
-    return artifactManagement;
+    // Cache the API instance for this workspace
+    artifactManagementCache.set(workspaceKey, api);
+
+    return api;
   } catch (error) {
     console.error("Failed to initialize artifact-management:", error);
     throw new Error("Artifact management initialization failed", {
@@ -214,4 +244,32 @@ export async function isArtifactManagementAvailable(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Clear the CAP model cache for a specific workspace or all workspaces
+ * Useful for testing or when workspace content changes significantly
+ */
+export function clearArtifactManagementCache(workspaceRoot?: string): void {
+  if (workspaceRoot) {
+    // Clear cache for specific workspace
+    const workspaceKey = getWorkspaceKey(workspaceRoot);
+    artifactManagementCache.delete(workspaceKey);
+  } else {
+    // Clear all cached instances
+    artifactManagementCache.clear();
+  }
+}
+
+/**
+ * Get cache statistics for monitoring
+ */
+export function getArtifactManagementCacheStats(): {
+  size: number;
+  workspaces: string[];
+} {
+  return {
+    size: artifactManagementCache.size,
+    workspaces: Array.from(artifactManagementCache.keys()),
+  };
 }
