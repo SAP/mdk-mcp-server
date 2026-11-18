@@ -992,6 +992,7 @@ export async function generateTemplateBasedMetadata(
       );
     } else {
       // Fallback: check system PATH for yo (e.g. /extbin/globals/bun/bin/yo)
+      // Security: Validate that resolved path is in a trusted location
       let yoInPath: string;
       try {
         yoInPath = execSync(
@@ -1002,8 +1003,35 @@ export async function generateTemplateBasedMetadata(
         yoInPath = "";
       }
       if (yoInPath && fs.existsSync(yoInPath)) {
-        yoCommand = yoInPath;
-        console.error(`[MDK MCP Server] Using system PATH yo at ${yoInPath}`);
+        // Security: Validate that yo is in a trusted directory
+        const absolutePath = fs.realpathSync(yoInPath);
+
+        // Trusted locations for yo:
+        // - System directories (/usr/, /opt/)
+        // - node_modules/.bin directories
+        // - Homebrew directories
+        const isTrusted =
+          absolutePath.includes("/node_modules/.bin/") ||
+          absolutePath.includes("/.bin/") || // global bun/npm bin
+          absolutePath.startsWith("/usr/") ||
+          absolutePath.startsWith("/opt/") ||
+          absolutePath.startsWith("/home/linuxbrew/") ||
+          (process.platform === "win32" &&
+            absolutePath.match(/^[A-Z]:\\Program Files/i));
+
+        if (isTrusted) {
+          yoCommand = absolutePath;
+          console.error(
+            `[MDK MCP Server] Using system PATH yo at ${absolutePath}`
+          );
+        } else {
+          console.warn(
+            `[Security Warning] yo binary at ${absolutePath} is not in a trusted directory. Skipping.`
+          );
+          throw new Error(
+            `yo executable not found in trusted locations. Found at ${absolutePath} but it's not in a trusted directory.`
+          );
+        }
       } else {
         throw new Error(
           `yo executable not found at ${yoExecutable}. Please ensure 'yo' package is installed.`

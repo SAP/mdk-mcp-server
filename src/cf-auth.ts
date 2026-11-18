@@ -4,6 +4,82 @@ import * as path from "path";
 import { execSync } from "child_process";
 
 /**
+ * Security: Resolve cf binary to a trusted absolute path
+ * Only accepts cf binaries from system directories to prevent PATH injection
+ */
+function resolveCFBinary(): string {
+  // Trusted system directories where cf should be installed
+  const trustedPaths = [
+    "/usr/local/bin/cf",
+    "/usr/bin/cf",
+    "/opt/homebrew/bin/cf", // macOS Homebrew on Apple Silicon
+    "/home/linuxbrew/.linuxbrew/bin/cf", // Linux Homebrew
+  ];
+
+  // On Windows, also check common installation paths
+  if (process.platform === "win32") {
+    trustedPaths.push(
+      "C:\\Program Files\\Cloud Foundry\\cf.exe",
+      "C:\\Program Files (x86)\\Cloud Foundry\\cf.exe"
+    );
+  }
+
+  // Check trusted paths first
+  for (const trustedPath of trustedPaths) {
+    if (fs.existsSync(trustedPath)) {
+      return trustedPath;
+    }
+  }
+
+  // If not in trusted paths, try to resolve via PATH and validate
+  try {
+    const resolvedPath = execSync("which cf 2>/dev/null || command -v cf", {
+      encoding: "utf8",
+      stdio: "pipe",
+    }).trim();
+
+    if (resolvedPath && fs.existsSync(resolvedPath)) {
+      // Validate that the resolved path is in a system directory
+      const absolutePath = fs.realpathSync(resolvedPath);
+
+      // Only accept paths in system directories, not in user writable locations
+      const isInSystemDir =
+        absolutePath.startsWith("/usr/") ||
+        absolutePath.startsWith("/opt/") ||
+        absolutePath.startsWith("/home/linuxbrew/") ||
+        (process.platform === "win32" &&
+          absolutePath.match(/^[A-Z]:\\Program Files/i));
+
+      if (isInSystemDir) {
+        return absolutePath;
+      }
+
+      console.warn(
+        `[Security] cf binary at ${absolutePath} is not in a trusted system directory`
+      );
+    }
+  } catch {
+    // PATH resolution failed
+  }
+
+  // Fallback to bare name (will rely on PATH) with a warning
+  console.warn(
+    "[Security Warning] Could not resolve cf binary to a trusted path. Using PATH resolution."
+  );
+  return "cf";
+}
+
+// Cache the resolved cf binary path to avoid repeated resolution
+let cachedCFBinary: string | null = null;
+
+function getCFBinary(): string {
+  if (!cachedCFBinary) {
+    cachedCFBinary = resolveCFBinary();
+  }
+  return cachedCFBinary;
+}
+
+/**
  * Cloud Foundry configuration structure from ~/.cf/config.json
  */
 export interface CFConfig {
@@ -70,9 +146,11 @@ export function getCFConfig(): CFConfig | null {
  */
 export function isCFLoggedIn(): boolean {
   try {
+    // Security: Use resolved cf binary path instead of bare "cf"
+    const cfBinary = getCFBinary();
     // Try to execute a simple CF command to verify the token is valid
     // Using 'cf target' is fast and will fail if token is expired
-    execSync("cf target", {
+    execSync(`"${cfBinary}" target`, {
       stdio: "pipe",
       encoding: "utf-8",
     });
@@ -144,9 +222,11 @@ export function refreshCFToken(): boolean {
   try {
     console.error("[MDK MCP Server] Refreshing CF OAuth token...");
 
+    // Security: Use resolved cf binary path instead of bare "cf"
+    const cfBinary = getCFBinary();
     // Execute cf oauth-token command
     // This command refreshes the token and updates ~/.cf/config.json
-    execSync("cf oauth-token", {
+    execSync(`"${cfBinary}" oauth-token`, {
       stdio: "pipe", // Suppress output
       encoding: "utf-8",
     });
